@@ -13,7 +13,7 @@ export default defineConfig({
     // @ts-ignore
     plugins: [tailwindcss()],
     optimizeDeps: {
-      include: [],
+      include: ['react-compiler-runtime'],
     },
   },
 
@@ -23,6 +23,7 @@ export default defineConfig({
       dataset: 'production',
       useCdn: false, // See note on using the CDN
       apiVersion: '2026-03-10', // insert the current date to access the latest version of the API
+      studioBasePath: '/admin',
     }),
     react(),
   ],

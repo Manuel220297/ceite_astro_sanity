@@ -1,0 +1,14 @@
+// ./sanity.config.ts
+import { defineConfig } from 'sanity';
+import { structureTool } from 'sanity/structure';
+import { schemaTypes } from './src/sanity/schemaTypes';
+import { visionTool } from '@sanity/vision';
+
+export default defineConfig({
+  projectId: '4pvkzr0g',
+  dataset: 'production',
+  plugins: [structureTool(), visionTool()],
+  schema: {
+    types: schemaTypes,
+  },
+});
