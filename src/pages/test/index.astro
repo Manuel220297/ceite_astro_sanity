@@ -12,18 +12,29 @@ const programs = (await getCollection('programs')).sort(
   <section class='flex flex-col h-[max(35vh,300px)] bg-gray-200'>
     <FirstComponent />
   </section>
-  {
-    programs.map((program, index) => (
-      <div class='tab' data-target={`content-${index}`}>
-        Show {index}
-      </div>
-    ))
-  }
+  <div id='program-tab' class='flex flex-1 min-h-40 gap-12 px-4 overflow-x-auto scroll-smooth'>
+    {
+      programs.map((program, index) => (
+        <div class='tab flex-col gap-4 flex justify-center items-center flex-shrink-0' data-target={`content-${index}`}>
+          <img
+            style='    
+            filter: saturate(0%);
+            transform: rotate(30deg);
+            width: 96px;
+            height: 96px;'
+            src='/images/asiatech_logo.avif'
+            class='cursor-pointer object-contain'
+          />
+          <p class='font-light'>{program.data.title}</p>
+        </div>
+      ))
+    }
+  </div>
 
   <section class='flex flex-col gap-8'>
     {
       programs.map((program, index) => (
-        <article id={`content-${index}`} class='content  hidden'>
+        <article id={`content-${index}`} class='content hidden col h-[67vh]'>
           <h1 class='text-7xl'>{program.data.title}</h1>
           <h2 class='text-3xl'>
             {program.data.titleLong} Index: {index}
@@ -40,28 +51,80 @@ const programs = (await getCollection('programs')).sort(
   </section>
 
   <script>
-    const tabs = document.querySelectorAll('.tab');
+    import { animate, spring } from 'animejs';
+
+    let activeTab: HTMLElement | null = null;
+
+    const programTab = document.querySelector('#program-tab');
+    const tabs = programTab?.querySelectorAll('.tab') ?? [];
     const contents = document.querySelectorAll('.content');
 
-    function setActive(id: string) {
+    // --- Utilities ---
+    function removeHidden(id: string) {
       contents.forEach((c) => c.classList.add('hidden'));
       document.getElementById(id)?.classList.remove('hidden');
     }
+
+    // --- Animations ---
+    const animateActiveTab = (target: HTMLElement) => {
+      animate(target, {
+        filter: 'saturate(100%)',
+        scale: [
+          { to: 1.15, ease: 'inOut(3)', duration: 200 },
+          { to: 1.0, ease: spring({ bounce: 0.7 }) },
+        ],
+      });
+    };
+
+    const animateInactiveTab = (target: HTMLElement) => {
+      animate(target, {
+        scale: [
+          { to: 0.95, ease: 'inOut(3)', duration: 200 },
+          { to: 0.83, ease: spring({ bounce: 0.7 }) },
+        ],
+        filter: 'saturate(0%)',
+      });
+    };
+
+    // --- Core Logic (Single Source of Truth) ---
+    function setActiveTab(nextTab: HTMLElement) {
+      // unnecessary work
+      if (activeTab === nextTab) return;
+
+      // 1. Deactivate previous
+      if (activeTab) {
+        activeTab.classList.remove('active');
+
+        const prevImg = activeTab.querySelector('img');
+        if (prevImg) animateInactiveTab(prevImg);
+      }
+
+      // 2. Activate new
+      nextTab.classList.add('active');
+
+      const nextImg = nextTab.querySelector('img');
+      if (nextImg) animateActiveTab(nextImg);
+
+      // 3. Update content
+      const targetId = nextTab.dataset.target;
+      if (targetId) removeHidden(targetId);
+
+      // 4. Update state
+      activeTab = nextTab;
+    }
+
+    // --- Event Binding ---
     tabs.forEach((tab) => {
       tab.addEventListener('click', () => {
-        // Remove active state
-        contents.forEach((c) => c.classList.add('hidden'));
-
-        // Show selected
-        const el = tab as HTMLElement;
-        const target = document.getElementById(el.dataset.target!);
-        target?.classList.remove('hidden');
+        setActiveTab(tab as HTMLElement);
       });
     });
 
+    // --- Initial State ---
     const firstTab = tabs[0] as HTMLElement | undefined;
-    if (firstTab?.dataset.target) {
-      setActive(firstTab.dataset.target);
+
+    if (firstTab) {
+      setActiveTab(firstTab);
     }
   </script>
 </MainLayout>

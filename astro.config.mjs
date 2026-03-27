@@ -1,11 +1,9 @@
-// @ts-check
+//@ts-check
 import { defineConfig, fontProviders } from 'astro/config';
-
 import tailwindcss from '@tailwindcss/vite';
-
 import react from '@astrojs/react';
-
 import sanity from '@sanity/astro';
+import 'dotenv/config';
 
 // https://astro.build/config
 export default defineConfig({
@@ -24,7 +22,7 @@ export default defineConfig({
 
   integrations: [
     sanity({
-      projectId: 'yiulggd9',
+      projectId: process.env.PUBLIC_SANITY_PROJECT_ID,
       dataset: 'production',
       useCdn: false, // See note on using the CDN
       apiVersion: '2026-03-10', // insert the current date to access the latest version of the API
