@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
@@ -9,12 +9,17 @@ import sanity from '@sanity/astro';
 
 // https://astro.build/config
 export default defineConfig({
+  fonts: [
+    {
+      name: 'Geist',
+      cssVariable: '--font-geist',
+      provider: fontProviders.fontsource(),
+    },
+  ],
+
   vite: {
     // @ts-ignore
     plugins: [tailwindcss()],
-    optimizeDeps: {
-      include: ['react-compiler-runtime'],
-    },
   },
 
   integrations: [

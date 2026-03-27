@@ -14,6 +14,7 @@
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    font-family: var(--font-geist), sans-serif;
   }
 }
 
@@ -121,4 +122,8 @@
     0.999586 99%,
     0.996779 100%
   );
+}
+
+@theme {
+  --font-serif: 'Times New Roman', Times, serif;
 }

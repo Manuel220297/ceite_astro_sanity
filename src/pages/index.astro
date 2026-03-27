@@ -1,18 +1,67 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
+import MainLayout from '../layouts/MainLayout.astro';
+import MenuIcon from '../assets/icons/MenuIcon.astro';
+import Programs from '../components/Programs.astro';
+import Hero from '../components/Hero.astro';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<nav>
-		<a href="/">Home</a>
-		<a href="/news">News</a>
-		<a href="/programs">Programs</a>
-	</nav>
-	<h1>
-		Home
-	</h1>
-</Layout>
+<MainLayout>
+  <nav class='flex justify-between'>
+    <div>
+      <a href='/'>Logo</a>
+    </div>
+
+    <input type='checkbox' id='menu-toggle' class='hidden' />
+    <label for='menu-toggle' class='cursor-pointer flex flex-col gap-1'>
+      <MenuIcon />
+    </label>
+
+    <!-- Desktop Menu -->
+    <div class='flex flex-row gap-8'>
+      <div class='flex flex-row gap-4'>
+        <a href='/'>Home</a>
+        <a href='/news'>News</a>
+        <a href='/programs'>Programs</a>
+        <a href='/faculty'>Faculty</a>
+        <a href='/specialization'>Specialization</a>
+        <a href='/projects'>Projects</a>
+        <a href='/test'>Test</a>
+      </div>
+    </div>
+
+    <div class='absolute flex flex-col right-0 top-16 bg-white' id='menu'>
+      <a href='/'>Home</a>
+      <a href='/news'>News</a>
+      <a href='/programs'>Programs</a>
+      <a href='/faculty'>Faculty</a>
+      <a href='/specialization'>Specialization</a>
+      <a href='/projects'>Projects</a>
+    </div>
+
+    <div>
+      <a href=''>Enroll</a>
+    </div>
+  </nav>
+
+  <Hero />
+
+  <Programs />
+
+  <h2>News</h2>
+  <ul>
+    <li>News 1</li>
+    <li>News 2</li>
+    <li>News 3</li>
+  </ul>
+</MainLayout>
+
+<footer class='mt-auto'>
+  <div class='flex flex-col'>
+    <p>Logo Asia Technological School of Science and Arts</p>
+    <p>1506 Dila, Dila, Entrance to Golden City Subdivision, City of Santa Rosa, Laguna</p>
+    <p>Facebook page</p>
+  </div>
+</footer>

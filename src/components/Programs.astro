@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+
+const programs = (await getCollection('programs')).sort(
+  (a, b) => a.data._createdAt.getTime() - b.data._createdAt.getTime(),
+);
+---
+
+<section>
+  <h2>Programs</h2>
+  <div class='flex gap-4'>
+    {
+      programs.map((program, index) => (
+        <div>
+          <input type='radio' id={program.id} name='program' checked={index === 0} />
+          <label for={program.id} class='cursor-pointer'>
+            {program.data.title}
+          </label>
+        </div>
+      ))
+    }
+  </div>
+
+  <div>
+    {
+      programs.map((program, index) => (
+        <div class='p-4 border program-content' data-program={program.id} style={index !== 0 ? 'display: none' : ''}>
+          <h1>{program.data.title}</h1>
+          <h2>{program.data.titleLong}</h2>
+          <p>{program.body}</p>
+          <img src={program.data.image} alt={`A picture of ${program.data.titleLong} program`} loading='lazy' />
+          {program.data.specializations?.map((s) => (
+            <p>{s}</p>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+
+  <script>
+    const radios = document.querySelectorAll('input[name="program"]');
+    const contents = document.querySelectorAll('.program-content');
+
+    radios.forEach((radio) => {
+      radio.addEventListener('change', () => {
+        contents.forEach((div) => {
+          const el = div as HTMLElement;
+          el.style.display = el.dataset.program === radio.id ? 'block' : 'none';
+        });
+      });
+    });
+  </script>
+</section>

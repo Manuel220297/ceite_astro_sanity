@@ -3,6 +3,7 @@ import { defineField, defineType } from 'sanity';
 
 export const newsType = defineType({
   name: 'news',
+  title: 'News and Events',
   type: 'document',
   fields: [
     defineField({
@@ -35,9 +36,9 @@ export const newsType = defineType({
       ],
     }),
     defineField({
-      name: 'pubDate',
-      title: 'Published at',
-      type: 'datetime',
+      name: 'body',
+      title: 'Body',
+      type: 'blockContent',
     }),
   ],
   preview: {

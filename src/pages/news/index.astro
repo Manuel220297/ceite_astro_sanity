@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+
+const markdownNews = await getCollection('news');
+
+const sanityNews = await getCollection('sanityNews');
+
+const allNews = [...markdownNews, ...sanityNews].sort(
+  (a, b) => new Date(b.data._createdAt).getTime() - new Date(a.data._createdAt).getTime(),
+);
+---
+
+<MainLayout>
+  <h1>News page</h1>
+  <ul>
+    {
+      allNews.map((news) => (
+        <li>
+          <a href={`/news/${news.data.slug}`}>{news.data.slug}</a>
+        </li>
+      ))
+    }
+  </ul>
+</MainLayout>

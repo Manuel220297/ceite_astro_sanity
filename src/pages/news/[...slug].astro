@@ -1,0 +1,36 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { render } from 'astro:content';
+import { getCollection } from 'astro:content';
+import SanityImage from '../../components/SanityImage.astro';
+import MainLayout from '../../layouts/MainLayout.astro';
+
+export const getStaticPaths = (async () => {
+  const markdownNews = await getCollection('news');
+  const sanityNews = await getCollection('sanityNews');
+
+  const allNews = [...markdownNews, ...sanityNews];
+
+  return allNews.map((news) => ({
+    params: {
+      slug: news.data.slug,
+    },
+    props: {
+      news,
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { news } = Astro.props;
+const { Content } = await render(news);
+---
+
+<MainLayout>
+  <div>
+    <h1>News slug</h1>
+    <SanityImage class='max-h-[720px] rounded-md' image={news.data.image} />
+    <h2 class='text-blue-300'>{news.data.title}</h2>
+    <p>{news.data._createdAt}</p>
+    <Content />
+  </div>
+</MainLayout>

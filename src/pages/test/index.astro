@@ -1,0 +1,67 @@
+---
+import MainLayout from '../../layouts/MainLayout.astro';
+import FirstComponent from '../../components/test-components/FirstComponent.astro';
+import { getCollection } from 'astro:content';
+
+const programs = (await getCollection('programs')).sort(
+  (a, b) => a.data._createdAt.getTime() - b.data._createdAt.getTime(),
+);
+---
+
+<MainLayout>
+  <section class='flex flex-col h-[max(35vh,300px)] bg-gray-200'>
+    <FirstComponent />
+  </section>
+  {
+    programs.map((program, index) => (
+      <div class='tab' data-target={`content-${index}`}>
+        Show {index}
+      </div>
+    ))
+  }
+
+  <section class='flex flex-col gap-8'>
+    {
+      programs.map((program, index) => (
+        <article id={`content-${index}`} class='content  hidden'>
+          <h1 class='text-7xl'>{program.data.title}</h1>
+          <h2 class='text-3xl'>
+            {program.data.titleLong} Index: {index}
+          </h2>
+          <h3 class='text-xl'>Tags</h3>
+          <ul class='flex gap-4'>
+            {program.data.specializations?.map((s) => (
+              <li>{s}</li>
+            ))}
+          </ul>
+        </article>
+      ))
+    }
+  </section>
+
+  <script>
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.content');
+
+    function setActive(id: string) {
+      contents.forEach((c) => c.classList.add('hidden'));
+      document.getElementById(id)?.classList.remove('hidden');
+    }
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        // Remove active state
+        contents.forEach((c) => c.classList.add('hidden'));
+
+        // Show selected
+        const el = tab as HTMLElement;
+        const target = document.getElementById(el.dataset.target!);
+        target?.classList.remove('hidden');
+      });
+    });
+
+    const firstTab = tabs[0] as HTMLElement | undefined;
+    if (firstTab?.dataset.target) {
+      setActive(firstTab.dataset.target);
+    }
+  </script>
+</MainLayout>

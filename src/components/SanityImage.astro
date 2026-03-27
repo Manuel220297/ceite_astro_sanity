@@ -1,0 +1,35 @@
+---
+import { urlFor } from '../lib/sanity/image';
+import clsx from 'clsx';
+import type { SanityImageSource } from '@sanity/image-url';
+import { DEFAULT_IMAGE } from '../lib/fallbackImages';
+import type { DefaultImage } from '../lib/fallbackImages';
+
+interface Props {
+  image?: SanityImageSource | null;
+  alt?: string;
+  class?: string;
+  fallback?: DefaultImage;
+}
+
+const { image, alt = '', fallback = DEFAULT_IMAGE.KEYBOARD, class: className } = Astro.props;
+
+const src = image ? urlFor(image).width(800).url() : fallback;
+
+const srcset = image
+  ? `
+    ${urlFor(image).width(400).url()} 400w,
+    ${urlFor(image).width(800).url()} 800w,
+    ${urlFor(image).width(1200).url()} 1200w
+  `
+  : undefined;
+---
+
+<img
+  src={src}
+  srcset={srcset}
+  sizes='(max-width: 600px) 400px, (max-width: 1200px) 800px, 1200px'
+  class={clsx('', className)}
+  alt={alt}
+  loading='lazy'
+/>
