@@ -1,0 +1,67 @@
+---
+import { getCollection } from 'astro:content';
+import SanityImage from '../SanityImage.astro';
+
+const programs = await getCollection('sanityPrograms');
+const [about] = await getCollection('sanityAbout')
+
+const [dean] = await getCollection('sanityDean')
+
+---
+<section>
+
+  <h1>Querying Sanity</h1>
+  <h2>Programs</h2>
+  <ul class="p-3">
+    {programs.map((p, index) => 
+  <li class="border-2 rounded-2xl border-stone-700 p-3">
+    <h1 class="text-2xl font-bold mb-3">Index: {index}</h1>
+    <h2 class="text-xl font-semibold mb-3">Slug: {p.id}</h2>
+    <h2 class="text-xl font-semibold mb-3">Created At: {p.data._createdAt.toLocaleString()}</h2>
+    <p>Title: {p.data.title}</p>
+    <p>TitleLong: {p.data.titleLong}</p>
+    <div class="flex gap-4 items-center ">
+      <h3>Specialization:</h3> {p.data.specializations.map((s) => (
+        <p style={`color: ${s.color}; border: solid; border-radius: 5px; padding: 4px`}>{s.specialization}</p>
+      ))}</div>
+    <div>
+      <h3>Curriculum</h3>
+      <div class="bg-stone-700/10 flex flex-col gap-4">{p.data.curriculum.map((c) => (
+        <div>
+          <p>{c.subjects?.length > 0 ? c.year : ''}</p>
+        {c.subjects.map((s) => (
+          <div style={`--color: ${s.specialization?.color}` } class="flex gap-2">
+            <p style={`color: var(--color);`}>{s.subject}</p>
+            <p style={`color: var(--color);`} class={`text-sm`}>{s.specialization?.specialization}</p>
+          </div>
+          
+        ))}
+        </div>
+      ))}
+      </div>
+    </div>
+  </li>
+  <li></li>
+  
+)}
+</ul> 
+</section>
+<section>
+
+  <h1>About</h1>
+  <h1>{about.data.title}</h1>
+  <div class="flex flex-col sm:flex-row">
+    <div class="about-data-body" set:html={about.data.body} />
+    <SanityImage class='object-cover sm:w-[55vw]' image={about.data.image} alt={about.data.image?.alt} />
+  </div>
+</section>
+<section>
+  <h1>Faculty</h1>
+  <div>
+    <h2>Dean</h2>
+    <p>{[dean.data.honorifics, dean.data.firstName, dean.data.middleName, dean.data.lastName].filter(Boolean).join(' ')}</p>
+    <SanityImage class='object-cover w-[128px]' image={dean.data.image} alt={dean.data.image?.alt} />
+  </div>
+  
+</section>
+

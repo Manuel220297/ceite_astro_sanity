@@ -28,7 +28,7 @@ const programs = (await getCollection('programs')).sort(
           <h1>{program.data.title}</h1>
           <h2>{program.data.titleLong}</h2>
           <p>{program.body}</p>
-          <img src={program.data.image} alt={`A picture of ${program.data.titleLong} program`} loading='lazy' />
+          <img src={program.data?.image?.src} alt={`A picture of ${program.data?.titleLong!} program`} loading='lazy' />
           {program.data.specializations?.map((s) => (
             <p>{s}</p>
           ))}

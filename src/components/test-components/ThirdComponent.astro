@@ -1,0 +1,82 @@
+---
+import { getCollection } from 'astro:content';
+
+const programs = (await getCollection('programs')).sort(
+  (a, b) => a.data._createdAt.getTime() - b.data._createdAt.getTime(),
+);
+---
+
+<article class='slider w-auto md:w-full h-[100vh] relative'>
+  <div class='list'>
+    {
+      programs.map((program, index) => (
+        <div class='item absolute inset-0 opacity-0 overflow-hidden'>
+          <img src='/images/design2.webp' class='object-cover w-full h-full' alt='program image' loading='lazy' />
+          <div class='absolute left-[10%] top-[20%] w-[1000 px] max-w-[100%] z-10 text-shadow-lg text-white'>
+            <h2 class='uppercase font-extrabold tracking-widest'>{program.data.title}</h2>
+            <h1 class='font-extrabold text-5xl sm:text-7xl'>{program.data.titleLong}</h1>
+            <p class='text-xl'>Tags</p>
+            <ul class='flex gap-4'>
+              {program.data.specializations?.map((s: any) => (
+                <p>{s.title}</p>
+              ))}
+            </ul>
+          </div>
+          <div class='absolute inset-0 bg-gradient-to-t from-black/70 to-transparent' />
+        </div>
+      ))
+    }
+  </div>
+  <div class='absolute right-[10%] top-[50px] z-10'>
+    <button id='prev' class='bg-gray-200 px-6 py-3'>←</button>
+    <button id='next' class='bg-gray-200 px-6 py-3'>→</button>
+  </div>
+  <div class='tab absolute bottom-[50px] left-0 flex items-center sm:justify-center gap-3 px-6 overflow-x-auto w-full'>
+    {
+      programs.map((program, index) => (
+        <div class='item flex flex-col items-center'>
+          <div class='flex-shrink-0 w-32 h-48 bg-blue-500 text-white flex items-center justify-center brightness-50'>
+            {index}
+          </div>
+          <p>{program.data.title} </p>
+        </div>
+      ))
+    }
+  </div>
+</article>
+<script>
+  const items = document.querySelectorAll('.slider .list .item');
+  const tabItems = document.querySelectorAll('.tab .item');
+  const next = document.querySelector('#next');
+  const prev = document.querySelector('#prev');
+  const countItem = items.length;
+  let itemActive = 0;
+
+  next?.addEventListener('click', () => {
+    itemActive = itemActive + 1;
+    if (itemActive >= countItem) {
+      itemActive = 0;
+    }
+    showSlider();
+  });
+
+  function showSlider() {
+    let itemActiveOld = document.querySelector('.slider .list .item.active');
+    let tabActiveOld = document.querySelector('.tab .item .active');
+    itemActiveOld?.classList.remove('active');
+    tabActiveOld?.classList.remove('active');
+
+    items[itemActive].classList.add('active');
+    tabItems[itemActive].children[0].classList.add('active');
+  }
+
+  tabItems.forEach((tab, index) => {
+    tab.addEventListener('click', () => {
+      itemActive = index;
+      showSlider();
+    });
+  });
+
+  items[0].classList.add('active');
+  tabItems[0].children[0].classList.add('active');
+</script>

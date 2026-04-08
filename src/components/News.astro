@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+
+const news = (await getCollection('news')).sort((a, b) => b.data._createdAt.getTime() - a.data._createdAt.getTime());
+const latestNews = news[0];
+const olderNews = news.slice(1, 4);
+---
+
+<section class='min-h-[90vh] bg-amber-100 overflow-hidden'>
+  <div class='max-w-7xl flex flex-col justify-center bg-amber-300 mx-auto'>
+    <h2>News</h2>
+    <article>
+      <div class='flex justify-between'>
+        <div class='relative mx-auto rounded-lg w-[80%] h-[500px]'>
+          <!-- Image -->
+          <img src='/images/default.avif' class='object-cover rounded-lg h-full w-full' alt='' />
+
+          <!-- Overlay -->
+          <div class='absolute inset-0 top-5 z-10 flex flex-col justify-end p-4'>
+            <h1 class='text-white text-5xl font-bold'>{latestNews.data.title}</h1>
+            <h3 class='text-white text-2xl font-normal'>
+              {latestNews.data._createdAt.toLocaleString('en-us', { dateStyle: 'long' })}
+            </h3>
+          </div>
+        </div>
+      </div>
+
+      {
+        olderNews.map((n) => (
+          <div>
+            <h1>{n.data.title}</h1>
+          </div>
+        ))
+      }
+    </article>
+  </div>
+</section>

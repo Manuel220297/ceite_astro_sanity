@@ -23,6 +23,7 @@ export const getStaticPaths = (async () => {
 
 const { news } = Astro.props;
 const { Content } = await render(news);
+console.log(news.data.image?.alt);
 ---
 
 <MainLayout>

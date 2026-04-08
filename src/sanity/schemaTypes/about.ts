@@ -1,23 +1,14 @@
 import { defineField, defineType } from 'sanity';
 
-export const newsType = defineType({
-  name: 'news',
-  title: 'News and Events',
+export const aboutType = defineType({
+  name: 'about',
+  title: 'About',
   type: 'document',
   fields: [
     defineField({
       name: 'title',
       title: 'Title',
       type: 'string',
-    }),
-    defineField({
-      name: 'slug',
-      title: 'slug',
-      type: 'slug',
-      options: {
-        source: 'title',
-        maxLength: 96,
-      },
     }),
     defineField({
       name: 'image',

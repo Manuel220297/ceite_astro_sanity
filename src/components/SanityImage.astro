@@ -10,9 +10,10 @@ interface Props {
   alt?: string;
   class?: string;
   fallback?: DefaultImage;
+  loading?: 'lazy' | 'eager';
 }
 
-const { image, alt = '', fallback = DEFAULT_IMAGE.KEYBOARD, class: className } = Astro.props;
+const { image, alt = '', fallback = DEFAULT_IMAGE.KEYBOARD, class: className, loading } = Astro.props;
 
 const src = image ? urlFor(image).width(800).url() : fallback;
 
@@ -31,5 +32,5 @@ const srcset = image
   sizes='(max-width: 600px) 400px, (max-width: 1200px) 800px, 1200px'
   class={clsx('', className)}
   alt={alt}
-  loading='lazy'
+  loading={loading || 'lazy'}
 />

@@ -1,8 +1,8 @@
 import { defineField, defineType } from 'sanity';
 
-export const newsType = defineType({
-  name: 'news',
-  title: 'News and Events',
+export const projectType = defineType({
+  name: 'projects',
+  title: 'Projects',
   type: 'document',
   fields: [
     defineField({
@@ -33,6 +33,13 @@ export const newsType = defineType({
           title: 'Alternative Text',
         },
       ],
+    }),
+
+    defineField({
+      name: 'tags',
+      title: 'Tags',
+      type: 'array',
+      of: [{ name: 'tag', type: 'string', title: 'Tag name' }],
     }),
     defineField({
       name: 'body',
