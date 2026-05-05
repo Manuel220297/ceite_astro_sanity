@@ -9,14 +9,41 @@ import 'dotenv/config';
 export default defineConfig({
   fonts: [
     {
-      name: 'Geist',
-      cssVariable: '--font-geist',
+      name: 'Inter',
+      cssVariable: '--font-inter',
       provider: fontProviders.fontsource(),
+      weights: ['100 900'],
+      fallbacks: ['sans-serif'],
+    },
+    {
+      provider: fontProviders.local(),
+      name: 'TikTok Sans',
+      cssVariable: '--font-tiktok',
+      fallbacks: ['sans-serif'],
+      options: {
+        variants: [
+          {
+            src: ['./src/assets/fonts/TikTokSans_Expanded-ExtraBold.woff2'],
+            weight: 'normal',
+            style: 'normal',
+          },
+        ],
+      },
     },
   ],
 
   vite: {
     plugins: [tailwindcss()],
+    // optimizeDeps: {
+    //   include: [
+    //     'react/compiler-runtime',
+    //     'lodash/isObject.js',
+    //     'lodash/groupBy.js',
+    //     'lodash/keyBy.js',
+    //     'lodash/partition.js',
+    //     'lodash/sortedIndex.js',
+    //   ],
+    // },
   },
 
   integrations: [

@@ -4,6 +4,9 @@ export const aboutType = defineType({
   name: 'about',
   title: 'About',
   type: 'document',
+  options: {
+    singleton: true,
+  },
   fields: [
     defineField({
       name: 'title',

@@ -1,36 +1,43 @@
 ---
 import { urlFor } from '../lib/sanity/image';
 import clsx from 'clsx';
-import type { SanityImageSource } from '@sanity/image-url';
 import { DEFAULT_IMAGE } from '../lib/fallbackImages';
 import type { DefaultImage } from '../lib/fallbackImages';
 
 interface Props {
-  image?: SanityImageSource | null;
+  image?: any;
   alt?: string;
   class?: string;
   fallback?: DefaultImage;
   loading?: 'lazy' | 'eager';
+  width?: number;
+  height?: number;
+  unoptimized?: boolean;
 }
 
-const { image, alt = '', fallback = DEFAULT_IMAGE.KEYBOARD, class: className, loading } = Astro.props;
+const {
+  image,
+  alt = '',
+  fallback = DEFAULT_IMAGE.KEYBOARD,
+  class: className,
+  loading,
+  width,
+  height,
+  unoptimized = false,
+} = Astro.props;
 
-const src = image ? urlFor(image).width(800).url() : fallback;
+const w = width || 800;
+const h = height;
 
-const srcset = image
-  ? `
-    ${urlFor(image).width(400).url()} 400w,
-    ${urlFor(image).width(800).url()} 800w,
-    ${urlFor(image).width(1200).url()} 1200w
-  `
-  : undefined;
+if (unoptimized) {
+}
+const hasImage = image?.asset?._ref;
+
+const src = hasImage
+  ? unoptimized
+    ? urlFor(image).url()
+    : urlFor(image).width(w).height(h!).format('webp').url()
+  : fallback;
 ---
 
-<img
-  src={src}
-  srcset={srcset}
-  sizes='(max-width: 600px) 400px, (max-width: 1200px) 800px, 1200px'
-  class={clsx('', className)}
-  alt={alt}
-  loading={loading || 'lazy'}
-/>
+<img src={src} alt={alt} class={clsx('', className)} loading={loading || 'lazy'} />

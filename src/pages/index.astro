@@ -4,56 +4,18 @@ import MenuIcon from '../assets/icons/MenuIcon.astro';
 import Programs from '../components/Programs.astro';
 import Hero from '../components/Hero.astro';
 import News from '../components/News.astro';
+import Navbar from '../components/Navbar.astro';
+import About from '../components/About.astro';
 
 // Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
 // Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
 <MainLayout>
-  <nav class='flex justify-between'>
-    <div>
-      <a href='/'>Logo</a>
-    </div>
-    <!-- Desktop Menu -->
-    <div class='hidden md:flex md:flex-row gap-4'>
-      <a href='/'>Home</a>
-      <a href='/news'>News</a>
-      <a href='/programs'>Programs</a>
-      <a href='/faculty'>Faculty</a>
-      <a href='/specialization'>Specialization</a>
-      <a href='/projects'>Projects</a>
-      <a href='/test'>Test</a>
-    </div>
-    <div class='hidden md:flex'>
-      <a href=''>Enroll</a>
-    </div>
-
-    <input type='checkbox' id='menu-toggle' class='hidden' />
-    <label for='menu-toggle' class='cursor-pointer md:hidden flex flex-col gap-1'>
-      <MenuIcon />
-    </label>
-
-    <div class='absolute hidden flex-col right-0 top-16 bg-white' id='menu'>
-      <a href='/'>Home</a>
-      <a href='/news'>News</a>
-      <a href='/programs'>Programs</a>
-      <a href='/faculty'>Faculty</a>
-      <a href='/specialization'>Specialization</a>
-      <a href='/projects'>Projects</a>
-    </div>
-  </nav>
-
   <Hero />
+  <About />
 
-  <!-- <Programs /> -->
+  <Programs />
 
   <News />
-
-  <footer class='mt-auto'>
-    <div class='flex flex-col'>
-      <p>Logo Asia Technological School of Science and Arts</p>
-      <p>1506 Dila, Dila, Entrance to Golden City Subdivision, City of Santa Rosa, Laguna</p>
-      <p>Facebook page</p>
-    </div>
-  </footer>
 </MainLayout>

@@ -4,19 +4,16 @@ import FirstComponent from '../../components/test-components/FirstComponent.astr
 import SecondComponent from '../../components/test-components/SecondComponent.astro';
 import ThirdComponent from '../../components/test-components/ThirdComponent.astro';
 import FourthComponent from '../../components/test-components/FourthComponent.astro';
+import FifthComponent from '../../components/test-components/FifthComponent.astro';
 ---
 
 <MainLayout>
-  <section class='flex flex-col bg-gray-200'>
-    <FirstComponent />
-  </section>
-  <section>
-    <SecondComponent />
-  </section>
-  <section>
-    <ThirdComponent />
-  </section>
-  <section class='min-h-screen bg-white'>
-    <FourthComponent />
-  </section>
+  <div class='flex flex-col'>
+    <section class='min-h-screen bg-neutralz-100'>
+      <FourthComponent />
+    </section>
+    <section class='min-h-screen'>
+      <h1>Background Image Test</h1>
+    </section>
+  </div>
 </MainLayout>

@@ -1,67 +1,204 @@
 ---
 import { getCollection } from 'astro:content';
 import SanityImage from '../SanityImage.astro';
+import { DEFAULT_IMAGE } from '../../lib/fallbackImages';
+import { toHTML } from '@portabletext/to-html';
+import { urlFor } from '../../lib/sanity/image';
 
 const programs = await getCollection('sanityPrograms');
-const [about] = await getCollection('sanityAbout')
-
-const [dean] = await getCollection('sanityDean')
+const staffs = await getCollection('sanityStaffs');
+const [about] = await getCollection('sanityAbout');
+const [dean] = await getCollection('sanityDean');
+const [announcement] = await getCollection('sanityAnnouncement')
+const news = (await getCollection('sanityNews')).sort(
+  (a, b) => b.data._createdAt.getTime() - a.data._createdAt.getTime(),
+);
 
 ---
-<section>
 
-  <h1>Querying Sanity</h1>
-  <h2>Programs</h2>
-  <ul class="p-3">
-    {programs.map((p, index) => 
-  <li class="border-2 rounded-2xl border-stone-700 p-3">
-    <h1 class="text-2xl font-bold mb-3">Index: {index}</h1>
-    <h2 class="text-xl font-semibold mb-3">Slug: {p.id}</h2>
-    <h2 class="text-xl font-semibold mb-3">Created At: {p.data._createdAt.toLocaleString()}</h2>
-    <p>Title: {p.data.title}</p>
-    <p>TitleLong: {p.data.titleLong}</p>
-    <div class="flex gap-4 items-center ">
-      <h3>Specialization:</h3> {p.data.specializations.map((s) => (
-        <p style={`color: ${s.color}; border: solid; border-radius: 5px; padding: 4px`}>{s.specialization}</p>
-      ))}</div>
-    <div>
-      <h3>Curriculum</h3>
-      <div class="bg-stone-700/10 flex flex-col gap-4">{p.data.curriculum.map((c) => (
-        <div>
-          <p>{c.subjects?.length > 0 ? c.year : ''}</p>
-        {c.subjects.map((s) => (
-          <div style={`--color: ${s.specialization?.color}` } class="flex gap-2">
-            <p style={`color: var(--color);`}>{s.subject}</p>
-            <p style={`color: var(--color);`} class={`text-sm`}>{s.specialization?.specialization}</p>
+<section class='py-8'>
+  <!-- Tab bar -->
+  <div class='tab-bar' id='tabBar'>
+    {
+      programs.map((p, i) => (
+        <button class:list={['tab-btn', { active: i === 0 }]} data-index={i} type='button'>
+          <SanityImage
+            fallback={DEFAULT_IMAGE.LOGO}
+            class='tab-logo'
+            image={p.data.logo}
+            alt={p.data.logo?.alt || p.data.title}
+          />
+          <span class='tab-label'>{p.id.toUpperCase()}</span>
+        </button>
+      ))
+    }
+  </div>
+
+  <!-- Panels -->
+  <div class='panels-wrap'>
+    {
+      programs.map((p, i) => (
+        <div class:list={['panel', { active: i === 0 }]}>
+          <div class='prog-card'>
+            <div class='prog-header'>
+              <SanityImage
+                fallback={DEFAULT_IMAGE.LOGO}
+                class='prog-logo'
+                image={p.data.logo}
+                alt={p.data.logo?.alt || 'Logo'}
+              />
+              <div>
+                <h2 class='prog-title'>{p.data.title}</h2>
+                <p class='prog-long'>{p.data.titleLong}</p>
+                <div class='spec-list'>
+                  {p.data.specializations?.map((s) => (
+                    <span
+                      class='spec-badge'
+                      style={`color: ${s.color}; border-color: ${s.color}40; background: ${s.color}14`}>
+                      {s.specialization}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <p class='meta-date'>
+              Created{' '}
+              {p.data._createdAt.toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
+
+            <div set:html={p.data.body} />
+            {p.data.specializations?.map((s) => (
+              <h1 style={`color: ${s.color};`}>{s.specialization}</h1>
+              <div set:html={toHTML(s.body)} />
+                  <SanityImage
+                fallback={DEFAULT_IMAGE.KEYBOARD}
+                class='size-64 object-cover'
+                image={s.image}
+                alt={s.image?.alt}
+              />
+            ))}
+
+            <p class='section-label'>Curriculum</p>
+            {p.data.curriculum.map(
+              (c) =>
+                c.firstSemester?.subjects?.length! > 0 && (
+                  <div class='curriculum-block'>
+                    <p class='year-label'>{c.year}</p>
+                    {c.firstSemester?.subjects?.map((s) => (
+                      <div class='subject-row'>
+                        <span class='subject-name'>{s.subject}</span>
+                        {s.specialization && (
+                          <span
+                            class='subject-spec'
+                            style={`color: ${s.specialization.color}; background: ${s.specialization.color}1a`}>
+                            {s.specialization.specialization}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ),
+            )}
           </div>
-          
-        ))}
         </div>
-      ))}
-      </div>
-    </div>
-  </li>
-  <li></li>
-  
-)}
-</ul> 
+      ))
+    }
+  </div>
 </section>
+<div class="bg-gray-300">
+
+  {announcement.data.announcements?.map((a) => (
+    <div class="announcement" set:html={toHTML(a.body)}/>
+  ))}
+  </div>
 <section>
 
+</section>
+
+<section>
   <h1>About</h1>
   <h1>{about.data.title}</h1>
-  <div class="flex flex-col sm:flex-row">
-    <div class="about-data-body" set:html={about.data.body} />
-    <SanityImage class='object-cover sm:w-[55vw]' image={about.data.image} alt={about.data.image?.alt} />
+  <div class='flex flex-col sm:flex-row'>
+    <div class='about-data-body' set:html={about.data.body} />
+    <SanityImage
+      fallback={DEFAULT_IMAGE.KEYBOARD}
+      class='object-cover sm:w-[55vw]'
+      image={about.data.image}
+      alt={about.data.image?.alt}
+    />
   </div>
 </section>
 <section>
   <h1>Faculty</h1>
   <div>
     <h2>Dean</h2>
-    <p>{[dean.data.honorifics, dean.data.firstName, dean.data.middleName, dean.data.lastName].filter(Boolean).join(' ')}</p>
-    <SanityImage class='object-cover w-[128px]' image={dean.data.image} alt={dean.data.image?.alt} />
+    <p>
+      {[dean.data.honorifics, dean.data.firstName, dean.data.middleName, dean.data.lastName].filter(Boolean).join(' ')}
+    </p>
+    <SanityImage
+      fallback={DEFAULT_IMAGE.AVATAR}
+      class='size-32 object-cover'
+      image={dean.data?.image}
+      alt={dean.data.image?.alt || 'Dean Avatar'}
+    />
+    <h2>Other</h2>
+    <div class='flex gap-8'>
+        {
+          staffs.map((staff) => (
+            <div class='flex-col'>
+              <p>
+                {[staff.data.honorifics, staff.data.firstName, staff.data.middleName, staff.data.lastName]
+                  .filter(Boolean)
+                  .join(' ')}
+              </p>
+              <p>{staff.data.title}</p>
+              <SanityImage
+                fallback={DEFAULT_IMAGE.AVATAR}
+                class='size-32 rounded-full border object-cover'
+                width={300}
+                height={150}
+                image={staff.data?.image}
+                alt={staff.data.image?.alt || 'Staff Avatar'}
+              />
+            </div>
+          ))
+        }
+    </div>
   </div>
-  
 </section>
 
+
+
+<section>
+  <h1>News Lists</h1>
+  {
+    news.map((n) => (
+      <div>
+        <h2>{n.data.title}</h2>
+        <SanityImage class='max-h-[256px]' image={n.data.image} />
+        <div class='border-2 border-black'>
+          <div set:html={toHTML(n.data.body)} />
+        </div>
+      </div>
+    ))
+  }
+</section>
+
+<script>
+  const tabBar = document.getElementById('tabBar');
+  const panels = document.querySelectorAll('.panel');
+  let active = 0;
+
+  tabBar?.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      if (i === active) return;
+      document.querySelectorAll('.tab-btn')[active].classList.remove('active');
+      panels[active].classList.remove('active');
+      active = i;
+      btn.classList.add('active');
+      panels[active].classList.add('active');
+    });
+  });
+  
+</script>

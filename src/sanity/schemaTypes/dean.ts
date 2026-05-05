@@ -13,6 +13,7 @@ export const deanType = defineType({
       name: 'firstName',
       title: 'First name',
       type: 'string',
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'middleName',
@@ -24,6 +25,7 @@ export const deanType = defineType({
       name: 'lastName',
       title: 'Last Name',
       type: 'string',
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'honorifics',

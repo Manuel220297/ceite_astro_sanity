@@ -1,15 +1,16 @@
 // ./src/sanity/schemaTypes/news.ts
 import { defineField, defineType } from 'sanity';
 
-export const professorType = defineType({
-  name: 'professor',
-  title: 'Professor',
+export const staffType = defineType({
+  name: 'staffs',
+  title: 'Staffs',
   type: 'document',
   fields: [
     defineField({
       name: 'firstName',
       title: 'First name',
       type: 'string',
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'middleName',
@@ -21,10 +22,11 @@ export const professorType = defineType({
       name: 'lastName',
       title: 'Last Name',
       type: 'string',
+      validation: (rule) => rule.required(),
     }),
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Staff Title',
       type: 'string',
     }),
     defineField({
@@ -44,7 +46,6 @@ export const professorType = defineType({
       name: 'image',
       title: 'Image',
       type: 'image',
-      description: 'Preferably 1:1 ratio',
       options: {
         hotspot: true,
       },

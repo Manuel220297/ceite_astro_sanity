@@ -1,0 +1,31 @@
+<p>Animation Test</p>
+<div class='flex justify-center items-center h-full'>
+  <h2 class='text-blue-800 text-7xl'>Text Testing</h2>
+  <h2 class='text-blue-50 text-7xl'>Text Testing</h2>
+</div>
+
+<script>
+  import { animate, stagger, splitText } from 'animejs';
+
+  const h2s = document.querySelectorAll('h2');
+
+  const { chars } = splitText(h2s, { words: false, chars: true });
+
+  console.log(chars);
+  animate(chars, {
+    // Property keyframes
+    y: [
+      { to: '-2.75rem', ease: 'outExpo', duration: 600 },
+      { to: 0, ease: 'outBounce', duration: 800, delay: 100 },
+    ],
+    // Property specific parameters
+    rotate: {
+      from: '-1turn',
+      delay: 0,
+    },
+    delay: stagger(50),
+    ease: 'inOutCirc',
+    loopDelay: 1000,
+    loop: true,
+  });
+</script>

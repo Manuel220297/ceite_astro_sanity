@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../layouts/MainLayout.astro';
+
+const [dean] = await getCollection('sanityDean');
+const staffs = await getCollection('sanityStaffs');
+---
+
+<MainLayout>
+  <h1>Faculty & Staff</h1>
+  <div>
+    <h2>Dean</h2>
+    <h2>{dean.data.honorifics} {dean.data?.firstName} {dean.data?.middleName} {dean.data?.lastName}</h2>
+  </div>
+  <div>
+    <h2>Staffs</h2>
+    {
+      staffs.map((s) => (
+        <div>
+          <p>
+            {s.data.honorifics} {s.data?.firstName} {s.data?.middleName} {s.data?.lastName}
+          </p>
+        </div>
+      ))
+    }
+  </div>
+</MainLayout>

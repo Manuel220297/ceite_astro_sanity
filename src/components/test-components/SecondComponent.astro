@@ -35,7 +35,7 @@ const programs = (await getCollection('programs')).sort(
         </h2>
         <h3 class='text-xl'>Tags</h3>
         <ul class='flex gap-4'>
-          {program.data.specializations?.map((s) => (
+          {program.data.specializations?.map((s: any) => (
             <li>{s}</li>
           ))}
         </ul>

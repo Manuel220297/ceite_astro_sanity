@@ -23,11 +23,37 @@ export const programType = defineType({
         source: 'title',
         maxLength: 96,
       },
-      validation: (rule) => rule.required().error('Required to generate a page on the website'),
+      validation: (rule) =>
+        rule
+          .required()
+          .error(
+            'Required to generate a page on the website, Slug can only contain letters, numbers, dashes (-), and underscores (_)',
+          )
+          .custom((slug) => {
+            if (!slug?.current) return true;
+            return /^[a-zA-Z0-9_-]+$/.test(slug.current)
+              ? true
+              : 'Slug can only contain letters, numbers, dashes (-), and underscores (_)';
+          }),
     }),
     defineField({
       name: 'image',
       title: 'Image',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alternative Text',
+        },
+      ],
+    }),
+    defineField({
+      name: 'logo',
+      title: 'Logo',
       type: 'image',
       options: {
         hotspot: true,
@@ -65,14 +91,30 @@ export const programType = defineType({
       title: 'Curriculum',
       type: 'array',
       initialValue: [
-        { year: '1st Year', subjects: [] },
-        { year: '2nd Year', subjects: [] },
-        { year: '3rd Year', subjects: [] },
-        { year: '4th Year', subjects: [] },
+        {
+          year: '1st Year',
+          firstSemester: { subjects: [] },
+          secondSemester: { subjects: [] },
+        },
+        {
+          year: '2nd Year',
+          firstSemester: { subjects: [] },
+          secondSemester: { subjects: [] },
+        },
+        {
+          year: '3rd Year',
+          firstSemester: { subjects: [] },
+          secondSemester: { subjects: [] },
+        },
+        {
+          year: '4th Year',
+          firstSemester: { subjects: [] },
+          secondSemester: { subjects: [] },
+        },
       ],
       options: {
         sortable: false,
-        disableActions: ['add', 'remove', 'duplicate', 'copy'],
+        disableActions: ['add', 'remove', 'copy', 'duplicate'],
       },
       of: [
         {
@@ -80,36 +122,40 @@ export const programType = defineType({
           fields: [
             { name: 'year', type: 'string', title: 'Year level', readOnly: true },
             {
-              name: 'subjects',
-              type: 'array',
-              title: 'Subjects',
-              readOnly: false,
-              of: [
+              name: 'firstSemester',
+              title: '1st Semester',
+              type: 'object',
+              fields: [
                 {
-                  type: 'object',
-                  fields: [
-                    {
-                      name: 'subject',
-                      type: 'string',
-                      title: 'Subject',
-                      validation: (rule) => rule.required().error('Subject name is required'),
-                    },
-                    {
-                      name: 'specialization',
-                      description: 'Optional. Select nothing this subject is not a specialization',
-                      type: 'reference',
-                      title: 'Specialization',
-                      to: [{ type: 'specialization' }],
-                      options: {
-                        filter: ({ document }) => {
-                          const program = document as { specializations?: { _ref: string }[] };
-                          const refs = program.specializations?.map((s) => s._ref).filter(Boolean) ?? [];
-                          if (refs.length === 0) return { filter: 'false' };
-                          return { filter: '_id in $refs', params: { refs } };
-                        },
-                      },
-                    },
-                  ],
+                  name: 'units',
+                  title: 'Units',
+                  description: 'Total units for this semester',
+                  type: 'number',
+                },
+                {
+                  name: 'subjects',
+                  type: 'array',
+                  title: 'Subjects',
+                  of: [{ type: 'curriculumSubject' }],
+                },
+              ],
+            },
+            {
+              name: 'secondSemester',
+              title: '2nd Semester',
+              type: 'object',
+              fields: [
+                {
+                  name: 'units',
+                  title: 'Units',
+                  description: 'Total units for this semester',
+                  type: 'number',
+                },
+                {
+                  name: 'subjects',
+                  type: 'array',
+                  title: 'Subjects',
+                  of: [{ type: 'curriculumSubject' }],
                 },
               ],
             },
@@ -117,17 +163,18 @@ export const programType = defineType({
           preview: {
             select: {
               title: 'year',
-              s0: 'subjects[0].subject',
-              s1: 'subjects[1].subject',
-              s2: 'subjects[2].subject',
-              s3: 'subjects[3].subject',
+              s0: 'firstSemester.subjects[0].subject',
+              s1: 'firstSemester.subjects[1].subject',
+              s2: 'secondSemester.subjects[0].subject',
+              s3: 'secondSemester.subjects[1].subject',
             },
             prepare({ title, s0, s1, s2, s3 }) {
-              const subjects = [s0, s1, s2, s3].filter(Boolean);
-              const preview = subjects.length ? subjects.join(' · ') : 'No subjects yet';
+              const sem1 = [s0, s1].filter(Boolean).join(' · ');
+              const sem2 = [s2, s3].filter(Boolean).join(' · ');
+              const parts = [sem1 && `Sem 1: ${sem1}`, sem2 && `Sem 2: ${sem2}`].filter(Boolean);
               return {
                 title,
-                subtitle: preview,
+                subtitle: parts.length ? parts.join('  |  ') : 'No subjects yet',
               };
             },
           },
@@ -143,7 +190,7 @@ export const programType = defineType({
   preview: {
     select: {
       title: 'title',
-      media: 'image',
+      media: 'logo',
     },
   },
 });

@@ -1,7 +1,22 @@
 ---
+import { getCollection } from 'astro:content';
 import MainLayout from '../../layouts/MainLayout.astro';
+import { actions } from 'astro:actions';
+
+const programs = await getCollection('sanityPrograms');
 ---
 
 <MainLayout>
-  <h1>Programs</h1>
+  <section class='mt-24'>
+    <h1>Programs</h1>
+    <div class='flex gap-8'>
+      {
+        programs.map((p) => (
+          <a class='underline text-blue-700' href={`/programs/${p.data.slug}`}>
+            {p.data.slug}
+          </a>
+        ))
+      }
+    </div>
+  </section>
 </MainLayout>

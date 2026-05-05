@@ -1,25 +1,27 @@
 ---
 import { getCollection } from 'astro:content';
 import MainLayout from '../../layouts/MainLayout.astro';
+import SanityImage from '../../components/SanityImage.astro';
 
-const markdownNews = await getCollection('news');
+const news = await getCollection('sanityNews');
 
-const sanityNews = await getCollection('sanityNews');
-
-const allNews = [...markdownNews, ...sanityNews].sort(
-  (a, b) => new Date(b.data._createdAt).getTime() - new Date(a.data._createdAt).getTime(),
-);
+news.sort((a, b) => new Date(b.data._createdAt).getTime() - new Date(a.data._createdAt).getTime());
 ---
 
 <MainLayout>
   <h1>News page</h1>
-  <ul>
-    {
-      allNews.map((news) => (
-        <li>
-          <a href={`/news/${news.data.slug}`}>{news.data.slug}</a>
-        </li>
-      ))
-    }
-  </ul>
+  {
+    news.map((n) => (
+      <div>
+        <a href={`/news/${n.data.slug}`}>
+          <SanityImage width={512} image={n.data.image} />
+        </a>
+        <p>Article created on {n.data._createdAt}</p>
+        <h4>
+          {n.data?.eventDateStart} {n.data?.eventDateEnd ? `– ${n.data?.eventDateEnd}` : ''}
+        </h4>
+        <h2>{n.data?.title}</h2>
+      </div>
+    ))
+  }
 </MainLayout>

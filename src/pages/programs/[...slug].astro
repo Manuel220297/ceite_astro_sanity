@@ -1,0 +1,183 @@
+---
+import { getCollection } from 'astro:content';
+import MainLayout from '../../layouts/MainLayout.astro';
+import SanityImage from '../../components/SanityImage.astro';
+import { PortableText } from 'astro-portabletext';
+import SanityPortableImage from '../../components/SanityPortableImage.astro';
+import SanityHighlight from '../../components/SanityHighlight.astro';
+
+const components = {
+  type: {
+    image: SanityPortableImage,
+  },
+  mark: {
+    highlight: SanityHighlight,
+  },
+};
+
+export async function getStaticPaths() {
+  const programs = await getCollection('sanityPrograms');
+
+  return programs.map((p) => ({
+    params: {
+      slug: p.data.slug,
+    },
+    props: {
+      program: p,
+    },
+  }));
+}
+
+const { program } = Astro.props;
+
+const duration =
+  program.data.curriculum.findLastIndex(
+    (year) => (year.firstSemester?.subjects?.length ?? 0) > 0 || (year.secondSemester?.subjects?.length ?? 0) > 0,
+  ) + 1;
+
+const curriculum = program.data.curriculum.slice(0, duration);
+
+const allProjects = await getCollection('sanityProjects');
+const projects = allProjects.filter((p) => p.data.program?.slug === program.data.slug);
+---
+
+<MainLayout>
+  <article id='program-top' class='mb-12'>
+    <div class='relative w-full h-screen md:h-[55vh]'>
+      <div class='relative h-full'>
+        <SanityImage
+          class='w-full h-full object-cover'
+          width={1920}
+          height={1080}
+          loading='eager'
+          image={program.data.image}
+        />
+
+        <div class='absolute inset-0 bg-gradient-to-r from-black to-transparent'></div>
+        <div class='absolute inset-0 flex flex-col'>
+          <p>{program.data.title}</p>
+          <p>{program.data.titleLong}</p>
+          <p>Duration: {duration} {duration == 1 ? 'Year' : 'Years'}</p>
+          <p>Specializations</p>
+          <div class='flex gap-2'>
+            {program.data.specializations?.map((s) => <p style={`color: ${s.color}`}>{s.specialization}</p>) || 'N/A'}
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article id='program-overview'>
+    <div class='max-w-[1280px] mx-auto px-2 sm:px-16 py-8'>
+      <h1 class='text-5xl sm:text-6xl font-bold mb-8'>PROGRAM <span class='text-accent'>OVERVIEW</span></h1>
+      <div class='portable-text mb-8 max-w-[1000px]'>
+        <PortableText value={program.data.body} components={components} />
+      </div>
+      <h2 class='text-4xl font-bold'>SPECIALIZATIONS</h2>
+      <p class='font-light text-neutral-300'>Find the specialization that fits you best</p>
+      <div class='flex flex-col gap-16'>
+        {
+          program.data.specializations?.map((s, i) => (
+            <div
+              class={`flex flex-col lg:flex ${i % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} border border-white`}>
+              <SanityImage class='w-full lg:w-96 aspect-square object-cover' image={s.image} />
+
+              <div class='flex flex-col p-4 lg:p-8 portable-text'>
+                <h2 class={`text-center lg:${i % 2 === 0 ? 'text-start' : 'text-end'}`} style={`color: ${s.color}`}>
+                  {s.specialization}
+                </h2>
+
+                <PortableText value={s.body} components={components} />
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </article>
+  <article id='program-curriculum'>
+    <h2 class='text-4xl font-bold tracking-tight mb-8'>
+      {program.data.title}
+      <span class='text-[var(--color-accent)]'>CURRICULUM</span>
+    </h2>
+
+    <div class='flex flex-row xl:justify-center gap-6 overflow-x-auto pb-4'>
+      {
+        curriculum.map((c) => (
+          <div class='shrink-0 w-80 border border-white/10 bg-white/[0.02] p-6'>
+            <h3 class='text-lg font-bold tracking-wide mb-6'>{c.year}</h3>
+
+            <div class='flex flex-col gap-6'>
+              <div>
+                <h4 class='text-xs flex justify-between font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-3'>
+                  1st Semester <span class='text-neutral-400'>{c.firstSemester?.units} units</span>
+                </h4>
+                <div class='flex flex-col gap-2'>
+                  {c.firstSemester?.subjects?.map((subject) => (
+                    <div
+                      class='flex items-start gap-2 border-l-2 border-[var(--color-accent)] bg-white/[0.03] py-2 pl-3 pr-3'
+                      style={
+                        subject.specialization?.color
+                          ? `background-color: ${subject.specialization.color}26; border-left-color: ${subject.specialization.color};`
+                          : ''
+                      }>
+                      <span
+                        class='text-sm leading-snug text-neutral-300'
+                        style={subject.specialization?.color ? `color: ${subject.specialization.color}` : ''}>
+                        • {subject.subject}
+                        {subject.specialization?.specialization && (
+                          <span class='block mt-2 font-extrabold'>{subject.specialization.specialization}</span>
+                        )}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {c.secondSemester?.subjects && c.secondSemester.subjects.length > 0 && (
+                <div>
+                  <h4 class='text-xs flex justify-between font-semibold uppercase tracking-wider text-[var(--color-accent)] mb-3'>
+                    2nd Semester <span class='text-neutral-400'>{c.secondSemester?.units} units</span>
+                  </h4>
+                  <div class='flex flex-col gap-2'>
+                    {c.secondSemester.subjects.map((subject) => (
+                      <div
+                        class='flex items-start gap-2 border-l-2 border-[var(--color-accent)] bg-white/[0.03] py-2 pl-3 pr-3'
+                        style={
+                          subject.specialization?.color
+                            ? `background-color: ${subject.specialization.color}26; border-left-color: ${subject.specialization.color};`
+                            : ''
+                        }>
+                        <span
+                          class='text-sm leading-snug text-neutral-300 '
+                          style={subject.specialization?.color ? `color: ${subject.specialization.color}` : ''}>
+                          • {subject.subject}
+                          {subject.specialization?.specialization && (
+                            <span class='block mt-2 font-extrabold'>{subject.specialization.specialization}</span>
+                          )}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </article>
+
+  <article id='program-projects'>
+    <h2>{program.data.title} STUDENT PROJECTS</h2>
+    {
+      projects.map((project) => (
+        <div>
+          <SanityImage width={128} height={128} image={project.data.image} />
+          <p>{project.data.title}</p>
+          <div set:html={project.data.body} />
+        </div>
+      ))
+    }
+  </article>
+</MainLayout>

@@ -35,6 +35,33 @@ export const newsType = defineType({
       ],
     }),
     defineField({
+      name: 'category',
+      title: 'Category',
+      type: 'string',
+      validation: (rule) => rule.required(),
+      options: {
+        layout: 'radio',
+        list: [
+          { title: 'News', value: 'News' },
+          { title: 'Event', value: 'Event' },
+          { title: 'Notice', value: 'Notice' },
+        ],
+      },
+    }),
+    defineField({
+      name: 'eventDateStart',
+      title: 'Event Date Start',
+      type: 'datetime',
+      description: 'Optional',
+    }),
+
+    defineField({
+      name: 'eventDateEnd',
+      title: 'Event Date End',
+      type: 'datetime',
+      description: 'Optional',
+    }),
+    defineField({
       name: 'body',
       title: 'Body',
       type: 'blockContent',

@@ -24,19 +24,17 @@ export const specializationType = defineType({
           // console.log('draftId:', `drafts.${publishedId}`);
 
           const query = `*[
-      _type == "specialization" &&
-      specialization == $value &&
-      _id != $publishedId &&
-      _id != $draftId
-    ]{ _id, specialization }`;
+            _type == "specialization" &&
+            specialization == $value &&
+            _id != $publishedId &&
+            _id != $draftId
+          ]{ _id, specialization }`;
 
           const results = await client.fetch(query, {
             value,
             publishedId,
             draftId: `drafts.${publishedId}`,
           });
-
-          // console.log('matched duplicates:', results);
 
           return results.length === 0 ? true : 'A specialization with this name already exists.';
         }),
@@ -47,26 +45,45 @@ export const specializationType = defineType({
       title: 'Color',
       options: { disableAlpha: true },
     }),
+    defineField({
+      name: 'body',
+      title: 'Body',
+      type: 'array',
+      of: [
+        {
+          type: 'block',
+          marks: {
+            decorators: [],
+          },
+          styles: [
+            { title: 'Normal', value: 'normal' },
+            { title: 'H1', value: 'h1' },
+            { title: 'H2', value: 'h2' },
+            { title: 'H3', value: 'h3' },
+          ],
+        },
+      ],
+    }),
+    defineField({
+      name: 'image',
+      title: 'Image',
+      type: 'image',
+      options: {
+        hotspot: true,
+      },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alternative Text',
+        },
+      ],
+    }),
   ],
   preview: {
     select: {
       title: 'specialization',
-      color: 'color.hex',
-    },
-    prepare({ title, color }) {
-      return {
-        title: title ?? 'Untitled',
-        media: (
-          <div
-            style={{
-              width: '100%',
-              height: '100%',
-              backgroundColor: color ?? '#ccc',
-              borderRadius: 2,
-            }}
-          />
-        ),
-      };
+      media: 'image',
     },
   },
 });

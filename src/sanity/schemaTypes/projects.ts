@@ -20,6 +20,11 @@ export const projectType = defineType({
       },
     }),
     defineField({
+      name: 'author',
+      title: 'Author',
+      type: 'string',
+    }),
+    defineField({
       name: 'image',
       title: 'Image',
       type: 'image',
@@ -36,10 +41,20 @@ export const projectType = defineType({
     }),
 
     defineField({
-      name: 'tags',
-      title: 'Tags',
-      type: 'array',
-      of: [{ name: 'tag', type: 'string', title: 'Tag name' }],
+      name: 'program',
+      type: 'object',
+      fields: [
+        {
+          title: 'Program',
+          name: 'program',
+          type: 'reference',
+          weak: true,
+          to: [{ type: 'programs' }],
+          options: {
+            disableNew: true,
+          },
+        },
+      ],
     }),
     defineField({
       name: 'body',
