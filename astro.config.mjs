@@ -3,6 +3,7 @@ import { defineConfig, fontProviders } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import sanity from '@sanity/astro';
+import cloudflare from '@astrojs/cloudflare';
 import 'dotenv/config';
 
 // https://astro.build/config
@@ -56,4 +57,6 @@ export default defineConfig({
     }),
     react(),
   ],
+
+  adapter: cloudflare(),
 });
