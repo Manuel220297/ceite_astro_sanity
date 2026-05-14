@@ -8,8 +8,8 @@ import { structure } from './src/lib/sanity/structure';
 import { singletonTools } from 'sanity-plugin-singleton-management';
 
 export default defineConfig({
-  projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
-  dataset: import.meta.env.PUBLIC_SANITY_DATASET,
+  projectId: 'yiulggd9',
+  dataset: 'production',
   plugins: [structureTool({ structure }), visionTool(), colorInput(), singletonTools()],
   schema: {
     types: schemaTypes,
