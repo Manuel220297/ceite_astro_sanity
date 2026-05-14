@@ -52,6 +52,7 @@ function timeAgo(dateString: string) {
         <SanityImage
           width={1366}
           height={768}
+          loading='lazy'
           image={latestNews.data.image}
           class='aspect-[16/10] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]'
         />
@@ -99,6 +100,7 @@ function timeAgo(dateString: string) {
                 <SanityImage
                   width={256}
                   height={256}
+                  loading='lazy'
                   image={n.data.image}
                   class='h-full w-full object-cover transition-transform duration-500 group-hover:scale-110'
                 />

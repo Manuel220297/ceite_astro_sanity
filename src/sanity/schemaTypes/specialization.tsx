@@ -53,13 +53,22 @@ export const specializationType = defineType({
         {
           type: 'block',
           marks: {
-            decorators: [],
+            decorators: [
+              { title: 'Bold', value: 'strong' },
+              { title: 'Italic', value: 'em' },
+              {
+                title: 'Highlight',
+                value: 'highlight',
+                component: (props) => <span style={{ color: '#ff9c45' }}>{props.children}</span>,
+              },
+            ],
           },
+          lists: [{ title: 'Bullet', value: 'bullet' }],
           styles: [
             { title: 'Normal', value: 'normal' },
-            { title: 'H1', value: 'h1' },
-            { title: 'H2', value: 'h2' },
             { title: 'H3', value: 'h3' },
+            { title: 'H4', value: 'h4' },
+            { title: 'H5', value: 'h5' },
           ],
         },
       ],

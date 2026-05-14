@@ -186,6 +186,52 @@ export const programType = defineType({
       title: 'Body',
       type: 'blockContent',
     }),
+    defineField({
+      name: 'objectives',
+      title: 'Objectives',
+      type: 'bulletContent',
+      initialValue: [
+        {
+          _type: 'block',
+          _key: 'initial',
+          style: 'normal',
+          listItem: 'bullet',
+          level: 1,
+          children: [
+            {
+              _type: 'span',
+              _key: 'initialSpan',
+              text: '',
+              marks: [],
+            },
+          ],
+          markDefs: [],
+        },
+      ],
+    }),
+    defineField({
+      name: 'careers',
+      title: 'Careers',
+      type: 'bulletContent',
+      initialValue: [
+        {
+          _type: 'block',
+          _key: 'initial',
+          style: 'normal',
+          listItem: 'bullet', // ← this makes it a bullet
+          level: 1,
+          children: [
+            {
+              _type: 'span',
+              _key: 'initialSpan',
+              text: '',
+              marks: [],
+            },
+          ],
+          markDefs: [],
+        },
+      ],
+    }),
   ],
   preview: {
     select: {

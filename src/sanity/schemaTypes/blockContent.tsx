@@ -28,6 +28,7 @@ export default defineType({
         { title: 'H2', value: 'h2' },
         { title: 'H3', value: 'h3' },
         { title: 'H4', value: 'h4' },
+        { title: 'H5', value: 'h5' },
       ],
       lists: [{ title: 'Bullet', value: 'bullet' }],
       // Marks let you mark up inline text in the block editor.
@@ -35,8 +36,8 @@ export default defineType({
         // Decorators usually describe a single property – e.g. a typographic
         // preference or highlighting by editors.
         decorators: [
-          { title: 'Strong', value: 'strong' },
-          { title: 'Emphasis', value: 'em' },
+          { title: 'Bold', value: 'strong' },
+          { title: 'Italic', value: 'em' },
           {
             title: 'Highlight',
             value: 'highlight',

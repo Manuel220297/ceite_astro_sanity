@@ -1,0 +1,33 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import SanityImage from '../../components/SanityImage.astro';
+
+interface Props {
+  program: CollectionEntry<'sanityPrograms'>;
+}
+
+const { program } = Astro.props;
+---
+
+<header id='program-top' class='mb-12 select-none'>
+  <div class='relative w-full h-[60vh]'>
+    <div class='relative h-full'>
+      <SanityImage
+        class='w-full h-full object-cover'
+        width={1920}
+        height={1080}
+        loading='eager'
+        image={program.data.image}
+      />
+
+      <div class='absolute inset-0 bg-gradient-to-r from-black to-transparent'></div>
+      <div class='absolute inset-0 bg-gradient-to-t from-background from-10% to-transparent'></div>
+      <div class='absolute inset-0 py-12 max-w-[90%] mx-auto flex flex-col-reverse'>
+        <h2 class='text-xl tracking-widest text-stone-300'>{program.data.titleLong}</h2>
+        <h1 class='text-6xl md:text-8xl font-(family-name:--font-tiktok) tracking-wider mb-2'>
+          {program.data.title}
+        </h1>
+      </div>
+    </div>
+  </div>
+</header>

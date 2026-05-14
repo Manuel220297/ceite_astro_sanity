@@ -8,10 +8,12 @@ import { projectType } from './projects.ts';
 import { specializationType } from './specialization.tsx';
 import { announcementType } from './announcement.ts';
 import curriculumSubject from './curriculumSubject.ts';
+import bulletContent from './bulletContent.tsx';
 
 export const schemaTypes = [
   blockContent,
   curriculumSubject,
+  bulletContent,
   newsType,
   programType,
   specializationType,

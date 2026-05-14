@@ -5,6 +5,7 @@ import { glob, file } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { client } from './lib/sanity/sanity';
 import { toHTML } from '@portabletext/to-html';
+import { object } from 'astro:schema';
 
 const specializationSchema = z.object({
   specialization: z.string(),
@@ -283,6 +284,9 @@ const sanityPrograms = defineCollection({
         logo,
         image,
 
+        careers,
+        objectives,
+
         body[]{
           ...,
           _type == "image" => {
@@ -291,7 +295,7 @@ const sanityPrograms = defineCollection({
             alt,
             caption
           }
-        }
+        }  
       }
     `);
 
@@ -305,6 +309,8 @@ const sanityPrograms = defineCollection({
       logo: post.logo,
       image: post.image,
       body: post.body,
+      careers: post.careers,
+      objectives: post.objectives,
     }));
   },
 
@@ -320,6 +326,8 @@ const sanityPrograms = defineCollection({
     image: z.any(),
 
     body: z.any(),
+    careers: z.any(),
+    objectives: z.any(),
   }),
 });
 // 5. Export a single `collections` object to register your collection(s)

@@ -1,19 +1,318 @@
 ---
+import { getCollection } from 'astro:content';
 import MainLayout from '../../layouts/MainLayout.astro';
-import FirstComponent from '../../components/test-components/FirstComponent.astro';
-import SecondComponent from '../../components/test-components/SecondComponent.astro';
-import ThirdComponent from '../../components/test-components/ThirdComponent.astro';
-import FourthComponent from '../../components/test-components/FourthComponent.astro';
-import FifthComponent from '../../components/test-components/FifthComponent.astro';
+
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+import SanityImage from '../../components/SanityImage.astro';
+
+const programs = (await getCollection('sanityPrograms')).sort().reverse();
+
+// programs.map((p) => console.log(p.data.image));
 ---
 
 <MainLayout>
-  <div class='flex flex-col'>
-    <section class='min-h-screen bg-neutralz-100'>
-      <FourthComponent />
+  <section class='flex flex-col'>
+    <section class='mt-[68px] my-4 min-h-screen border-b-2 border-white'>
+      <h1 class='text-7xl font-black'>Swiper 1 Test</h1>
+      <div id='swiper-1' class='swiper max-w-[clamp(300px,100%,1280px)] h-[450px]'>
+        <div class='swiper-wrapper'>
+          <div
+            class='swiper-slide bg-linear-to-r from-orange-200 to-orange-300 !flex justify-center items-center text-3xl text-white text-shadow-md/75'>
+            Slide 1
+          </div>
+          <div
+            class='swiper-slide bg-linear-to-r from-orange-300 to-orange-400 !flex justify-center items-center text-3xl text-white text-shadow-md/75'>
+            Slide 2
+          </div>
+          <div
+            class='swiper-slide bg-linear-to-r from-orange-400 to-orange-500 !flex justify-center items-center text-3xl text-white text-shadow-md/75'>
+            Slide 3
+          </div>
+          <div
+            class='swiper-slide bg-linear-to-r from-orange-500 to-orange-600 !flex justify-center items-center text-3xl text-white text-shadow-md/75'>
+            Slide 4
+          </div>
+          <div
+            class='swiper-slide bg-linear-to-r from-orange-600 to-orange-700 !flex justify-center items-center text-3xl text-white text-shadow-md/75'>
+            Slide 5
+          </div>
+          <div
+            class='swiper-slide bg-linear-to-r from-orange-700 to-orange-800 !flex justify-center items-center text-3xl text-white text-shadow-md/75'>
+            Slide 6
+          </div>
+          <div
+            class='swiper-slide bg-linear-to-r from-orange-800 to-orange-900 !flex justify-center items-center text-3xl text-white text-shadow-md/75'>
+            Slide 7
+          </div>
+          <div
+            class='swiper-slide bg-linear-to-r from-orange-900 to-orange-950 !flex justify-center items-center text-3xl text-white text-shadow-md/75'>
+            Slide 8
+          </div>
+          <div
+            class='swiper-slide bg-linear-to-r from-orange-950 to-orange-black !flex justify-center items-center text-3xl text-white text-shadow-md/75'>
+            Slide 9
+          </div>
+        </div>
+
+        <div class='swiper-pagination'></div>
+
+        <div class='swiper-button-prev'></div>
+        <div class='swiper-button-next'></div>
+      </div>
     </section>
-    <section class='min-h-screen'>
-      <h1>Background Image Test</h1>
+
+    <section class='mt-[68px] my-4 min-h-screen border-b-2 border-white'>
+      <h1 class='text-7xl font-black'>Swiper 2 Test</h1>
+      <div id='swiper-2' class='swiper max-w-[clamp(300px,100%,1280px)] h-[450px]'>
+        <div class='swiper-wrapper'>
+          <div class='swiper-slide relative'>
+            <img class='object-cover h-full w-full' src='/images/default.avif' alt='' />
+            <div class='absolute left-0 bottom-0 z-10 flex flex-col text-2xl text-white'>
+              <p>Hello</p>
+              <p>Everyone</p>
+            </div>
+          </div>
+          <div class='swiper-slide relative'>
+            <img class='object-cover h-full w-full' src='/images/default.avif' alt='' />
+            <div class='absolute left-0 bottom-0 z-10 flex flex-col text-2xl text-white'>
+              <p>Hello</p>
+              <p>Everyone</p>
+            </div>
+          </div>
+          <div class='swiper-slide relative'>
+            <img class='object-cover h-full w-full' src='/images/default.avif' alt='' />
+            <div class='absolute left-0 bottom-0 z-10 flex flex-col text-2xl text-white'>
+              <p>Hello</p>
+              <p>Everyone</p>
+            </div>
+          </div>
+          <div class='swiper-slide relative'>
+            <img class='object-cover h-full w-full' src='/images/default.avif' alt='' />
+            <div class='absolute left-0 bottom-0 z-10 flex flex-col text-2xl text-white'>
+              <p>Hello</p>
+              <p>Everyone</p>
+            </div>
+          </div>
+          <div class='swiper-slide relative'>
+            <img class='object-cover h-full w-full' src='/images/default.avif' alt='' />
+            <div class='absolute left-0 bottom-0 z-10 flex flex-col text-2xl text-white'>
+              <p>Hello</p>
+              <p>Everyone</p>
+            </div>
+          </div>
+        </div>
+
+        <div class='swiper-pagination'></div>
+
+        <div id='nav-left' class='custom-swiper-nav1 left-0'>
+          <p>L</p>
+        </div>
+        <div id='nav-right' class='custom-swiper-nav1 right-0'>
+          <p>R</p>
+        </div>
+      </div>
     </section>
-  </div>
+
+    <section class='mt-[68px] my-4 min-h-screen border-b-2 border-white'>
+      <h1 class='text-5xl font-black'>Swiper 3 test</h1>
+      <div class='flex items-center justify-center h-[95vh]'>
+        <div id='swiper-3' class='swiper max-w-full h-full sm:h-[90%]'>
+          <div class='swiper-wrapper'>
+            <div class='swiper-slide'>
+              <div class='img-wrapper'>
+                <img
+                  src='https://cdn.sanity.io/images/yiulggd9/production/7c2bd70f215c44b20d9a2d669fc300d9f3dd6914-5472x3648.jpg?rect=0,0,5472,3078&w=1920&h=1080&fm=webp'
+                  data-swiper-parallax-x='20%'
+                  loading='lazy'
+                  alt=''
+                />
+              </div>
+              <p>BSIT</p>
+            </div>
+
+            <div class='swiper-slide'>
+              <div class='img-wrapper'>
+                <img
+                  src='https://cdn.sanity.io/images/yiulggd9/production/52c61d1357851d863ee70dbb386e40571adf355d-6048x4032.jpg?rect=0,0,6048,3402&w=1920&h=1080&fm=webp'
+                  data-swiper-parallax-x='20%'
+                  loading='lazy'
+                  alt=''
+                />
+              </div>
+              <p>BSCS</p>
+            </div>
+
+            <div class='swiper-slide'>
+              <div class='img-wrapper'>
+                <img
+                  src='https://cdn.sanity.io/images/yiulggd9/production/8fa28fe842d1eaa0515cd94802f459608f573260-3600x2400.jpg?rect=0,0,3600,2025&w=1920&h=1080&fm=webp'
+                  data-swiper-parallax-x='20%'
+                  loading='lazy'
+                  alt=''
+                />
+              </div>
+              <p>BSCpE</p>
+            </div>
+          </div>
+          <div class='swiper-pagination'></div>
+
+          <div class='swiper-button-prev'></div>
+          <div class='swiper-button-next'></div>
+        </div>
+      </div>
+    </section>
+
+    <section class='mt-[68px] my-4 min-h-screen border-b-2 border-white'>
+      <h1 class='text-5xl font-black'>Swiper 4 test</h1>
+      <div id='swiper-4' class='swiper flex items-center justify-center w-full sm:w-[90%] h-[600px] sm:h-[700px]'>
+        <div class='swiper-wrapper'>
+          {
+            programs.map((p) => (
+              <div class='swiper-slide'>
+                <div class='img-wrapper relative '>
+                  <SanityImage image={p.data.image} Xparallax={20} loading='lazy' width={1920} height={1080} />
+                  <div class='absolute inset-0 bg-linear-to-t from-0% from-background/83 to-60% to-transparent' />
+                </div>
+                <p>{p.data.titleLong}</p>
+                <p>{p.data.titleLong}</p>
+              </div>
+            ))
+          }
+        </div>
+        <div class='swiper-pagination'></div>
+
+        <div class='swiper-button-prev'></div>
+        <div class='swiper-button-next'></div>
+      </div>
+    </section>
+  </section>
 </MainLayout>
+<script>
+  // core version + navigation, pagination modules:
+  import Swiper from 'swiper';
+  import { Navigation, Pagination, EffectFade, Parallax } from 'swiper/modules';
+  // import Swiper and modules styles
+  import 'swiper/css';
+  import 'swiper/css/navigation';
+  import 'swiper/css/pagination';
+  import 'swiper/css/effect-fade';
+
+  new Swiper('#swiper-1', {
+    modules: [Navigation, Pagination, EffectFade],
+    // effect: 'fade',
+
+    cssMode: true,
+
+    // fadeEffect: {
+    //   crossFade: true,
+    // },
+
+    // Optional parameters
+    direction: 'horizontal',
+    rewind: true,
+
+    // If we need pagination
+    pagination: {
+      el: '.swiper-pagination',
+      dynamicBullets: true,
+    },
+
+    // Navigation arrows
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+  });
+
+  new Swiper('#swiper-2', {
+    modules: [Navigation, Pagination],
+
+    navigation: {
+      prevEl: '#nav-left',
+      nextEl: '#nav-right',
+    },
+
+    slidesPerView: 1,
+
+    breakpoints: {
+      768: {
+        slidesPerView: 1.5,
+      },
+      1080: {
+        slidesPerView: 2,
+      },
+    },
+    centeredSlides: true,
+
+    spaceBetween: 24,
+    keyboard: {
+      enabled: true,
+    },
+
+    pagination: {
+      el: '.swiper-pagination',
+      type: 'progressbar',
+    },
+  });
+
+  new Swiper('#swiper-3', {
+    modules: [Parallax, Navigation],
+
+    grabCursor: true,
+
+    speed: 400,
+
+    spaceBetween: 36,
+    parallax: true,
+    slidesPerView: 1,
+    centeredSlides: true,
+
+    // cssMode: true,
+
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+
+    breakpoints: {
+      768: {
+        slidesPerView: 1.25,
+      },
+      1080: {
+        slidesPerView: 1.5,
+      },
+    },
+  });
+  new Swiper('#swiper-4', {
+    modules: [Parallax, Navigation],
+
+    grabCursor: true,
+
+    speed: 400,
+
+    spaceBetween: 36,
+    parallax: true,
+    slidesPerView: 1,
+    centeredSlides: true,
+
+    // cssMode: true,
+
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+
+    breakpoints: {
+      768: {
+        slidesPerView: 1.25,
+      },
+      1080: {
+        slidesPerView: 1.5,
+      },
+    },
+  });
+</script>

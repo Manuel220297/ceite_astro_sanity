@@ -1,5 +1,113 @@
-<section class='min-h-20 bg-stone-800 w-full mt-auto'>
-  <div class='flex h-full justify-center items-center'>
-    <h1>footer</h1>
+---
+import FacebookIcon from '../assets/icons/FacebookIcon.astro';
+import TikTokIcon from '../assets/icons/TikTokIcon.astro';
+import InstagramIcon from '../assets/icons/InstagramIcon.astro';
+import YoutubeIcon from '../assets/icons/YoutubeIcon.astro';
+import ArrowUpIcon from '../assets/icons/ArrowUpIcon.astro';
+---
+
+<footer class='h-auto pt-8 pb-4 bg-stone-800 w-full mt-auto footer px-2 md:px-12 lg:px-18'>
+  <div class='grid md:grid-cols-2 lg:grid-cols-3 gap-16 border-b border-stone-600 py-4'>
+    <div class='flex flex-col items-center sm:items-start gap-6'>
+      <div class='flex shrink-0 items-center gap-1 md:gap-2.5 text-white'>
+        <img src='/images/ceite_small.webp' alt='Ceite Logo' class='shrink-0 size-12 md:size-16' />
+        <div class='flex flex-col justify-center items-center'>
+          <h2
+            class='text-3xl md:text-4xl text-transparent tracking-wider bg-clip-text font-(family-name:--font-tiktok) bg-[linear-gradient(to_top,_#ffffff_33%,_#9f9f9f_50%,_#ffffff_67%)]'>
+            C.E.I.T.E.
+          </h2>
+          <p class='md:block text-[7px] sm:text-[8px] whitespace-nowrap'>
+            College of <span class='text-accent'>Engineering</span> and <span class='text-accent'
+              >Information Technology</span
+            > Education
+          </p>
+        </div>
+      </div>
+
+      <div class='flex shrink-0 items-center gap-1 md:gap-2.5 text-white'>
+        <img src='/images/asiatech_logo.avif' alt='Ceite Logo' class='shrink-0 size-12 md:size-16' />
+        <div class='flex flex-col justify-center items-center'>
+          <h2
+            class='text-3xl md:text-4xl text-transparent tracking-wider bg-clip-text font-serif font-bold bg-linear-to-tr from-stone-300 to-stone-100'>
+            ASIATECH
+          </h2>
+          <p class='md:block text-[7px] sm:text-[9px] uppercase whitespace-nowrap'>
+            Asia Technological School of Science and Arts
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <h3>Social Links</h3>
+        <div class='grid grid-cols-2 gap-2 text-xs text-neutral'>
+          <div class='flex items-center gap-2 rounded-full squircle px-2 py-1 border border-stone-600'>
+            <FacebookIcon />
+            <p>IT & CS</p>
+          </div>
+          <div class='flex items-center gap-2 rounded-full squircle px-2 py-1 border border-stone-600'>
+            <FacebookIcon />
+            <p>CpE</p>
+          </div>
+          <div class='flex items-center gap-2 rounded-full squircle px-2 py-1 border border-stone-600'>
+            <FacebookIcon />
+            <p>C.E.I.T.E</p>
+          </div>
+          <div class='flex items-center gap-2 rounded-full squircle px-2 py-1 border border-stone-600'>
+            <FacebookIcon />
+            <p>Asiatech</p>
+          </div>
+          <div class='flex items-center gap-2 rounded-full squircle px-2 py-1 border border-stone-600'>
+            <TikTokIcon />
+            <p>@asiatech.official</p>
+          </div>
+          <div class='flex items-center gap-2 rounded-full squircle px-2 py-1 border border-stone-600'>
+            <InstagramIcon />
+            <p>asiatechofficial</p>
+          </div>
+          <div class='flex items-center gap-2 rounded-full squircle px-2 py-1 border border-stone-600'>
+            <YoutubeIcon />
+            <p>AsiatechTV</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <h3>Contact</h3>
+      <div class='grid grid-cols-[auto_1fr] gap-x-4 gap-y-2'>
+        <p class='text-sm text-neutral'>Telephone</p>
+        <div class='text-sm tracking-wider text-stone-300'>
+          <p>(049) 302-0477</p>
+          <p>530-2717</p>
+        </div>
+
+        <p class='text-sm text-neutral'>Mobile</p>
+        <div class='text-sm tracking-wider text-stone-300'>
+          <p>0927 822 3741</p>
+          <p>0123456789</p>
+        </div>
+
+        <p class='text-sm text-neutral'>Email</p>
+        <div class='text-sm tracking-wider text-stone-300'>
+          <p>info@asiatech.edu.ph</p>
+          <p>asiatechnological@yahoo.com</p>
+        </div>
+
+        <p class='text-sm text-neutral'>Website</p>
+        <div class='text-sm tracking-wider text-stone-300'>
+          <p>0123456789</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <h3>Address</h3>
+      <p>1506 National Highway (Entrance of Golden City), Brgy. Dila, City of Santa Rosa, Laguna</p>
+      <img />
+    </div>
   </div>
-</section>
+  <div class='mt-4'>
+    <p class='text-xs text-stone-400'>
+      Copyright © 2026 Asia Technological School of Science and Arts. All rights reserved.
+    </p>
+  </div>
+</footer>

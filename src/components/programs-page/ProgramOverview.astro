@@ -1,0 +1,191 @@
+---
+import { PortableText } from 'astro-portabletext';
+import SanityImage from '../SanityImage.astro';
+import SanityPortableImage from '../SanityPortableImage.astro';
+import SanityHighlight from '../SanityHighlight.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  program: CollectionEntry<'sanityPrograms'>;
+}
+
+const { program } = Astro.props;
+
+const components = {
+  type: {
+    image: SanityPortableImage,
+  },
+  mark: {
+    highlight: SanityHighlight,
+  },
+};
+
+const duration =
+  program.data.curriculum.findLastIndex(
+    (year) => (year.firstSemester?.subjects?.length ?? 0) > 0 || (year.secondSemester?.subjects?.length ?? 0) > 0,
+  ) + 1;
+
+const totalUnits = program.data.curriculum
+  .map((c) => {
+    const units = c.firstSemester?.units ?? 0;
+    const units2 = c.secondSemester?.units ?? 0;
+
+    return units + units2;
+  })
+  .reduce((sum, curr) => sum + curr, 0);
+---
+
+<section id='program-overview'>
+  <div class='max-w-[1366px] mx-auto px-8 sm:px-16 py-8'>
+    <article class='mb-18'>
+      <div class='flex items-center gap-5 mb-2'>
+        <span
+          class='size-2 shrink-0 rounded-full animate-pulse bg-accent shadow-[0px_0px_0px_5px_rgb(from_var(--color-accent)_r_g_b_/_0.15)]'
+        ></span>
+        <p class='tracking-wider text-stone-400 whitespace-nowrap'>About {program.data.title}</p>
+        <span class='w-full h-px mb-2 bg-linear-to-r from-stone-400/40 to-transparent'></span>
+      </div>
+      <div class='flex lg:flex-row flex-col justify-between border-b border-stone-400/40 mb-16 py-8'>
+        <div class='mb-8'>
+          <h2 class='text-[clamp(3rem,5vw,4.5rem)] leading-tight font-bold mb-4 w-full'>
+            PROGRAM <br />
+            <span class='text-accent'>OVERVIEW</span>
+          </h2>
+          <a
+            href={`/programs/${program.data.slug}#program-curriculum`}
+            class='flex justify-around items-center
+                  text-[0.7rem] sm:text-sm
+                  rounded-full squircle px-4 py-3
+                  text-stone-400
+                  border border-stone-400/3
+                  bg-stone-400/6
+                  font-semibold tracking-[0.075em]
+                  inset-shadow-[1px_1px_0px_0px_rgba(190,179,173,0.33)]
+                  shadow-[2px_2px_6px_0px_rgba(0,0,0,0.2)]
+                  transition-all duration-1000 ease-float-spring
+                  hover:-translate-y-0.75
+                  hover:scale-[1.015]
+                  hover:bg-stone-400/9
+                  hover:text-accent
+                  hover:inset-shadow-[1px_1px_0px_0.1px_rgba(190,179,173,0.44)]
+                  hover:shadow-[5px_5px_15px_0px_rgba(0,0,0,0.27)]
+                  active:scale-[0.985]'>
+            <span>
+              <span class='font-extrabold'>
+                {duration}-Year
+              </span>{' '}
+              Program
+            </span>
+
+            <span class='text-stone-700'> — ♦ — </span>
+
+            <span>
+              <span class='font-extrabold'>
+                {totalUnits}
+              </span>{' '}
+              Total Units
+            </span>
+          </a>
+        </div>
+        <div class='portable-text mb-8 max-w-full lg:max-w-[50%]'>
+          <PortableText value={program.data.body} components={components} />
+        </div>
+      </div>
+
+      <div class='grid grid-cols-1 md:grid-cols-2 mb-8 gap-8'>
+        <div
+          class='portable-text [&_ul]:pl-4 [&_ul]:mt-8 [&_li]:list-decimal [&_li]:px-12 [&_li]:pb-8 [&_li]:mt-8 [&_li]:border-b [&_li]:border-stone-700'>
+          <h3>Program Objectives</h3>
+          <PortableText value={program.data.objectives} components={components} />
+        </div>
+
+        <div
+          class="portable-text
+                [&_ul]:grid
+                [&_ul]:mt-8
+                [&_ul]:grid-cols-1
+                md:[&_ul]:grid-cols-2
+                [&_ul]:gap-4
+                [&_li]:flex
+                [&_li]:items-center
+                [&_li]:list-none
+                [&_li]:relative
+                [&_li]:border
+                [&_li]:rounded-md
+                [&_li]:bg-stone-400/6
+                [&_li]:border-stone-400/15
+                [&_li]:px-6
+                [&_li]:py-3
+                [&_li]:pl-[2em]
+                [&_li]:before:content-['•']
+                [&_li]:before:absolute
+                [&_li]:before:left-3
+                [&_li]:before:top-1/2
+                [&_li]:before:-translate-y-1/2
+                [&_li]:before:text-accent
+                [&_li]:before:text-lg">
+          <h3>Career Opportunities</h3>
+          <PortableText value={program.data.careers} components={components} />
+        </div>
+      </div>
+    </article>
+
+    <article>
+      <div class='mb-8'>
+        <h2 class='text-[clamp(2rem,5vw,3rem)] leading-tight font-bold w-full'>
+          PROGRAM
+          <span class='text-accent'>SPECIALIZATION</span>
+        </h2>
+        <p class='font-light text-stone-400'>Find the specialization that fits you best</p>
+      </div>
+      <div class='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
+        {
+          program.data.specializations?.map((s) => (
+            <div
+              class='flex flex-col border border-stone-700 rounded-2xl bg-stone-900 overflow-hidden'
+              style={`--program-color: ${s.color}`}>
+              <div class='relative w-full overflow-hidden'>
+                <SanityImage class='w-full h-full aspect-[16/10] object-cover' image={s.image} />
+
+                <div class='absolute inset-0 bg-gradient-to-t from-stone-900 from-10% to-transparent' />
+              </div>
+              <div
+                class='flex 
+              flex-col p-4 
+              lg:p-8 
+              portable-text 
+              [&_p]:text-xs
+              [&_p]:leading-[1.15rem] 
+              [&_ul]:flex 
+              [&_ul]:text-xs 
+              [&_ul]:flex-wrap 
+              [&_ul]:mt-1.5 
+              [&_ul]:gap-2 
+              [&_li]:border
+              [&_li]:before:content-["•"]
+              [&_li]:before:mr-2
+              [&_li]:before:text-[var(--program-color)] 
+              [&_li]:rounded-full 
+              [&_li]:bg-stone-600/17
+              [&_li]:border-stone-700
+              [&_li]:px-3
+              [&_li]:py-[5.5px]
+              
+              '>
+                <h4 class='text-xs font-regular tracking-wider text-[var(--program-color)]'>
+                  — {program.data.title} SPECIALIZATION
+                </h4>
+                <h2 class='text-3xl my-2'>{s.specialization}</h2>
+                <span
+                  class='block w-full h-px mb-4'
+                  style={`background: linear-gradient(90deg, ${s.color}, transparent)`}
+                />
+                <PortableText value={s.body} components={components} />
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </article>
+  </div>
+</section>

@@ -1,53 +1,246 @@
 ---
 import { getCollection } from 'astro:content';
+import SanityImage from './SanityImage.astro';
+import { PortableText } from 'astro-portabletext';
 
-const programs = (await getCollection('programs')).sort(
-  (a, b) => a.data._createdAt.getTime() - b.data._createdAt.getTime(),
-);
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import 'swiper/css/scrollbar';
+
+import type { CollectionEntry } from 'astro:content';
+import SanityPortableImage from './SanityPortableImage.astro';
+import SanityHighlight from './SanityHighlight.astro';
+
+const components = {
+  type: {
+    image: SanityPortableImage,
+  },
+  mark: {
+    highlight: SanityHighlight,
+  },
+};
+
+const programs = (await getCollection('sanityPrograms')).sort().reverse();
+
+function getDuration(program: CollectionEntry<'sanityPrograms'>) {
+  return (
+    program.data.curriculum.findLastIndex(
+      (year) => (year.firstSemester?.subjects?.length ?? 0) > 0 || (year.secondSemester?.subjects?.length ?? 0) > 0,
+    ) + 1
+  );
+}
+
+function getUnits(program: CollectionEntry<'sanityPrograms'>) {
+  return program.data.curriculum
+    .map((c) => {
+      const units = c.firstSemester?.units ?? 0;
+      const units2 = c.secondSemester?.units ?? 0;
+      return units + units2;
+    })
+    .reduce((sum, curr) => sum + curr, 0);
+}
+
+const durations = programs.map(getDuration);
+const minDuration = Math.min(...durations);
+const maxDuration = Math.max(...durations);
+const durationLabel = minDuration === maxDuration ? `${minDuration}` : `${minDuration}–${maxDuration}`;
+
+const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
-<section>
-  <h2>Programs</h2>
-  <div class='flex gap-4'>
-    {
-      programs.map((program, index) => (
-        <div>
-          <input type='radio' id={program.id} name='program' checked={index === 0} />
-          <label for={program.id} class='cursor-pointer'>
-            {program.data.title}
-          </label>
-        </div>
-      ))
-    }
+<section class='relative w-full overflow-hidden bg-background py-16 md:py-24'>
+  <!-- Top meta bar -->
+  <div
+    class='relative z-10 mx-auto mb-12 flex w-full max-w-[1600px] items-center gap-4 px-6 md:px-10 text-[10px] md:text-xs tracking-[0.25em] text-stone-500'>
+    <span class='flex items-center gap-2'>
+      <span class='relative inline-block size-1.5 rounded-full bg-accent'>
+        <span class='absolute inset-0 animate-ping rounded-full bg-accent/70'></span>
+      </span>
+      <span class='uppercase text-stone-300'>CEITE</span>
+      <span class='text-stone-600'>/</span>
+      <span class='uppercase'>Academic Programs</span>
+    </span>
+    <span class='h-px flex-1 bg-linear-to-r from-stone-700/80 via-stone-700/30 to-transparent'></span>
+    <span class='uppercase tabular-nums'>SY 2025–2026</span>
   </div>
 
-  <div>
-    {
-      programs.map((program, index) => (
-        <div class='p-4 border program-content' data-program={program.id} style={index !== 0 ? 'display: none' : ''}>
-          <h1>{program.data.title}</h1>
-          <h2>{program.data.titleLong}</h2>
-          <p>{program.body}</p>
-          <img src={program.data?.image?.src} alt={`A picture of ${program.data?.titleLong!} program`} loading='lazy' />
-          {program.data.specializations?.map((s: any) => (
-            <p>{s}</p>
-          ))}
-        </div>
-      ))
-    }
+  <!-- Headline -->
+  <header class='relative z-10 mx-auto max-w-4xl px-6 text-center'>
+    <h1 class='font-(family-name:--font-tiktok) text-5xl leading-[0.95] sm:text-6xl md:text-7xl lg:text-8xl'>
+      <span class='block text-stone-50'>C.E.I.T.E.</span>
+      <span class='block text-accent'>Programs</span>
+    </h1>
+
+    <div class='relative mt-6 flex items-center justify-center text-[11px] uppercase tracking-[0.25em] text-stone-400'>
+      <div class='flex items-center gap-10'>
+        <span>
+          <strong class='font-bold text-stone-100'>Bachelor</strong>
+          and
+          <strong class='font-bold text-stone-100'>Associate</strong>
+        </span>
+
+        <span>
+          <strong class='font-bold text-stone-100'>CHED</strong>
+          Recognized
+        </span>
+      </div>
+    </div>
+    <span class='w-full block h-px m-8 bg-linear-to-r from-transparent via-accent/50 to-transparent'></span>
+    <p class='mx-auto mt-5 max-w-xl text-sm leading-relaxed tracking-wider text-stone-400 sm:text-base'>
+      Choose your path in the tech landscape
+    </p>
+  </header>
+
+  <!-- Slider -->
+  <div
+    id='swiper-program'
+    class='swiper relative mt-16 w-full max-w-[1920px] h-[680px] md:h-[768px] max-h-[100vh] md:max-h-[85vh] !px-4 !py-4 sm:px-0'>
+    <div class='swiper-wrapper w-full h-full'>
+      {
+        programs.map((p, i) => (
+          <div class='swiper-slide group'>
+            <div class='img-wrapper'>
+              <SanityImage image={p.data.image} Xparallax={30} loading='lazy' width={1920} height={1080} />
+              {/* Gradient layers */}
+              <div class='gradient-layer absolute inset-0 bg-linear-to-t from-background via-background/70 via-30% to-transparent' />
+              <div class='gradient-layer absolute inset-0 bg-linear-to-r from-background/95 from-20% via-background/40 via-50% to-transparent' />
+              {/* Subtle grain */}
+            </div>
+
+            {/* Content */}
+            <div class='absolute inset-0 flex flex-col px-6 py-6 sm:px-10 sm:pt-2 pb-12 sm:pb-16 md:px-14 md:pt-4 md:pb-24'>
+              {/* Top row: program counter + logo */}
+              <div class='flex items-center justify-between gap-4'>
+                <div class='flex items-center gap-3 rounded-full border border-accent/50 bg-stone-900/60 px-4 py-1.5'>
+                  <span class='text-[10px] tracking-[0.3em] uppercase text-accent '>Program</span>
+                  <span class='text-accent/50'>·</span>
+                  <span class='text-xs font-bold tabular-nums text-accent'>{pad(i + 1)}</span>
+                  <span class='text-accent/50'>/</span>
+                  <span class='text-xs tabular-nums text-accent/50'>{pad(programs.length)}</span>
+                </div>
+
+                <SanityImage
+                  class='size-16 sm:size-20 md:size-24 rounded-full border border-stone-400/30 bg-stone-900/60 p-2.5'
+                  image={p.data.logo}
+                  format='none'
+                  width={128}
+                  height={128}
+                />
+              </div>
+
+              {/* Title */}
+              <div class='flex flex-1 flex-col justify-start' data-swiper-parallax='-75'>
+                <h2 class='font-(family-name:--font-tiktok) text-6xl leading-none tracking-wider text-stone-50 sm:text-7xl md:text-8xl drop-shadow-[0_4px_30px_rgba(0,0,0,0.6)]'>
+                  {p.data.title}
+                </h2>
+
+                <h3 class='mb-2 text-base font-medium text-stone-300 sm:text-lg md:text-xl'>{p.data.titleLong}</h3>
+              </div>
+
+              {/* Stats */}
+              <div class='flex flex-col gap-8' data-swiper-parallax='-25'>
+                <div class='flex flex-col gap-6'>
+                  <div class='flex items-end gap-8 sm:gap-12'>
+                    <div class='flex flex-col'>
+                      <span class='mb-2 text-[10px] tracking-[0.3em] uppercase text-stone-400 font-medium'>
+                        Duration
+                      </span>
+                      <span class='font-(family-name:--font-tiktok) text-3xl text-accent'>
+                        {getDuration(p)}
+                        <span class='ml-1 text-sm font-medium tracking-wider uppercase text-stone-400'>yrs</span>
+                      </span>
+                    </div>
+                    <div class='h-10 w-px bg-stone-700/60' />
+                    <div class='flex flex-col'>
+                      <span class='mb-2 text-[11px] tracking-[0.3em] uppercase text-stone-400 font-medium'>
+                        Total Units
+                      </span>
+                      <span class='font-(family-name:--font-tiktok) text-3xl tabular-nums text-accent'>
+                        {getUnits(p)}
+                        <span class='ml-1 text-sm font-medium tracking-wider uppercase text-stone-400'>units</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <span class='w-full block h-px m-0 bg-linear-to-r from-stone-700/67 to-transparent' />
+
+                  <div class='flex flex-col'>
+                    <span class='mb-3 text-[10px] tracking-[0.2em] uppercase text-stone-400'>Specializations</span>
+                    <ul class='flex flex-wrap gap-2'>
+                      {p.data.specializations?.map((s) => (
+                        <li
+                          class='flex items-center gap-2 rounded-full border border-[var(--program-color)]/40 bg-[var(--program-color)]/10 px-3 py-1.5 text-xs font-semibold text-[var(--program-color)] transition-colors hover:bg-[var(--program-color)]/20'
+                          style={`--program-color: ${s.color}`}>
+                          <span class='size-1.5 shrink-0 animate-pulse brightness-125 saturate-150 rounded-full bg-[var(--program-color)] shadow-[0_0_8px_2px_rgb(from_var(--program-color)_r_g_b_/_0.5)]' />
+                          <span class='tracking-wide'>{s.specialization}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* career paths */}
+                <div class='flex items-end justify-between gap-4'>
+                  <div class='flex flex-col'>
+                    <span class='mb-3 text-[11px] tracking-[0.2em] uppercase text-stone-400'>Career Paths</span>
+                    <div class='flex flex-col career-paths text-xs sm:text-sm text-stone-300 [&_ul]:flex [&_ul]:flex-col [&_ul]:gap-2 [&_li:nth-child(n+4)]:hidden'>
+                      <PortableText value={p.data.careers} components={components} />
+                      <span class='mt-2 text-stone-500'>+ More...</span>
+                    </div>
+                  </div>
+
+                  <a
+                    href={`/programs/${p.data.slug}`}
+                    class='group/cta shrink-0 inline-flex w-fit items-center gap-2 rounded-full squircle border  bg-accent px-5 py-2.5 text-sm font-semibold text-background transition-all hover:border-accent hover:bg-accent/10 hover:text-accent'>
+                    <span>Learn more</span>
+                    <svg
+                      class='size-4 transition-transform group-hover/cta:translate-x-1'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      stroke-width='2'>
+                      <path d='M5 12h14M13 5l7 7-7 7' stroke-linecap='round' stroke-linejoin='round' />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    <!--  Navigation -->
+    <div class='swiper-button-prev'></div>
+    <div class='swiper-button-next'></div>
   </div>
-
-  <script>
-    const radios = document.querySelectorAll('input[name="program"]');
-    const contents = document.querySelectorAll('.program-content');
-
-    radios.forEach((radio) => {
-      radio.addEventListener('change', () => {
-        contents.forEach((div) => {
-          const el = div as HTMLElement;
-          el.style.display = el.dataset.program === radio.id ? 'block' : 'none';
-        });
-      });
-    });
-  </script>
 </section>
+
+<script>
+  import Swiper from 'swiper';
+  import { Navigation, Pagination, Parallax, Keyboard } from 'swiper/modules';
+  import 'swiper/css';
+  import 'swiper/css/navigation';
+  import 'swiper/css/pagination';
+
+  new Swiper('#swiper-program', {
+    modules: [Parallax, Navigation, Pagination, Keyboard],
+    grabCursor: true,
+    speed: 600,
+    spaceBetween: 28,
+    parallax: true,
+    slidesPerView: 1,
+    centeredSlides: true,
+    keyboard: { enabled: true },
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+    breakpoints: {
+      768: { slidesPerView: 1.25, spaceBetween: 32 },
+      1080: { slidesPerView: 1.33, spaceBetween: 40 },
+      1440: { slidesPerView: 1.5, spaceBetween: 48 },
+    },
+  });
+</script>

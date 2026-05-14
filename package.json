@@ -16,7 +16,7 @@
     "@sanity/color-input": "^6.0.4",
     "@sanity/image-url": "^2.0.3",
     "@sanity/vision": "^5.13.0",
-    "@tailwindcss/vite": "^4.2.1",
+    "@tailwindcss/vite": "^4.3.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "animejs": "^4.3.6",
@@ -32,7 +32,8 @@
     "sanity": "^5.13.0",
     "sanity-plugin-singleton-management": "^1.0.6",
     "styled-components": "^6.3.11",
-    "tailwindcss": "^4.2.1"
+    "swiper": "^12.1.4",
+    "tailwindcss": "^4.3.0"
   },
   "packageManager": "pnpm@10.17.1+sha512.17c560fca4867ae9473a3899ad84a88334914f379be46d455cbf92e5cf4b39d34985d452d2583baf19967fa76cb5c17bc9e245529d0b98745721aa7200ecaf7a"
 }

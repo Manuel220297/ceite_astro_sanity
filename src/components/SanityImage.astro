@@ -13,6 +13,9 @@ interface Props {
   width?: number;
   height?: number;
   unoptimized?: boolean;
+  Xparallax?: number;
+  Yparallax?: number;
+  format?: 'png' | 'jpg' | 'webp' | 'none';
 }
 
 const {
@@ -24,6 +27,9 @@ const {
   width,
   height,
   unoptimized = false,
+  Xparallax = 0,
+  Yparallax = 0,
+  format = 'webp',
 } = Astro.props;
 
 const w = width || 800;
@@ -33,11 +39,30 @@ if (unoptimized) {
 }
 const hasImage = image?.asset?._ref;
 
-const src = hasImage
+const builder = hasImage ? urlFor(image) : null;
+
+const processed = builder
   ? unoptimized
-    ? urlFor(image).url()
-    : urlFor(image).width(w).height(h!).format('webp').url()
-  : fallback;
+    ? builder.url()
+    : (() => {
+        let img = builder.width(w).height(h!);
+
+        if (format !== 'none') {
+          img = img.format(format);
+        }
+
+        return img.url();
+      })()
+  : null;
+
+const src = processed || fallback;
 ---
 
-<img src={src} alt={alt} class={clsx('', className)} loading={loading || 'lazy'} />
+<img
+  data-swiper-parallax-x={`${Xparallax}%`}
+  data-swiper-parallax-y={`${Yparallax}%`}
+  src={src}
+  alt={alt}
+  class={clsx('', className)}
+  loading={loading || 'lazy'}
+/>
