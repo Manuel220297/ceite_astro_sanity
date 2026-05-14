@@ -35,16 +35,28 @@
       Become the Next Generation of Asiatechian Tech Pioneers.
     </h2>
 
-    {/* Buttons */}
-    <div class='flex gap-4'>
-      <a href='#' class='px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition'>
-        Explore
-      </a>
-      <a
-        href='#'
-        class='px-6 py-3 border border-white text-white font-semibold rounded-lg hover:bg-white hover:text-black transition'>
-        Enroll
-      </a>
+    {/* Scroll indicator */}
+    <div class='flex flex-col items-center gap-3 mt-8'>
+      <span class='text-[10px] tracking-[0.3em] uppercase text-stone-300'>Explore</span>
+
+      <div class='relative flex items-center justify-center'>
+        {/* Pulsing glow ring */}
+
+        {/* Bouncing arrow */}
+        <span class='relative flex size-12 items-center justify-center animate-bounce'>
+          <svg
+            class='h-8 w-5 text-white'
+            viewBox='0 0 24 32'
+            fill='none'
+            stroke='currentColor'
+            stroke-width='1.5'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+            aria-hidden='true'>
+            <path d='M12 2v26M19 22l-7 7-7-7'></path>
+          </svg>
+        </span>
+      </div>
     </div>
   </div>
 </main>

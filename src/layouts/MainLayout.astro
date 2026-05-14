@@ -18,8 +18,10 @@ import { Font } from 'astro:assets';
     <title>Astro Basics</title>
   </head>
   <body>
-    <Navbar />
-    <slot />
-    <Footer />
+    <main class='flex flex-col'>
+      <Navbar />
+      <slot />
+      <Footer />
+    </main>
   </body>
 </html>

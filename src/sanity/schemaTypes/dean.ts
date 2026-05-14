@@ -1,4 +1,3 @@
-// ./src/sanity/schemaTypes/news.ts
 import { defineField, defineType } from 'sanity';
 
 export const deanType = defineType({
@@ -15,18 +14,21 @@ export const deanType = defineType({
       type: 'string',
       validation: (rule) => rule.required(),
     }),
+
     defineField({
       name: 'middleName',
       title: 'Middle name',
       type: 'string',
       description: 'Optional',
     }),
+
     defineField({
       name: 'lastName',
       title: 'Last Name',
       type: 'string',
       validation: (rule) => rule.required(),
     }),
+
     defineField({
       name: 'honorifics',
       title: 'Honorifics',
@@ -40,6 +42,43 @@ export const deanType = defineType({
         ],
       },
     }),
+
+    defineField({
+      name: 'email',
+      title: 'Email',
+      type: 'string',
+      description: '(Optional)',
+      validation: (rule) => rule.email(),
+    }),
+
+    defineField({
+      name: 'facebook',
+      title: 'Facebook',
+      type: 'url',
+      description: 'Facebook profile or page URL (Optional)',
+    }),
+
+    defineField({
+      name: 'twitter',
+      title: 'Twitter (X)',
+      type: 'url',
+      description: 'X/Twitter profile URL (Optional)',
+    }),
+
+    defineField({
+      name: 'tiktok',
+      title: 'TikTok',
+      type: 'url',
+      description: 'TikTok profile URL (Optional)',
+    }),
+
+    defineField({
+      name: 'instagram',
+      title: 'Instagram',
+      type: 'url',
+      description: 'Instagram profile URL (Optional)',
+    }),
+
     defineField({
       name: 'image',
       title: 'Image',
@@ -57,6 +96,7 @@ export const deanType = defineType({
       ],
     }),
   ],
+
   preview: {
     select: {
       firstName: 'firstName',
@@ -64,8 +104,10 @@ export const deanType = defineType({
       lastName: 'lastName',
       media: 'image',
     },
+
     prepare({ firstName, middleName, lastName, media }) {
       const fullname = [firstName, middleName, lastName].filter(Boolean).join(' ');
+
       return {
         title: fullname || 'Unnamed',
         media,

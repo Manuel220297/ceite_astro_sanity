@@ -152,6 +152,11 @@ const sanityDean = defineCollection({
   middleName,
   lastName,
   honorifics,
+            email,
+          facebook,
+          tiktok,
+          twitter,
+          instagram,
   image,
 }`);
 
@@ -161,6 +166,11 @@ const sanityDean = defineCollection({
       middleName: post.middleName,
       lastName: post.lastName,
       honorifics: post.honorifics,
+      email: post.email,
+      facebook: post.facebook,
+      tiktok: post.tiktok,
+      twitter: post.twitter,
+      instagram: post.instagram,
       image: post.image,
     }));
   },
@@ -170,6 +180,11 @@ const sanityDean = defineCollection({
     middleName: z.string().nullish(),
     lastName: z.string(),
     honorifics: z.string(),
+    email: z.string().nullish(),
+    facebook: z.string().nullish(),
+    tiktok: z.string().nullish(),
+    twitter: z.string().nullish(),
+    instagram: z.string().nullish(),
     image: z.any(),
   }),
 });
@@ -178,13 +193,18 @@ const sanityStaffs = defineCollection({
   loader: async () => {
     const posts = await client.fetch(`
       *[_type == 'staffs'] {
-        _id,
-        firstName,
-        middleName,
-        lastName,
-        title,
-        honorifics,
-        image,
+          _id,
+          firstName,
+          middleName,
+          lastName,
+          title,
+          honorifics,
+          email,
+          facebook,
+          tiktok,
+          twitter,
+          instagram,
+          image,
       }`);
 
     return posts.map((post: any) => ({
@@ -194,6 +214,11 @@ const sanityStaffs = defineCollection({
       lastName: post.lastName,
       title: post.title,
       honorifics: post.honorifics,
+      email: post.email,
+      facebook: post.facebook,
+      tiktok: post.tiktok,
+      twitter: post.twitter,
+      instagram: post.instagram,
       image: post.image,
     }));
   },
@@ -204,6 +229,11 @@ const sanityStaffs = defineCollection({
     lastName: z.string(),
     title: z.string(),
     honorifics: z.string(),
+    email: z.string().nullish(),
+    facebook: z.string().nullish(),
+    tiktok: z.string().nullish(),
+    twitter: z.string().nullish(),
+    instagram: z.string().nullish(),
     image: z.any(),
   }),
 });

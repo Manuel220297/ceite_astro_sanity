@@ -7,7 +7,6 @@ const navLinks = [
   { href: '/faculty', label: 'Faculty' },
   { href: '/news', label: 'Happenings' },
   { href: '/projects', label: 'Projects' },
-  { href: '/contact', label: 'Contact' },
 ];
 ---
 
@@ -21,16 +20,18 @@ const navLinks = [
   {/* Layer 2: subtle tint */}
   <div class='absolute inset-0 rounded-[inherit] bg-linear-to-t from-0% from-white/8 to-20% to-black/40'></div>
 
-  {/* Layer 3: specular highlight — the "wet" edge */}
+  {/* Layer 3: specular highlight */}
   <div
     class='pointer-events-none absolute inset-0 rounded-[inherit] shadow-[inset_0px_1px_0_rgba(255,255,255,0.4),inset_0px_-1px_0px_rgba(255,255,255,0.16)]'>
   </div>
 
-  {/* Layer 4: nav content, undistorted */}
+  {/* Content */}
   <div class='relative z-10 w-full px-6 py-4 lg:px-10 drop-shadow-md/50'>
     <div class='flex items-center justify-between gap-8'>
+      {/* Logo */}
       <a href='/' class='flex shrink-0 items-center gap-2.5 text-white'>
         <img src='/images/ceite_small.webp' width='36' height='36' alt='' class='shrink-0' />
+
         <h2
           class='hidden md:block text-2xl text-transparent bg-clip-text bg-[linear-gradient(to_top,_#ffffff_33%,_#9f9f9f_50%,_#ffffff_67%)]'>
           C.E.I.T.E.
@@ -38,10 +39,11 @@ const navLinks = [
       </a>
 
       {/* Desktop Menu */}
-      <div class='hidden flex-1 items-center justify-between lg:justify-start gap-0 lg:gap-8 md:flex'>
+      <div class='hidden flex-1 items-center justify-between gap-0 lg:justify-start lg:gap-8 md:flex'>
         {
           navLinks.map(({ href, label }) => {
             const isActive = href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+
             return (
               <a
                 href={href}
@@ -57,19 +59,86 @@ const navLinks = [
           })
         }
       </div>
+
+      {/* Mobile Button */}
+      <button id='mobile-menu-button' class='flex md:hidden items-center justify-center text-white'>
+        <svg
+          id='menu-open-icon'
+          xmlns='http://www.w3.org/2000/svg'
+          class='h-7 w-7'
+          fill='none'
+          viewBox='0 0 24 24'
+          stroke='currentColor'>
+          <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6h16M4 12h16M4 18h16'></path>
+        </svg>
+
+        <svg
+          id='menu-close-icon'
+          xmlns='http://www.w3.org/2000/svg'
+          class='hidden h-7 w-7'
+          fill='none'
+          viewBox='0 0 24 24'
+          stroke='currentColor'>
+          <path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 18L18 6M6 6l12 12'></path>
+        </svg>
+      </button>
+    </div>
+
+    {/* Mobile Menu */}
+    <div id='mobile-menu' class='grid grid-rows-[0fr] transition-all duration-300 ease-out md:hidden'>
+      <div class='overflow-hidden'>
+        <div class='flex flex-col gap-1 pt-6 pb-2'>
+          {
+            navLinks.map(({ href, label }) => {
+              const isActive = href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+
+              return (
+                <a
+                  href={href}
+                  aria-current={isActive ? 'page' : undefined}
+                  class={`rounded-xl px-4 py-3 text-sm transition-all ${
+                    isActive
+                      ? 'bg-white/10 font-semibold text-accent'
+                      : 'text-white/90 hover:bg-white/5 hover:text-accent'
+                  }`}>
+                  {label}
+                </a>
+              );
+            })
+          }
+        </div>
+      </div>
     </div>
   </div>
 </nav>
 
-{/* SVG filter — hidden, referenced by the filter URL above */}
+<script>
+  const button = document.getElementById('mobile-menu-button');
+  const menu = document.getElementById('mobile-menu');
+
+  const openIcon = document.getElementById('menu-open-icon');
+  const closeIcon = document.getElementById('menu-close-icon');
+
+  let isOpen = false;
+
+  button?.addEventListener('click', () => {
+    isOpen = !isOpen;
+
+    menu?.classList.toggle('grid-rows-[1fr]');
+    menu?.classList.toggle('grid-rows-[0fr]');
+
+    openIcon?.classList.toggle('hidden');
+    closeIcon?.classList.toggle('hidden');
+  });
+</script>
+
+{/* SVG filter */}
 <svg class='hidden'>
   <filter id='liquid-glass' x='0%' y='0%' width='100%' height='100%'>
-    <!-- Displacement -->
     <feImage
       href='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAACAUlEQVR4Ae3TAQkAMBDDwALv33JnYA56Ryzk2jQaTZdmFhgAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwAAYwAAYAAwABgADgAHAAGAAMAAYAAwABgADgAHAAGAAMAAYAAwABgADgAHAAGAAMAAYAAwABgADgAHAAGAAMAAYAAwABgADgAHAAGAAMAAYAAwABgADgAHAAGAAMAAYAAwABsAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwABgADAAGAAOAAcAAYAAwAAYwAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4AB+DEAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwABgADAAGAAMAAYAA4ABwADwADV0Ah/8rry9AAAAAElFTkSuQmCC'
       preserveAspectRatio='none'></feImage>
 
-    <!-- Refraction -->
     <feDisplacementMap in='SourceGraphic' scale='33' xChannelSelector='R' yChannelSelector='G'></feDisplacementMap>
   </filter>
 </svg>

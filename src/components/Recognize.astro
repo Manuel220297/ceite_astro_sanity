@@ -1,0 +1,98 @@
+---
+import chedLogo from '../assets/icons/ched.svg';
+import tesdaLogo from '../assets/icons/tesda.svg';
+import depedLogo from '../assets/icons/deped.svg';
+
+const accreditors = [
+  { src: chedLogo.src, name: 'CHED', alt: 'Commission on Higher Education' },
+  { src: tesdaLogo.src, name: 'TESDA', alt: 'Technical Education and Skills Development Authority' },
+  { src: depedLogo.src, name: 'DepEd', alt: 'Department of Education' },
+];
+---
+
+<section class='relative w-full overflow-hidden bg-background py-20 md:py-28'>
+  {/* ─── Background details ─── */}
+
+  {/* Grid pattern overlay */}
+  <div
+    class='pointer-events-none absolute inset-0 opacity-[0.07] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_75%)]'
+    style='background-image: linear-gradient(to right, rgb(255 255 255 / 0.5) 1px, transparent 1px), linear-gradient(to bottom, rgb(255 255 255 / 0.5) 1px, transparent 1px); background-size: 64px 64px;'>
+  </div>
+
+  {/* Ambient glows */}
+  <div
+    class='pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 size-[800px] rounded-full bg-accent/[0.05] blur-[140px]'>
+  </div>
+  <div class='pointer-events-none absolute -bottom-40 left-1/4 size-[500px] rounded-full bg-accent/[0.03] blur-[120px]'>
+  </div>
+  <div
+    class='pointer-events-none absolute -bottom-32 right-1/4 size-[400px] rounded-full bg-accent/[0.02] blur-[100px]'>
+  </div>
+
+  {/* Top + bottom fade — softens grid edges */}
+  <div class='pointer-events-none absolute inset-x-0 top-0 h-32 bg-linear-to-b from-background to-transparent'></div>
+  <div class='pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-linear-to-t from-background to-transparent'></div>
+
+  {/* Faint scribble lines */}
+  <svg
+    class='pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 h-64 w-auto opacity-[0.04]'
+    viewBox='0 0 200 400'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+    aria-hidden='true'>
+    <path d='M0 200 Q 50 100, 100 200 T 200 200' stroke='currentColor' stroke-width='1' class='text-accent'></path>
+    <path d='M0 220 Q 50 120, 100 220 T 200 220' stroke='currentColor' stroke-width='1' class='text-accent'></path>
+    <path d='M0 240 Q 50 140, 100 240 T 200 240' stroke='currentColor' stroke-width='1' class='text-accent'></path>
+  </svg>
+  <svg
+    class='pointer-events-none absolute right-0 top-1/2 -translate-y-1/2 h-64 w-auto opacity-[0.04] scale-x-[-1]'
+    viewBox='0 0 200 400'
+    fill='none'
+    xmlns='http://www.w3.org/2000/svg'
+    aria-hidden='true'>
+    <path d='M0 200 Q 50 100, 100 200 T 200 200' stroke='currentColor' stroke-width='1' class='text-accent'></path>
+    <path d='M0 220 Q 50 120, 100 220 T 200 220' stroke='currentColor' stroke-width='1' class='text-accent'></path>
+    <path d='M0 240 Q 50 140, 100 240 T 200 240' stroke='currentColor' stroke-width='1' class='text-accent'></path>
+  </svg>
+
+  {/* Content */}
+  <header class='relative z-10 mx-auto mb-16 max-w-[1600px] px-6 md:px-10 text-center'>
+    <div class='mb-4 flex items-center justify-center gap-3'>
+      <span class='h-px w-8 bg-accent'></span>
+      <span class='text-[10px] tracking-[0.3em] uppercase text-accent'>Trusted Authority</span>
+      <span class='h-px w-8 bg-accent'></span>
+    </div>
+    <h2 class='font-extrabold tracking-wider text-4xl leading-[0.95] sm:text-5xl md:text-6xl'>
+      <span class='text-stone-50'>Recognized by</span>
+    </h2>
+  </header>
+
+  {/* Logos row */}
+  <div class='relative z-10 mx-auto w-full max-w-[1200px] px-6 md:px-10'>
+    <div class='flex flex-wrap items-center justify-center gap-x-16 gap-y-10 sm:gap-x-24 md:gap-x-32'>
+      {
+        accreditors.map((a) => (
+          <div class='group flex flex-col items-center gap-4'>
+            <img
+              src={a.src}
+              alt={a.alt}
+              height='80'
+              class='h-20 w-auto object-contain transition-opacity duration-300 '
+            />
+            <span class='font-(family-name:--font-tiktok) text-lg tracking-wider text-stone-300'>{a.name}</span>
+            <span class='text-xs text-center text-stone-500 max-w-[16ch] leading-snug'>{a.alt}</span>
+          </div>
+        ))
+      }
+    </div>
+
+    {/* Bottom */}
+    <div class='mt-16 flex items-center gap-4'>
+      <span class='h-px flex-1 bg-linear-to-r from-transparent via-stone-700/60 to-transparent'></span>
+      <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>
+        Operating under official PH government recognition
+      </span>
+      <span class='h-px flex-1 bg-linear-to-r from-transparent via-stone-700/60 to-transparent'></span>
+    </div>
+  </div>
+</section>

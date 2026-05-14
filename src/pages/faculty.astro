@@ -1,27 +1,198 @@
 ---
 import { getCollection } from 'astro:content';
 import MainLayout from '../layouts/MainLayout.astro';
+import SanityImage from '../components/SanityImage.astro';
+import SocialIcon from '../components/SocialIcon.astro';
 
 const [dean] = await getCollection('sanityDean');
 const staffs = await getCollection('sanityStaffs');
+
+const pad = (n: number) => String(n).padStart(2, '0');
+
+// Social link helper
+const socialLinks = (data: any) =>
+  [
+    { key: 'email', value: data.email, href: data.email ? `mailto:${data.email}` : null, label: 'Email' },
+    { key: 'facebook', value: data.facebook, href: data.facebook, label: 'Facebook' },
+    { key: 'tiktok', value: data.tiktok, href: data.tiktok, label: 'TikTok' },
+    { key: 'twitter', value: data.twitter, href: data.twitter, label: 'X' },
+    { key: 'instagram', value: data.instagram, href: data.instagram, label: 'Instagram' },
+  ].filter((s) => s.value);
 ---
 
 <MainLayout>
-  <h1>Faculty & Staff</h1>
-  <div>
-    <h2>Dean</h2>
-    <h2>{dean.data.honorifics} {dean.data?.firstName} {dean.data?.middleName} {dean.data?.lastName}</h2>
-  </div>
-  <div>
-    <h2>Staffs</h2>
-    {
-      staffs.map((s) => (
-        <div>
-          <p>
-            {s.data.honorifics} {s.data?.firstName} {s.data?.middleName} {s.data?.lastName}
-          </p>
+  <section class='relative w-full overflow-hidden bg-background pt-32 pb-24 md:pt-40 md:pb-32'>
+    {/* Ambient background glow */}
+    <div
+      class='pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 size-[800px] rounded-full bg-accent/5 blur-[120px]'>
+    </div>
+
+    {/* Top meta bar */}
+    <div
+      class='relative z-10 mx-auto mb-12 flex w-full max-w-[1600px] items-center gap-4 px-6 md:px-10 text-[10px] md:text-xs tracking-[0.25em] text-stone-500'>
+      <span class='flex items-center gap-2'>
+        <span class='relative inline-block size-1.5 rounded-full bg-accent'>
+          <span class='absolute inset-0 animate-ping rounded-full bg-accent/70'></span>
+        </span>
+        <span class='uppercase text-stone-300'>CEITE</span>
+        <span class='text-stone-600'>/</span>
+        <span class='uppercase'>Faculty &amp; Staff</span>
+      </span>
+      <span class='h-px flex-1 bg-linear-to-r from-stone-700/80 via-stone-700/30 to-transparent'></span>
+      <span class='uppercase tabular-nums'>{pad(staffs.length + 1)} Members</span>
+    </div>
+
+    {/* Headline */}
+    <header class='relative z-10 mx-auto max-w-4xl px-6 text-center'>
+      <h1 class='font-(family-name:--font-tiktok) text-5xl leading-[0.95] sm:text-6xl md:text-7xl lg:text-8xl'>
+        <span class='block text-stone-50'>Faculty</span>
+        <span class='block text-accent'>&amp; Staff<span class='text-accent/70'>.</span></span>
+      </h1>
+      <p class='mx-auto mt-6 max-w-xl text-sm leading-relaxed text-stone-400 sm:text-base'>
+        Meet the educators, mentors, and administrators shaping the next generation of engineers and IT professionals.
+      </p>
+    </header>
+
+    {/* Dean — featured card */}
+    <div class='relative z-10 mx-auto mt-20 w-full max-w-[1400px] px-6 md:px-10'>
+      <div class='mb-6 flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase text-stone-500'>
+        <span class='h-px w-8 bg-accent'></span>
+        <span class='text-accent'>01</span>
+        <span>·</span>
+        <span>Office of the Dean</span>
+      </div>
+
+      <article
+        class='dean-card group relative overflow-hidden rounded-[40px] border border-white/10 bg-white/[0.02] backdrop-blur-md'>
+        {/* Soft accent glow */}
+        <div class='pointer-events-none absolute -right-20 -top-20 size-96 rounded-full bg-accent/10 blur-3xl'></div>
+
+        <div class='grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-0 md:gap-8'>
+          {/* Portrait */}
+          <div class='relative aspect-square overflow-hidden md:aspect-auto md:min-h-[520px]'>
+            <SanityImage
+              image={dean.data?.image}
+              fallback='/images/default_avatar.png'
+              width={800}
+              height={800}
+              class='size-full object-cover transition-transform duration-700 group-hover:scale-105'
+            />
+            <div
+              class='absolute inset-0 bg-linear-to-t from-background/80 via-background/10 to-transparent md:bg-linear-to-r md:from-transparent md:to-background/30'>
+            </div>
+            {/* Role badge */}
+            <div
+              class='absolute left-6 top-6 flex items-center gap-2 rounded-full border border-white/15 bg-black/40 px-4 py-1.5 backdrop-blur-md'>
+              <span
+                class='size-1.5 rounded-full bg-accent shadow-[0_0_8px_2px_rgb(from_var(--color-accent)_r_g_b_/_0.5)]'
+              ></span>
+              <span class='text-[10px] tracking-[0.3em] uppercase text-stone-100'>Dean</span>
+            </div>
+          </div>
+
+          {/* Info */}
+          <div class='flex flex-col justify-center gap-6 p-8 md:p-12'>
+            <div>
+              <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>Office of the Dean</span>
+              <h2
+                class='mt-3 font-(family-name:--font-tiktok) text-4xl leading-tight text-stone-50 sm:text-5xl md:text-6xl'>
+                {dean.data?.firstName}
+                {dean.data?.middleName && <span class='text-stone-400'> {dean.data.middleName}</span>}
+                <span class='block'>{dean.data?.lastName}</span>
+              </h2>
+              {dean.data.honorifics && <p class='mt-2 text-base font-medium text-accent'>{dean.data.honorifics}</p>}
+            </div>
+
+            {/* Socials */}
+            {
+              socialLinks(dean.data).length > 0 && (
+                <div class='flex flex-col gap-3'>
+                  <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>Connect</span>
+                  <div class='flex flex-wrap gap-2'>
+                    {socialLinks(dean.data).map((s) => (
+                      <a
+                        href={s.href}
+                        target={s.key === 'email' ? '_self' : '_blank'}
+                        rel='noopener noreferrer'
+                        class='social-link group/s flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-medium text-stone-300 backdrop-blur-md transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent'>
+                        <SocialIcon name={s.key} />
+                        <span>{s.key === 'email' ? s.value : s.label}</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )
+            }
+          </div>
         </div>
-      ))
-    }
-  </div>
+      </article>
+    </div>
+
+    {/* Staff Grid */}
+    <div class='relative z-10 mx-auto mt-24 w-full max-w-[1400px] px-6 md:px-10'>
+      <div class='mb-8 flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase text-stone-500'>
+        <span class='h-px w-8 bg-accent'></span>
+        <span class='text-accent'>02</span>
+        <span>·</span>
+        <span>Faculty &amp; Administrative Staff</span>
+        <span class='ml-auto tabular-nums text-stone-400'>{pad(staffs.length)} Members</span>
+      </div>
+
+      <div class='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+        {
+          staffs.map((s, i) => {
+            const socials = socialLinks(s.data);
+            return (
+              <article class='staff-card group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-md transition-all duration-500 hover:border-accent/30 hover:bg-white/[0.04]'>
+                {/* Portrait */}
+                <div class='relative aspect-[4/5] overflow-hidden'>
+                  <SanityImage
+                    image={s.data?.image}
+                    fallback='/images/default_avatar.png'
+                    width={512}
+                    height={640}
+                    class='size-full object-cover saturate-[0.85] transition-all duration-700 group-hover:scale-105 group-hover:saturate-100'
+                  />
+                  <div class='absolute inset-0 bg-linear-to-t from-background via-background/40 via-30% to-transparent' />
+
+                  {/* Number */}
+                  <span class='absolute right-4 top-4 font-(family-name:--font-tiktok) text-2xl tabular-nums text-stone-300/40'>
+                    {pad(i + 1)}
+                  </span>
+
+                  {/* Name overlay */}
+                  <div class='absolute inset-x-0 bottom-0 p-5'>
+                    {s.data.honorifics && (
+                      <span class='text-[10px] tracking-[0.25em] uppercase text-accent'>{s.data.honorifics}</span>
+                    )}
+                    <h3 class='mt-1 text-xl font-bold leading-tight text-stone-50'>
+                      {s.data?.firstName} {s.data?.lastName}
+                    </h3>
+                    {s.data?.middleName && <p class='text-xs text-stone-400 mt-0.5'>{s.data.middleName}</p>}
+                  </div>
+                </div>
+
+                {/* Socials footer */}
+                {socials.length > 0 && (
+                  <div class='flex items-center gap-1.5 border-t border-white/5 p-4'>
+                    {socials.map((soc) => (
+                      <a
+                        href={soc.href}
+                        target={soc.key === 'email' ? '_self' : '_blank'}
+                        rel='noopener noreferrer'
+                        aria-label={soc.label}
+                        title={soc.key === 'email' ? soc.value : soc.label}
+                        class='flex size-9 items-center justify-center rounded-full border border-white/5 bg-white/[0.02] text-stone-400 transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent'>
+                        <SocialIcon name={soc.key} />
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </article>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
 </MainLayout>

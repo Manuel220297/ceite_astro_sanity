@@ -4,24 +4,225 @@ import MainLayout from '../../layouts/MainLayout.astro';
 import SanityImage from '../../components/SanityImage.astro';
 
 const news = await getCollection('sanityNews');
-
 news.sort((a, b) => new Date(b.data._createdAt).getTime() - new Date(a.data._createdAt).getTime());
+
+const pad = (n: number) => String(n).padStart(2, '0');
+
+function timeAgo(dateString: string) {
+  const now = new Date().getTime();
+  const past = new Date(dateString).getTime();
+  const diffMs = now - past;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffMins = Math.floor(diffMs / (1000 * 60));
+
+  const years = Math.floor(diffDays / 365);
+  const months = Math.floor((diffDays % 365) / 30);
+  const days = diffDays % 30;
+  const hours = diffHours % 24;
+  const mins = diffMins % 60;
+
+  if (years > 0) return `${years}y ago`;
+  if (months > 0) return `${months}mo ago`;
+  if (days > 0) return `${days}d ago`;
+  if (hours > 0) return `${hours}h ago`;
+  return `${mins}m ago`;
+}
+
+function formatDate(date: Date | string) {
+  return new Date(date).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' });
+}
+
+// Unique categories for filter chips
+const categories = Array.from(new Set(news.map((n) => n.data.category).filter(Boolean)));
+
+// Stats
+const latestDate = news[0]?.data._createdAt;
 ---
 
 <MainLayout>
-  <h1>News page</h1>
-  {
-    news.map((n) => (
-      <div>
-        <a href={`/news/${n.data.slug}`}>
-          <SanityImage width={512} image={n.data.image} />
-        </a>
-        <p>Article created on {n.data._createdAt}</p>
-        <h4>
-          {n.data?.eventDateStart} {n.data?.eventDateEnd ? `– ${n.data?.eventDateEnd}` : ''}
-        </h4>
-        <h2>{n.data?.title}</h2>
+  <section class='relative w-full overflow-hidden bg-background py-24 md:py-32'>
+    {/* Ambient glow */}
+    <div
+      class='pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 size-[800px] rounded-full bg-accent/[0.04] blur-[140px]'>
+    </div>
+
+    {/* Top meta bar */}
+    <div
+      class='relative z-10 mx-auto mb-10 flex w-full max-w-[1600px] items-center gap-4 px-6 md:px-10 text-[10px] md:text-xs tracking-[0.25em] text-stone-500'>
+      <span class='flex items-center gap-2'>
+        <span class='relative inline-block size-1.5 rounded-full bg-accent'>
+          <span class='absolute inset-0 animate-ping rounded-full bg-accent/70'></span>
+        </span>
+        <span class='uppercase text-stone-300'>CEITE</span>
+        <span class='text-stone-600'>/</span>
+        <span class='uppercase'>Newsroom</span>
+        <span class='text-stone-600'>/</span>
+        <span class='uppercase text-stone-400'>Happenings</span>
+      </span>
+      <span class='h-px flex-1 bg-linear-to-r from-stone-700/80 via-stone-700/30 to-transparent'></span>
+      <span class='uppercase tabular-nums'>{pad(news.length)} Stories</span>
+    </div>
+
+    {/* Headline */}
+    <header class='relative z-10 mx-auto mb-14 max-w-[1600px] px-6 md:px-10'>
+      <div class='flex flex-col gap-8 md:flex-row md:items-end md:justify-between mb-12'>
+        <div>
+          <h1 class='font-extrabold text-5xl leading-[0.95] sm:text-6xl md:text-7xl lg:text-8xl'>
+            <span class='block text-stone-50'>Happenings</span>
+            <span class='block text-accent'>Archive<span class='text-accent/70'>.</span></span>
+          </h1>
+          <p class='mt-5 max-w-md text-sm leading-relaxed text-stone-400 sm:text-base'>
+            Browse past updates and school happenings
+          </p>
+        </div>
       </div>
-    ))
-  }
+
+      {/* Category filter chips */}
+      {
+        categories.length > 0 && (
+          <div class='relative z-10 mx-auto mb-10 w-full max-w-[1600px] px-6 md:px-10'>
+            <div class='flex items-center gap-3 mb-4'>
+              <span class='h-px w-6 bg-accent' />
+              <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>Filter by Category</span>
+            </div>
+            <div class='flex flex-wrap gap-2'>
+              <span
+                class='filter-chip is-active flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-4 py-1.5 text-xs font-medium text-stone-300 backdrop-blur-md cursor-pointer transition-all hover:border-accent/40 hover:bg-accent/10 hover:text-accent'
+                data-category='all'>
+                <span>All Stories</span>
+                <span class='chip tabular-nums text-stone-500'>{pad(news.length)}</span>
+              </span>
+              {categories.map((cat) => {
+                const count = news.filter((n) => n.data.category === cat).length;
+                return (
+                  <span
+                    class='filter-chip flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-4 py-1.5 text-xs font-medium text-stone-300 backdrop-blur-md cursor-pointer transition-all hover:border-accent/40 hover:bg-accent/10 hover:text-accent'
+                    data-category={cat}>
+                    <span>{cat}</span>
+                    <span class='chip-count tabular-nums text-stone-500'>{pad(count)}</span>
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        )
+      }
+
+      {/* News list */}
+      <div class='relative z-10 mx-auto w-full max-w-[1600px] px-6 md:px-10'>
+        <div class='mb-6 flex items-center gap-3'>
+          <span class='h-px w-6 bg-accent'></span>
+          <span class='text-[10px] tracking-[0.3em] uppercase text-accent'>All</span>
+          <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>·</span>
+          <span class='text-[10px] tracking-[0.3em] uppercase text-stone-400'>Sorted by Most Recent</span>
+        </div>
+
+        {/* Flex wrap with explicit basis — 1 / 2 / 3 cols */}
+        <div class='flex flex-wrap gap-6'>
+          {
+            news.map((n, i) => (
+              <article
+                class='news-card group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-md transition-all duration-500 hover:border-accent/30 hover:bg-white/[0.04] basis-full sm:basis-[calc((100%-1.5rem)/2)] lg:basis-[calc((100%-3rem)/3)]'
+                data-category={n.data.category}
+                style={`--row-index: ${i}`}>
+                <a href={`/news/${n.data.slug}`} class='flex h-full flex-col'>
+                  {/* Image */}
+                  <div class='relative aspect-[4/3] overflow-hidden'>
+                    <SanityImage
+                      width={600}
+                      height={450}
+                      image={n.data.image}
+                      loading={i < 6 ? 'eager' : 'lazy'}
+                      class='size-full object-cover saturate-[0.9] transition-all duration-700 group-hover:scale-105 group-hover:saturate-100'
+                    />
+                    <div class='pointer-events-none absolute inset-0 bg-linear-to-t from-background/80 via-background/20 to-transparent' />
+
+                    {/* Top-left: index number */}
+                    <span class='absolute left-4 top-4 font-(family-name:--font-tiktok) text-base tabular-nums text-stone-300/70'>
+                      {pad(i + 1)}
+                    </span>
+
+                    {/* Top-right: category */}
+                    {n.data.category && (
+                      <div class='absolute right-4 top-4 rounded-full border border-white/15 bg-black/50 px-3 py-1 backdrop-blur-md'>
+                        <span class='text-[9px] tracking-[0.25em] uppercase text-stone-100 font-bold'>
+                          {n.data.category}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Body */}
+                  <div class='flex flex-1 flex-col gap-3 p-5'>
+                    {/* Meta row */}
+                    <div class='flex items-center gap-2 text-[10px] tracking-[0.25em] uppercase'>
+                      <time datetime={new Date(n.data._createdAt).toISOString()} class='text-stone-400 tabular-nums'>
+                        {formatDate(n.data._createdAt)}
+                      </time>
+                      <span class='size-1 rounded-full bg-stone-700' />
+                      <span class='text-stone-500 tabular-nums'>{timeAgo(n.data._createdAt.toString())}</span>
+                    </div>
+
+                    {/* Title */}
+                    <h2 class='text-lg font-bold leading-[1.15] line-clamp-2 text-stone-50 transition-colors group-hover:text-accent'>
+                      {n.data?.title}
+                    </h2>
+
+                    {/* Footer CTA */}
+                    <div class='mt-auto flex items-center gap-2 pt-3 text-[10px] font-semibold tracking-[0.25em] uppercase text-stone-400 transition-all group-hover:text-accent group-hover:gap-3'>
+                      <span>Read story</span>
+                      <svg
+                        class='size-3.5 transition-transform group-hover:translate-x-1'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        stroke-width='2'
+                        stroke-linecap='round'
+                        stroke-linejoin='round'>
+                        <path d='M5 12h14M13 5l7 7-7 7' />
+                      </svg>
+                    </div>
+                  </div>
+                </a>
+              </article>
+            ))
+          }
+        </div>
+
+        {/* Empty state */}
+        <div id='empty-state' class='hidden flex-col items-center gap-3 py-20 text-center'>
+          <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>No Stories Found</span>
+          <p class='text-stone-400'>Try selecting a different category.</p>
+        </div>
+      </div>
+    </header>
+  </section>
+
+  <script>
+    const chips = document.querySelectorAll<HTMLElement>('.filter-chip');
+    const cards = document.querySelectorAll<HTMLElement>('.news-card');
+    const emptyState = document.getElementById('empty-state');
+
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        const target = chip.dataset.category;
+
+        chips.forEach((c) => c.classList.remove('is-active'));
+        chip.classList.add('is-active');
+
+        let visibleCount = 0;
+        cards.forEach((card) => {
+          const match = target === 'all' || card.dataset.category === target;
+          card.style.display = match ? '' : 'none';
+          if (match) visibleCount++;
+        });
+
+        if (emptyState) {
+          emptyState.classList.toggle('hidden', visibleCount > 0);
+          emptyState.classList.toggle('flex', visibleCount === 0);
+        }
+      });
+    });
+  </script>
 </MainLayout>

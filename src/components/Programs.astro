@@ -51,6 +51,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 <section class='relative w-full overflow-hidden bg-background py-16 md:py-24'>
   <!-- Top meta bar -->
+  <div class='pointer-events-none absolute inset-0 opacity-[1] pattern-graph'></div>
   <div
     class='relative z-10 mx-auto mb-12 flex w-full max-w-[1600px] items-center gap-4 px-6 md:px-10 text-[10px] md:text-xs tracking-[0.25em] text-stone-500'>
     <span class='flex items-center gap-2'>
@@ -95,7 +96,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   <!-- Slider -->
   <div
     id='swiper-program'
-    class='swiper relative mt-16 w-full max-w-[1920px] h-[680px] md:h-[768px] max-h-[100vh] md:max-h-[85vh] !px-4 !py-4 sm:px-0'>
+    class='swiper relative mt-16 w-full max-w-[1920px] h-[680px] md:h-[768px] max-h-[100vh] md:max-h-[85vh] !px-4 !py-4 sm:!px-0'>
     <div class='swiper-wrapper w-full h-full'>
       {
         programs.map((p, i) => (
@@ -103,9 +104,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
             <div class='img-wrapper'>
               <SanityImage image={p.data.image} Xparallax={30} loading='lazy' width={1920} height={1080} />
               {/* Gradient layers */}
-              <div class='gradient-layer absolute inset-0 bg-linear-to-t from-background via-background/70 via-30% to-transparent' />
-              <div class='gradient-layer absolute inset-0 bg-linear-to-r from-background/95 from-20% via-background/40 via-50% to-transparent' />
-              {/* Subtle grain */}
+              <div class='gradient-layer absolute inset-0 bg-linear-to-t from-background/60 via-background/33 via-25% to-transparent' />
+              <div class='gradient-layer absolute inset-0 bg-linear-to-r from-background/90 from-20% via-background/55 via-55% to-transparent' />
             </div>
 
             {/* Content */}
@@ -192,7 +192,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
                   <a
                     href={`/programs/${p.data.slug}`}
-                    class='group/cta shrink-0 inline-flex w-fit items-center gap-2 rounded-full squircle border  bg-accent px-5 py-2.5 text-sm font-semibold text-background transition-all hover:border-accent hover:bg-accent/10 hover:text-accent'>
+                    class='group/cta shrink-0 inline-flex w-fit items-center gap-2 bg-accent px-5 py-2.5 text-sm font-semibold text-background transition-all hover:border-accent hover:bg-orange-300 hover: hover:font-black'>
                     <span>Learn more</span>
                     <svg
                       class='size-4 transition-transform group-hover/cta:translate-x-1'
@@ -227,6 +227,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   new Swiper('#swiper-program', {
     modules: [Parallax, Navigation, Pagination, Keyboard],
     grabCursor: true,
+    // cssMode: true,
     speed: 600,
     spaceBetween: 28,
     parallax: true,

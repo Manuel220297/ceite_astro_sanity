@@ -1,10 +1,10 @@
-// ./src/sanity/schemaTypes/news.ts
 import { defineField, defineType } from 'sanity';
 
 export const staffType = defineType({
   name: 'staffs',
   title: 'Staffs',
   type: 'document',
+
   fields: [
     defineField({
       name: 'firstName',
@@ -12,23 +12,27 @@ export const staffType = defineType({
       type: 'string',
       validation: (rule) => rule.required(),
     }),
+
     defineField({
       name: 'middleName',
       title: 'Middle name',
       type: 'string',
       description: 'Optional',
     }),
+
     defineField({
       name: 'lastName',
       title: 'Last Name',
       type: 'string',
       validation: (rule) => rule.required(),
     }),
+
     defineField({
       name: 'title',
       title: 'Staff Title',
       type: 'string',
     }),
+
     defineField({
       name: 'honorifics',
       title: 'Honorifics',
@@ -42,6 +46,42 @@ export const staffType = defineType({
         ],
       },
     }),
+
+    defineField({
+      name: 'email',
+      title: 'Email',
+      type: 'string',
+      validation: (rule) => rule.email(),
+    }),
+
+    defineField({
+      name: 'facebook',
+      title: 'Facebook',
+      type: 'url',
+      description: 'Facebook profile or page URL',
+    }),
+
+    defineField({
+      name: 'twitter',
+      title: 'Twitter (X)',
+      type: 'url',
+      description: 'X/Twitter profile URL',
+    }),
+
+    defineField({
+      name: 'tiktok',
+      title: 'TikTok',
+      type: 'url',
+      description: 'TikTok profile URL',
+    }),
+
+    defineField({
+      name: 'instagram',
+      title: 'Instagram',
+      type: 'url',
+      description: 'Instagram profile URL',
+    }),
+
     defineField({
       name: 'image',
       title: 'Image',
@@ -59,6 +99,7 @@ export const staffType = defineType({
       ],
     }),
   ],
+
   preview: {
     select: {
       firstName: 'firstName',
@@ -66,8 +107,10 @@ export const staffType = defineType({
       lastName: 'lastName',
       media: 'image',
     },
+
     prepare({ firstName, middleName, lastName, media }) {
       const fullname = [firstName, middleName, lastName].filter(Boolean).join(' ');
+
       return {
         title: fullname || 'Unnamed',
         media,
