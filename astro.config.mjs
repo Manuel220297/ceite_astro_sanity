@@ -49,7 +49,7 @@ export default defineConfig({
 
   integrations: [
     sanity({
-      projectId: process.env.PUBLIC_SANITY_PROJECT_ID,
+      projectId: 'yiulggd9',
       dataset: 'production',
       useCdn: false, // See note on using the CDN
       apiVersion: '2026-03-10', // insert the current date to access the latest version of the API
