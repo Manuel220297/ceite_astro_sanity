@@ -9,10 +9,14 @@ const staffs = await getCollection('sanityStaffs');
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
-// Social link helper
+// Helper: build full name with honorifics + first + middle + last
+function fullName(data: any) {
+  return [data.honorifics, data.firstName, data.middleName, data.lastName].filter(Boolean).join(' ');
+}
+
+// Social link helper — excludes email (handled separately)
 const socialLinks = (data: any) =>
   [
-    { key: 'email', value: data.email, href: data.email ? `mailto:${data.email}` : null, label: 'Email' },
     { key: 'facebook', value: data.facebook, href: data.facebook, label: 'Facebook' },
     { key: 'tiktok', value: data.tiktok, href: data.tiktok, label: 'TikTok' },
     { key: 'twitter', value: data.twitter, href: data.twitter, label: 'X' },
@@ -80,6 +84,7 @@ const socialLinks = (data: any) =>
             <div
               class='absolute inset-0 bg-linear-to-t from-background/80 via-background/10 to-transparent md:bg-linear-to-r md:from-transparent md:to-background/30'>
             </div>
+
             {/* Role badge */}
             <div
               class='absolute left-6 top-6 flex items-center gap-2 rounded-full border border-white/15 bg-black/40 px-4 py-1.5 backdrop-blur-md'>
@@ -95,13 +100,27 @@ const socialLinks = (data: any) =>
             <div>
               <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>Office of the Dean</span>
               <h2
-                class='mt-3 font-(family-name:--font-tiktok) text-4xl leading-tight text-stone-50 sm:text-5xl md:text-6xl'>
-                {dean.data?.firstName}
-                {dean.data?.middleName && <span class='text-stone-400'> {dean.data.middleName}</span>}
-                <span class='block'>{dean.data?.lastName}</span>
+                class='mt-3 font-(family-name:--font-tiktok) text-3xl leading-tight text-stone-50 sm:text-4xl md:text-5xl'>
+                {fullName(dean.data)}
               </h2>
-              {dean.data.honorifics && <p class='mt-2 text-base font-medium text-accent'>{dean.data.honorifics}</p>}
             </div>
+
+            {/* Email — separate from socials */}
+            {
+              dean.data.email && (
+                <div class='flex flex-col gap-2'>
+                  <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>Email</span>
+                  <a
+                    href={`mailto:${dean.data.email}`}
+                    class='group/email inline-flex w-fit items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm text-stone-200 backdrop-blur-md transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent'>
+                    <span class='flex size-8 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-accent transition-colors group-hover/email:bg-accent/20'>
+                      <SocialIcon name='email' />
+                    </span>
+                    <span class='break-all font-medium tracking-wide'>{dean.data.email}</span>
+                  </a>
+                </div>
+              )
+            }
 
             {/* Socials */}
             {
@@ -112,11 +131,11 @@ const socialLinks = (data: any) =>
                     {socialLinks(dean.data).map((s) => (
                       <a
                         href={s.href}
-                        target={s.key === 'email' ? '_self' : '_blank'}
+                        target='_blank'
                         rel='noopener noreferrer'
                         class='social-link group/s flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-medium text-stone-300 backdrop-blur-md transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent'>
                         <SocialIcon name={s.key} />
-                        <span>{s.key === 'email' ? s.value : s.label}</span>
+                        <span>{s.label}</span>
                       </a>
                     ))}
                   </div>
@@ -155,39 +174,51 @@ const socialLinks = (data: any) =>
                   />
                   <div class='absolute inset-0 bg-linear-to-t from-background via-background/40 via-30% to-transparent' />
 
-                  {/* Number */}
-                  <span class='absolute right-4 top-4 font-(family-name:--font-tiktok) text-2xl tabular-nums text-stone-300/40'>
-                    {pad(i + 1)}
-                  </span>
-
                   {/* Name overlay */}
                   <div class='absolute inset-x-0 bottom-0 p-5'>
-                    {s.data.honorifics && (
-                      <span class='text-[10px] tracking-[0.25em] uppercase text-accent'>{s.data.honorifics}</span>
-                    )}
-                    <h3 class='mt-1 text-xl font-bold leading-tight text-stone-50'>
-                      {s.data?.firstName} {s.data?.lastName}
-                    </h3>
-                    {s.data?.middleName && <p class='text-xs text-stone-400 mt-0.5'>{s.data.middleName}</p>}
+                    <h3 class='text-lg font-bold leading-tight text-stone-50 sm:text-xl'>{fullName(s.data)}</h3>
                   </div>
                 </div>
 
-                {/* Socials footer */}
-                {socials.length > 0 && (
-                  <div class='flex items-center gap-1.5 border-t border-white/5 p-4'>
-                    {socials.map((soc) => (
-                      <a
-                        href={soc.href}
-                        target={soc.key === 'email' ? '_self' : '_blank'}
-                        rel='noopener noreferrer'
-                        aria-label={soc.label}
-                        title={soc.key === 'email' ? soc.value : soc.label}
-                        class='flex size-9 items-center justify-center rounded-full border border-white/5 bg-white/[0.02] text-stone-400 transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent'>
-                        <SocialIcon name={soc.key} />
-                      </a>
-                    ))}
-                  </div>
-                )}
+                {/* Card body — role + email + socials */}
+                <div class='flex flex-col gap-3 p-4'>
+                  {/* Role / title — shown below the image in full */}
+                  {s.data?.title && (
+                    <div class='flex flex-col gap-1'>
+                      <span class='text-[9px] tracking-[0.3em] uppercase text-stone-500'>Role</span>
+                      <span class='text-sm font-medium text-accent leading-snug'>{s.data.title}</span>
+                    </div>
+                  )}
+
+                  {/* Email — visible, dedicated row */}
+                  {s.data?.email && (
+                    <a
+                      href={`mailto:${s.data.email}`}
+                      class='group/email flex items-center gap-2 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2 text-xs text-stone-300 transition-all hover:border-accent/40 hover:bg-accent/10 hover:text-accent'>
+                      <span class='shrink-0 text-stone-400 group-hover/email:text-accent'>
+                        <SocialIcon name='email' />
+                      </span>
+                      <span class='break-all font-medium leading-snug'>{s.data.email}</span>
+                    </a>
+                  )}
+
+                  {/* Social icons row */}
+                  {socials.length > 0 && (
+                    <div class='flex items-center gap-1.5 border-t border-white/5 pt-3'>
+                      {socials.map((soc) => (
+                        <a
+                          href={soc.href}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          aria-label={soc.label}
+                          title={soc.label}
+                          class='flex size-9 items-center justify-center rounded-full border border-white/5 bg-white/[0.02] text-stone-400 transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent'>
+                          <SocialIcon name={soc.key} />
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </article>
             );
           })

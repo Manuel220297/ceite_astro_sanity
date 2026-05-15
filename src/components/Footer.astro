@@ -151,39 +151,50 @@ const year = new Date().getFullYear();
 
         {/* Map */}
         <div class='group/map relative overflow-hidden rounded-2xl border border-stone-700/50 aspect-[4/3]'>
-          <img
-            src='https://placehold.co/600x450/1c1917/57534e?text=Campus+Map'
-            alt='Campus location map'
-            class='size-full object-cover saturate-50 transition-all duration-500 group-hover/map:saturate-100 group-hover/map:scale-105'
-          />
-          {/* Pin marker */}
-          <div class='absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
-            <span class='relative flex size-3 items-center justify-center'>
-              <span class='absolute size-6 rounded-full bg-accent/30 animate-ping'></span>
-              <span
-                class='relative size-3 rounded-full bg-accent shadow-[0_0_12px_2px_rgb(from_var(--color-accent)_r_g_b_/_0.6)]'
-              ></span>
-            </span>
-          </div>
-          {/* Gradient overlay */}
-          <div
-            class='pointer-events-none absolute inset-0 bg-linear-to-t from-stone-900/60 via-transparent to-transparent'>
-          </div>
-          {/* "View on map" tag */}
-          <div
-            class='absolute bottom-3 left-3 flex items-center gap-2 rounded-full border border-white/15 bg-black/50 px-3 py-1 backdrop-blur-md cursor-pointer'>
-            <span class='size-1.5 rounded-full bg-accent'></span>
-            <span class='text-[10px] tracking-[0.2em] uppercase text-stone-100'>View on map</span>
-          </div>
+          <a
+            href='https://www.google.com/maps?q=1506+National+Highway,+Brgy.+Dila,+City+of+Santa+Rosa,+Laguna'
+            target='_blank'
+            rel='noopener noreferrer'
+            class='block size-full'>
+            <img
+              src='https://staticmap.openstreetmap.de/staticmap.php?center=14.288405,121.108902&zoom=16&size=600x450&maptype=mapnik&markers=14.288405,121.108902,red-pushpin'
+              alt='Campus location map - 1506 National Highway, Brgy. Dila, Santa Rosa, Laguna'
+              loading='lazy'
+              class='size-full object-cover saturate-50 transition-all duration-500 group-hover/map:saturate-100 group-hover/map:scale-105'
+            />
+
+            {/* Dark overlay */}
+            <div class='absolute inset-0 bg-black/10 transition-colors duration-300 group-hover/map:bg-black/0'></div>
+
+            {/* Pin marker */}
+            <div class='pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
+              <span class='relative flex size-3 items-center justify-center'>
+                <span class='absolute size-6 rounded-full bg-accent/30 animate-ping'></span>
+                <span
+                  class='relative size-3 rounded-full bg-accent shadow-[0_0_12px_2px_rgb(from_var(--color-accent)_r_g_b_/_0.6)]'
+                ></span>
+              </span>
+            </div>
+          </a>
+        </div>
+        {/* Gradient overlay */}
+        <div
+          class='pointer-events-none absolute inset-0 bg-linear-to-t from-stone-900/60 via-transparent to-transparent'>
+        </div>
+        {/* "View on map" tag */}
+        <div
+          class='absolute bottom-3 left-3 flex items-center gap-2 rounded-full border border-white/15 bg-black/50 px-3 py-1 backdrop-blur-md cursor-pointer'>
+          <span class='size-1.5 rounded-full bg-accent'></span>
+          <span class='text-[10px] tracking-[0.2em] uppercase text-stone-100'>View on map</span>
         </div>
       </div>
     </div>
+  </div>
 
-    {/* Bottom row */}
-    <div class='flex flex-row items-center justify-center pt-8'>
-      <p class='text-sm text-stone-400'>
-        &copy; {year} Asia Technological School of Science and Arts . All rights reserved.
-      </p>
-    </div>
+  {/* Bottom row */}
+  <div class='flex flex-row items-center justify-center pt-8'>
+    <p class='text-sm text-stone-400'>
+      &copy; {year} Asia Technological School of Science and Arts . All rights reserved.
+    </p>
   </div>
 </footer>
