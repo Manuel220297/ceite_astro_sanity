@@ -4,7 +4,6 @@ import { glob, file } from 'astro/loaders';
 
 import { z } from 'astro/zod';
 import { client } from './lib/sanity/sanity';
-import { toHTML } from '@portabletext/to-html';
 import { object } from 'astro:schema';
 
 const specializationSchema = z.object({
@@ -109,7 +108,7 @@ const sanityAbout = defineCollection({
 
     return posts.map((post: any) => ({
       id: post.title.replace(/\s+/g, ''),
-      body: toHTML(post.body),
+      body: post.body,
       title: post.title,
       image: post.image,
     }));
@@ -117,7 +116,7 @@ const sanityAbout = defineCollection({
 
   schema: z.object({
     title: z.string(),
-    body: z.string().optional(),
+    body: z.any(),
     image: z.any(),
   }),
 });
@@ -259,7 +258,7 @@ const sanityProjects = defineCollection({
       slug: post.slug,
       image: post.image,
       program: post.program,
-      body: toHTML(post.body),
+      body: post.body,
     }));
   },
 

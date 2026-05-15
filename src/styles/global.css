@@ -81,6 +81,61 @@
     }
   }
 
+  .portable-text-article {
+    /* Generous paragraph spacing for reading */
+    p {
+      @apply leading-relaxed text-neutral mb-5 text-base sm:text-lg;
+    }
+
+    /* Headings get breathing room */
+    h2,
+    h3,
+    h4 {
+      @apply mt-10 mb-4 text-stone-200;
+    }
+
+    /* Lists */
+    ul,
+    ol {
+      @apply pl-6 mb-5 space-y-2;
+    }
+    ul {
+      @apply list-disc;
+    }
+    ol {
+      @apply list-decimal;
+    }
+    li {
+      @apply text-stone-300 leading-relaxed pl-1;
+    }
+
+    /* Blockquote */
+    blockquote {
+      @apply my-8 border-l-2 border-accent pl-6 italic text-stone-200 text-lg;
+    }
+
+    /* Inline code */
+    code {
+      @apply rounded bg-white/5 border border-white/10 px-1.5 py-0.5 text-sm text-accent font-mono;
+    }
+
+    /* Links inside articles */
+    a {
+      @apply text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent;
+    }
+
+    /* Images get rounded + spacing */
+    figure,
+    img {
+      @apply my-8 rounded-xl;
+    }
+
+    /* Horizontal rule */
+    hr {
+      @apply my-10 border-stone-700/50;
+    }
+  }
+
   #swiper-2 .swiper-pagination-progressbar-fill {
     @apply !bg-accent;
   }

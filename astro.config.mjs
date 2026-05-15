@@ -35,16 +35,17 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
-    // optimizeDeps: {
-    //   include: [
-    //     'react/compiler-runtime',
-    //     'lodash/isObject.js',
-    //     'lodash/groupBy.js',
-    //     'lodash/keyBy.js',
-    //     'lodash/partition.js',
-    //     'lodash/sortedIndex.js',
-    //   ],
-    // },
+    optimizeDeps: {
+      include: [
+        // 'react/compiler-runtime',
+        // 'lodash/isObject.js',
+        // 'lodash/groupBy.js',
+        // 'lodash/keyBy.js',
+        // 'lodash/partition.js',
+        // 'lodash/sortedIndex.js',
+      ],
+      exclude: ['audit', 'xray', 'toolbar'],
+    },
   },
 
   integrations: [

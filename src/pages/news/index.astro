@@ -133,6 +133,7 @@ const latestDate = news[0]?.data._createdAt;
                       width={600}
                       height={450}
                       image={n.data.image}
+                      fallback='/images/default_background.avif'
                       loading={i < 6 ? 'eager' : 'lazy'}
                       class='size-full object-cover saturate-[0.9] transition-all duration-700 group-hover:scale-105 group-hover:saturate-100'
                     />

@@ -6,6 +6,7 @@ import MainLayout from '../../layouts/MainLayout.astro';
 import { PortableText } from 'astro-portabletext';
 import SanityPortableImage from '../../components/SanityPortableImage.astro';
 import SanityHighlight from '../../components/SanityHighlight.astro';
+
 const components = {
   type: {
     image: SanityPortableImage,
@@ -29,14 +30,161 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 const { news } = Astro.props;
+
+function formatDate(date: Date | string) {
+  return new Date(date).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+function formatDateShort(date: Date | string) {
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'short',
+    day: '2-digit',
+    year: 'numeric',
+  });
+}
+
+// Estimate reading time from portable text
+function estimateReadTime(body: any[]): number {
+  if (!body) return 1;
+  const text = body
+    .filter((b) => b._type === 'block')
+    .flatMap((b) => b.children?.map((c: any) => c.text) ?? [])
+    .join(' ');
+  const words = text.split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 200));
+}
+
+const readTime = estimateReadTime(news.data.body);
+const createdDate = new Date(news.data._createdAt);
 ---
 
 <MainLayout>
-  <div>
-    <h1>News slug</h1>
-    <SanityImage class='max-h-[720px] rounded-md' image={news.data.image} />
-    <h2 class='text-blue-300'>{news.data.title}</h2>
-    <p>{news.data._createdAt.toLocaleString()}</p>
-    <PortableText value={news.data?.body} />
-  </div>
+  <article class='relative w-full bg-background pb-24 pt-28 md:pt-32'>
+    {/* ─── Breadcrumb / meta bar ─── */}
+    <div
+      class='mx-auto mb-10 flex w-full max-w-[1100px] items-center gap-4 px-6 md:px-10 text-[10px] md:text-xs tracking-[0.25em] text-stone-500'>
+      <a href='/news' class='flex items-center gap-2 text-stone-300 transition-colors hover:text-accent'>
+        <svg
+          class='size-3'
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          stroke-width='2'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+          aria-hidden='true'>
+          <path d='M19 12H5M12 19l-7-7 7-7'></path>
+        </svg>
+        <span class='uppercase'>Newsroom</span>
+      </a>
+      <span class='h-px flex-1 bg-linear-to-r from-stone-700/80 via-stone-700/30 to-transparent'></span>
+      <span class='uppercase tabular-nums'>{formatDateShort(news.data._createdAt)}</span>
+    </div>
+
+    {/* ─── Header ─── */}
+    <header class='mx-auto mb-10 w-full max-w-[900px] px-6 md:px-10'>
+      {/* Category */}
+      {
+        news.data.category && (
+          <div class='mb-6 flex items-center gap-3'>
+            <span class='h-px w-8 bg-accent' />
+            <span class='text-[10px] tracking-[0.3em] uppercase text-accent font-bold'>{news.data.category}</span>
+          </div>
+        )
+      }
+
+      {/* Title */}
+      <h1 class='font-extrabold text-4xl leading-[1.1] text-stone-50 sm:text-5xl md:text-6xl'>
+        {news.data.title}
+      </h1>
+
+      {/* Article meta */}
+      <div
+        class='mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-stone-700/50 pt-6 text-xs text-stone-400'>
+        <div class='flex items-center gap-2'>
+          <svg
+            class='size-3.5 text-stone-500'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            stroke-width='2'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+            aria-hidden='true'>
+            <rect x='3' y='4' width='18' height='18' rx='2'></rect>
+            <path d='M16 2v4M8 2v4M3 10h18'></path>
+          </svg>
+          <time datetime={createdDate.toISOString()} class='tracking-wide'>
+            {formatDate(news.data._createdAt)}
+          </time>
+        </div>
+        <span class='size-1 rounded-full bg-stone-700'></span>
+        <div class='flex items-center gap-2'>
+          <svg
+            class='size-3.5 text-stone-500'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            stroke-width='2'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+            aria-hidden='true'>
+            <circle cx='12' cy='12' r='10'></circle>
+            <path d='M12 6v6l4 2'></path>
+          </svg>
+          <span class='tabular-nums'>{readTime} min read</span>
+        </div>
+      </div>
+    </header>
+
+    {/* ─── Featured image ─── */}
+    <figure class='mx-auto mb-12 w-full max-w-[1100px] px-6 md:px-10'>
+      <div class='overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]'>
+        <SanityImage
+          class='w-full max-h-[640px] object-cover'
+          image={news.data.image}
+          fallback='/images/default_background.avif'
+        />
+      </div>
+    </figure>
+
+    {/* ─── Body ─── */}
+    <div class='mx-auto w-full max-w-[760px] px-6 md:px-10'>
+      <div class='portable-text portable-text-article'>
+        <PortableText value={news.data?.body} components={components} />
+      </div>
+
+      {/* ─── End-of-article footer ─── */}
+      <div class='mt-16 border-t border-stone-700/50 pt-8'>
+        <div class='flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between'>
+          <div class='flex flex-col gap-1'>
+            <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>End of article</span>
+          </div>
+          <a
+            href='/news'
+            class='inline-flex w-fit items-center gap-2 rounded-full border border-accent/40 bg-accent/10
+          px-5 py-2.5 text-xs font-semibold tracking-[0.2em] uppercase text-accent transition-colors hover:border-accent
+          hover:bg-accent hover:text-background'>
+            <svg
+              class='size-3.5'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              stroke-width='2'
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              aria-hidden='true'>
+              <path d='M19 12H5M12 19l-7-7 7-7'></path>
+            </svg>
+            <span>Back to Newsroom</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </article>
 </MainLayout>
