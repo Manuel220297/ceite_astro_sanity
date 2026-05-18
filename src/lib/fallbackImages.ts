@@ -1,5 +1,5 @@
 export const DEFAULT_IMAGE = {
-  KEYBOARD: '/images/default_keyboard.jpg',
+  KEYBOARD: '/images/default_keyboard.avif',
   MOUSE: '/images/default_mouse.jpg',
   AVATAR: '/images/default_avatar.png',
   BACKGROUND: '/images/default_background.avif',

@@ -35,17 +35,41 @@ const {
 const w = width || 800;
 const h = height;
 
-if (unoptimized) {
-}
-const hasImage = image?.asset?._ref;
+// SAFE IMAGE CHECKS
+// ─────────────────────────────
+const hasImage = image?.asset?.url || image?.asset?._ref;
+const assetSize: number = image?.asset?.size ?? 0;
 
+// Skip optimization if:
+// - manually disabled
+// - image < 60KB
+const shouldSkipOptimization = unoptimized || (assetSize > 0 && assetSize < 60 * 1024);
+
+// Debug
+//  ─────────────────────────────
+// console.log(
+//   'Image:',
+//   image?.asset?.url,
+//   '\nSize:',
+//   (assetSize / 1024).toFixed(2),
+//   'kb',
+//   '\nSkip optimization:',
+//   shouldSkipOptimization,
+// );
+
+// BUILD IMAGE URL
+// ─────────────────────────────
 const builder = hasImage ? urlFor(image) : null;
 
 const processed = builder
-  ? unoptimized
+  ? shouldSkipOptimization
     ? builder.url()
     : (() => {
-        let img = builder.width(w).height(h!);
+        let img = builder.width(w);
+
+        if (h) {
+          img = img.height(h);
+        }
 
         if (format !== 'none') {
           img = img.format(format);
@@ -55,7 +79,30 @@ const processed = builder
       })()
   : null;
 
+// Fallback Image
 const src = processed || fallback;
+
+// STYLE ONLY FOR NON-OPTIMIZED IMAGES
+// ─────────────────────────────
+const hotspotX = image?.hotspot?.x ?? 0.5;
+const hotspotY = image?.hotspot?.y ?? 0.5;
+
+const objectPosition = `${hotspotX * 100}% ${hotspotY * 100}%`;
+
+const baseImageStyle = `
+  object-position: ${objectPosition};
+`;
+
+let sizeStyle = '';
+
+if (shouldSkipOptimization) {
+  sizeStyle = `
+    width: ${w}px;
+    ${h ? `height: ${h}px;` : ''}
+  `;
+}
+
+const finalStyle = `${baseImageStyle} ${sizeStyle}`;
 ---
 
 <img
@@ -63,6 +110,9 @@ const src = processed || fallback;
   data-swiper-parallax-y={`${Yparallax}%`}
   src={src}
   alt={alt}
-  class={clsx('', className)}
+  style={finalStyle}
+  class={clsx('object-cover', className)}
   loading={loading || 'lazy'}
+  width={w}
+  height={h}
 />

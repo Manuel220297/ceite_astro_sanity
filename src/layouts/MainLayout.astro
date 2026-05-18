@@ -17,11 +17,12 @@ import { Font } from 'astro:assets';
     <link rel='icon' href='/favicon.ico' />
     <title>C.E.I.T.E. | College of Engineering and Information Technology Education</title>
   </head>
-  <body>
-    <main class='flex flex-col'>
+  <body class='min-h-screen flex flex-col'>
+    <main class='flex flex-col flex-1'>
       <Navbar />
       <slot />
-      <Footer />
     </main>
+
+    <Footer />
   </body>
 </html>

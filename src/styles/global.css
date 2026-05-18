@@ -22,7 +22,7 @@
   }
   html,
   body {
-    @apply h-full min-h-screen flex flex-col selection:bg-accent selection:text-background 
+    @apply selection:bg-accent selection:text-background 
     scrollbar-thumb-accent scrollbar-track-background;
   }
 

@@ -65,7 +65,14 @@ const sanityNews = defineCollection({
           _createdAt,
           title,
           "slug": slug.current,
-          image,
+          image{
+              ...,
+              asset->{
+                _id,
+                url,
+                size
+              }
+            },
           category,
           eventDateStart,
           eventDateEnd,
@@ -102,7 +109,14 @@ const sanityAbout = defineCollection({
     const posts = await client.fetch(`
       *[_type == 'about']{
       body,
-      image,
+      image{
+        ...,
+        asset->{
+          _id,
+          url,
+          size
+        }
+      },
       title,
     }`);
 
@@ -156,7 +170,14 @@ const sanityDean = defineCollection({
           tiktok,
           twitter,
           instagram,
-  image,
+  image{
+              ...,
+              asset->{
+                _id,
+                url,
+                size
+              }
+            },
 }`);
 
     return posts.map((post: any) => ({
@@ -203,7 +224,14 @@ const sanityStaffs = defineCollection({
           tiktok,
           twitter,
           instagram,
-          image,
+          image{
+              ...,
+              asset->{
+                _id,
+                url,
+                size
+              }
+            },
       }`);
 
     return posts.map((post: any) => ({
@@ -243,7 +271,14 @@ const sanityProjects = defineCollection({
       *[_type == 'projects']{
           title,
           "slug": slug.current,
-          image,
+          image{
+              ...,
+              asset->{
+                _id,
+                url,
+                size
+              }
+            },
           "program": program.program->{
             title,
             "slug": slug.current
@@ -306,12 +341,33 @@ const sanityPrograms = defineCollection({
         specializations[]->{
           specialization,
           "color": color.hex,
-          image,
+            image{
+              ...,
+              asset->{
+                _id,
+                url,
+                size
+              }
+            },
           body,
         },
 
-        logo,
-        image,
+      logo{
+        ...,
+        asset->{
+          _id,
+          url,
+          size
+        }
+      },
+      image{
+        ...,
+        asset->{
+          _id,
+          url,
+          size
+        }
+      },
 
         careers,
         objectives,
