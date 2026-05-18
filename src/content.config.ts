@@ -74,8 +74,7 @@ const sanityNews = defineCollection({
               }
             },
           category,
-          eventDateStart,
-          eventDateEnd,
+
           body,
       }`);
 
@@ -85,8 +84,7 @@ const sanityNews = defineCollection({
       slug: post.slug,
       _createdAt: new Date(post._createdAt),
       category: post.category,
-      eventDateStart: post.eventDateStart,
-      eventDateEnd: post.eventDateEnd,
+
       image: post.image,
       body: post.body,
     }));
@@ -97,8 +95,7 @@ const sanityNews = defineCollection({
     slug: z.string(),
     _createdAt: z.coerce.date(),
     category: z.string(),
-    eventDateStart: z.coerce.date().nullish(),
-    eventDateEnd: z.coerce.date().nullish(),
+
     image: z.any(),
     body: z.any(),
   }),

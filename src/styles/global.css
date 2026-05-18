@@ -235,6 +235,12 @@
     .career-paths li::before {
       @apply content-['–'] text-accent shrink-0 mr-1;
     }
+
+    .swiper-button-disabled {
+      @apply !opacity-0 pointer-events-none cursor-default;
+    }
+
+    --swiper-navigation-color: var(--color-accent);
   }
 
   .news-card {

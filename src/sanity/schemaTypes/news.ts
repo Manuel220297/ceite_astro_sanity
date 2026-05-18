@@ -45,21 +45,9 @@ export const newsType = defineType({
           { title: 'News', value: 'News' },
           { title: 'Event', value: 'Event' },
           { title: 'Notice', value: 'Notice' },
+          { title: 'Story', value: 'Story' },
         ],
       },
-    }),
-    defineField({
-      name: 'eventDateStart',
-      title: 'Event Date Start',
-      type: 'datetime',
-      description: 'Optional',
-    }),
-
-    defineField({
-      name: 'eventDateEnd',
-      title: 'Event Date End',
-      type: 'datetime',
-      description: 'Optional',
     }),
     defineField({
       name: 'body',

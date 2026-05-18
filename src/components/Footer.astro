@@ -6,13 +6,33 @@ import YoutubeIcon from '../assets/icons/YoutubeIcon.astro';
 import ArrowUpIcon from '../assets/icons/ArrowUpIcon.astro';
 
 const socialLinks = [
-  { icon: FacebookIcon, label: 'IT & CS', handle: 'facebook.com/ceite.itcs' },
-  { icon: FacebookIcon, label: 'CpE', handle: 'facebook.com/ceite.cpe' },
-  { icon: FacebookIcon, label: 'C.E.I.T.E', handle: 'facebook.com/ceite' },
-  { icon: FacebookIcon, label: 'Asiatech', handle: 'facebook.com/asiatech' },
-  { icon: TikTokIcon, label: '@asiatech.official', handle: 'tiktok' },
-  { icon: InstagramIcon, label: 'asiatechofficial', handle: 'instagram' },
-  { icon: YoutubeIcon, label: 'AsiatechTV', handle: 'youtube' },
+  {
+    icon: FacebookIcon,
+    label: 'IT & CS',
+    handle: 'facebook.com/ceite.itcs',
+    url: 'https://www.facebook.com/asiatechITCS',
+  },
+  { icon: FacebookIcon, label: 'CpE', handle: 'facebook.com/ceite.cpe', url: 'https://www.facebook.com/asiatechBSCPE' },
+  {
+    icon: FacebookIcon,
+    label: 'C.E.I.T.E',
+    handle: 'facebook.com/ceite',
+    url: 'https://www.facebook.com/asiatechCEITE/',
+  },
+  {
+    icon: FacebookIcon,
+    label: 'Asiatech',
+    handle: 'facebook.com/asiatech',
+    url: 'https://www.facebook.com/asiatech.official/',
+  },
+  { icon: TikTokIcon, label: '@asiatech.official', handle: 'tiktok', url: 'https://www.tiktok.com/@asiatech.official' },
+  {
+    icon: InstagramIcon,
+    label: 'asiatechofficial',
+    handle: 'instagram',
+    url: 'https://www.instagram.com/asiatechofficial/',
+  },
+  { icon: YoutubeIcon, label: 'AsiatechTV', handle: 'youtube', url: 'https://www.youtube.com/@ASIATECHtv' },
 ];
 
 const contactRows = [
@@ -42,7 +62,7 @@ const year = new Date().getFullYear();
       <span class='uppercase text-stone-300'>Get in Touch</span>
     </span>
     <span class='h-px flex-1 bg-linear-to-r from-stone-700/80 via-stone-700/30 to-transparent'></span>
-    <span class='flex items-center gap-2 cursor-pointer group/top'>
+    <span class='flex items-center gap-2 group/top'>
       <span class='uppercase'>Back to top</span>
       <span
         class='flex size-7 items-center justify-center rounded-full border border-stone-700 transition-all group-hover/top:border-accent group-hover/top:bg-accent/10'>
@@ -95,12 +115,15 @@ const year = new Date().getFullYear();
           <div class='flex flex-wrap gap-2'>
             {
               socialLinks.map((s) => (
-                <span class='group/social flex items-center gap-2 rounded-full border border-stone-700/70 bg-white/[0.02] px-3 py-1.5 text-xs text-stone-300 backdrop-blur-md transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent cursor-pointer'>
+                <a
+                  href={s.url}
+                  target='_blank'
+                  class='group/social flex items-center gap-2 rounded-full border border-stone-700/70 bg-white/[0.02] px-3 py-1.5 text-xs text-stone-300 backdrop-blur-md transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent'>
                   <span class='shrink-0 [&_svg]:size-3.5'>
                     <s.icon />
                   </span>
                   <span class='font-medium'>{s.label}</span>
-                </span>
+                </a>
               ))
             }
           </div>
@@ -123,9 +146,7 @@ const year = new Date().getFullYear();
                 </span>
                 <div class='flex flex-col gap-0.5'>
                   {row.values.map((v) => (
-                    <span class='text-sm tracking-wide text-stone-200 hover:text-accent transition-colors cursor-pointer'>
-                      {v}
-                    </span>
+                    <span class='text-sm tracking-wide text-stone-200 hover:text-accent transition-colors'>{v}</span>
                   ))}
                 </div>
               </div>
@@ -135,7 +156,7 @@ const year = new Date().getFullYear();
       </div>
 
       {/* COLUMN 3 — Address + Map */}
-      <div class='flex flex-col gap-5 xl:w-[28%] xl:shrink-0'>
+      <div class='relative flex flex-col gap-5 xl:w-[28%] xl:shrink-0'>
         <div class='flex items-center gap-3'>
           <span class='h-px w-6 bg-accent'></span>
           <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>Address</span>
@@ -144,8 +165,9 @@ const year = new Date().getFullYear();
         {/* Address */}
         <div class='flex flex-col gap-2'>
           <p class='text-sm leading-relaxed text-stone-200'>
-            1506 National Highway <span class='text-stone-400'>(Entrance of Golden City)</span>, Brgy. Dila, City of
-            Santa Rosa, <span class='text-accent'>Laguna</span>
+            1506 National Highway <span class='text-stone-400'>(Entrance of Golden City)</span>, Brgy. Dila, <span
+              class='text-accent'>City of Santa Rosa, Laguna</span
+            >
           </p>
         </div>
 
@@ -157,24 +179,14 @@ const year = new Date().getFullYear();
             rel='noopener noreferrer'
             class='block size-full'>
             <img
-              src='https://staticmap.openstreetmap.de/staticmap.php?center=14.288405,121.108902&zoom=16&size=600x450&maptype=mapnik&markers=14.288405,121.108902,red-pushpin'
+              src='/images/location.avif'
               alt='Campus location map - 1506 National Highway, Brgy. Dila, Santa Rosa, Laguna'
               loading='lazy'
-              class='size-full object-cover saturate-50 transition-all duration-500 group-hover/map:saturate-100 group-hover/map:scale-105'
+              class='size-full object-cover transition-all duration-500 group-hover/map:scale-105'
             />
 
             {/* Dark overlay */}
             <div class='absolute inset-0 bg-black/10 transition-colors duration-300 group-hover/map:bg-black/0'></div>
-
-            {/* Pin marker */}
-            <div class='pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2'>
-              <span class='relative flex size-3 items-center justify-center'>
-                <span class='absolute size-6 rounded-full bg-accent/30 animate-ping'></span>
-                <span
-                  class='relative size-3 rounded-full bg-accent shadow-[0_0_12px_2px_rgb(from_var(--color-accent)_r_g_b_/_0.6)]'
-                ></span>
-              </span>
-            </div>
           </a>
         </div>
         {/* Gradient overlay */}
@@ -184,15 +196,15 @@ const year = new Date().getFullYear();
         {/* "View on map" tag */}
         <div
           class='absolute bottom-3 left-3 flex items-center gap-2 rounded-full border border-white/15 bg-black/50 px-3 py-1 backdrop-blur-md cursor-pointer'>
-          <span class='size-1.5 rounded-full bg-accent'></span>
-          <span class='text-[10px] tracking-[0.2em] uppercase text-stone-100'>View on map</span>
+          <span class='size-1.5 rounded-full bg-accent animate-bounce'></span>
+          <span class='text-[10px] tracking-[0.2em] uppercase text-stone-100'>View on Google maps</span>
         </div>
       </div>
     </div>
   </div>
 
   {/* Bottom row */}
-  <div class='flex flex-row items-center justify-center pt-8'>
+  <div class='flex flex-row items-center justify-center p-8'>
     <p class='text-sm text-stone-400'>
       &copy; {year} Asia Technological School of Science and Arts . All rights reserved.
     </p>
