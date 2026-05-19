@@ -30,35 +30,6 @@ const curriculumItemSchema = z.object({
 });
 
 const news = defineCollection({
-  loader: glob({ base: './news-content', pattern: '**/*.{md,mdx}' }),
-  schema: z.object({
-    title: z.string(),
-    slug: z.string(),
-    _createdAt: z.coerce.date(),
-    image: z.any(),
-  }),
-});
-
-const programs = defineCollection({
-  loader: glob({
-    base: './programs-content',
-    pattern: '**/*.{md,mdx}',
-  }),
-  schema: z.object({
-    title: z.string(),
-    titleLong: z.string(),
-    slug: z.string(),
-    _createdAt: z.coerce.date(),
-
-    image: z.any(),
-
-    specializations: z.any(),
-
-    curriculum: z.any(),
-  }),
-});
-
-const sanityNews = defineCollection({
   loader: async () => {
     const posts = await client.fetch(`
       *[_type == 'news']{
@@ -101,7 +72,7 @@ const sanityNews = defineCollection({
   }),
 });
 
-const sanityAbout = defineCollection({
+const about = defineCollection({
   loader: async () => {
     const posts = await client.fetch(`
       *[_type == 'about']{
@@ -132,28 +103,7 @@ const sanityAbout = defineCollection({
   }),
 });
 
-const sanityAnnouncement = defineCollection({
-  loader: async () => {
-    const posts = await client.fetch(`
-      *[_type == 'announcement']{
-        _id,
-        announcements[]{
-          body
-        }
-    }`);
-
-    return posts.map((post: any) => ({
-      id: post._id,
-      announcements: post.announcements,
-    }));
-  },
-
-  schema: z.object({
-    announcements: z.array(z.object({ body: z.any() })).nullish(),
-  }),
-});
-
-const sanityDean = defineCollection({
+const dean = defineCollection({
   loader: async () => {
     const posts = await client.fetch(`
 *[_type == 'dean'] {
@@ -206,7 +156,7 @@ const sanityDean = defineCollection({
   }),
 });
 
-const sanityStaffs = defineCollection({
+const staffs = defineCollection({
   loader: async () => {
     const posts = await client.fetch(`
       *[_type == 'staffs'] {
@@ -262,7 +212,7 @@ const sanityStaffs = defineCollection({
   }),
 });
 
-const sanityProjects = defineCollection({
+const projects = defineCollection({
   loader: async () => {
     const posts = await client.fetch(`
       *[_type == 'projects']{
@@ -303,7 +253,7 @@ const sanityProjects = defineCollection({
   }),
 });
 
-const sanityPrograms = defineCollection({
+const programs = defineCollection({
   loader: async () => {
     const posts = await client.fetch(`
       *[_type == 'programs']{
@@ -415,12 +365,9 @@ const sanityPrograms = defineCollection({
 // 5. Export a single `collections` object to register your collection(s)
 export const collections = {
   news,
-  sanityNews,
   programs,
-  sanityPrograms,
-  sanityAbout,
-  sanityDean,
-  sanityStaffs,
-  sanityAnnouncement,
-  sanityProjects,
+  about,
+  dean,
+  staffs,
+  projects,
 };

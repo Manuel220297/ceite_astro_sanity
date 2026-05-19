@@ -3,9 +3,7 @@ import { getCollection } from 'astro:content';
 import SanityImage from './SanityImage.astro';
 import { PortableText } from 'astro-portabletext';
 
-const news = (await getCollection('sanityNews')).sort(
-  (a, b) => b.data._createdAt.getTime() - a.data._createdAt.getTime(),
-);
+const news = (await getCollection('news')).sort((a, b) => b.data._createdAt.getTime() - a.data._createdAt.getTime());
 const latestNews = news[0];
 const olderNews = news.slice(1, 4);
 
