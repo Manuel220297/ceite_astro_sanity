@@ -6,7 +6,6 @@ import { staffType } from './staffs.ts';
 import { programType } from './programs';
 import { projectType } from './projects.ts';
 import { specializationType } from './specialization.tsx';
-import { announcementType } from './announcement.ts';
 import curriculumSubject from './curriculumSubject.ts';
 import bulletContent from './bulletContent.tsx';
 
@@ -21,5 +20,4 @@ export const schemaTypes = [
   deanType,
   projectType,
   aboutType,
-  announcementType,
 ];
