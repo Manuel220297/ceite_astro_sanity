@@ -17,7 +17,7 @@ const components = {
 };
 
 export const getStaticPaths = (async () => {
-  const sanityNews = await getCollection('sanityNews');
+  const sanityNews = await getCollection('news');
 
   return sanityNews.map((news) => ({
     params: {

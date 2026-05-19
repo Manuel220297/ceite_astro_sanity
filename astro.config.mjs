@@ -52,8 +52,8 @@ export default defineConfig({
     sanity({
       projectId: 'yiulggd9',
       dataset: 'production',
-      useCdn: false, // See note on using the CDN
-      apiVersion: '2026-03-10', // insert the current date to access the latest version of the API
+      useCdn: false,
+      apiVersion: '2026-03-10',
       studioBasePath: '/admin',
     }),
     react(),

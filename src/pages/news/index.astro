@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import MainLayout from '../../layouts/MainLayout.astro';
 import SanityImage from '../../components/SanityImage.astro';
 
-const news = await getCollection('sanityNews');
+const news = await getCollection('news');
 news.sort((a, b) => new Date(b.data._createdAt).getTime() - new Date(a.data._createdAt).getTime());
 
 const pad = (n: number) => String(n).padStart(2, '0');

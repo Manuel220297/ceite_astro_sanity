@@ -21,11 +21,9 @@ const components = {
   },
 };
 
-const programs = (await getCollection('sanityPrograms')).sort().reverse();
+const programs = (await getCollection('programs')).sort().reverse();
 
-console.log('Image 0: ', programs[0].data.image);
-
-function getDuration(program: CollectionEntry<'sanityPrograms'>) {
+function getDuration(program: CollectionEntry<'programs'>) {
   return (
     program.data.curriculum.findLastIndex(
       (year) => (year.firstSemester?.subjects?.length ?? 0) > 0 || (year.secondSemester?.subjects?.length ?? 0) > 0,
@@ -33,7 +31,7 @@ function getDuration(program: CollectionEntry<'sanityPrograms'>) {
   );
 }
 
-function getUnits(program: CollectionEntry<'sanityPrograms'>) {
+function getUnits(program: CollectionEntry<'programs'>) {
   return program.data.curriculum
     .map((c) => {
       const units = c.firstSemester?.units ?? 0;
