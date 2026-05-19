@@ -48,9 +48,9 @@ const socialLinks = (data: any) =>
 
     {/* Headline */}
     <header class='relative z-10 mx-auto max-w-4xl px-6 text-center'>
-      <h1 class='font-(family-name:--font-tiktok) text-5xl leading-[0.95] sm:text-6xl md:text-7xl lg:text-8xl'>
+      <h1 class='font-extrabold tracking-wider text-5xl sm:text-6xl md:text-7xl lg:text-8xl'>
         <span class='block text-stone-50'>Faculty</span>
-        <span class='block text-accent'>&amp; Staff<span class='text-accent/70'>.</span></span>
+        <span class='block text-accent'>&amp; Staff</span>
       </h1>
       <p class='mx-auto mt-6 max-w-xl text-sm leading-relaxed text-stone-400 sm:text-base'>
         Meet the educators, mentors, and administrators shaping the next generation of engineers and IT professionals.
@@ -76,22 +76,13 @@ const socialLinks = (data: any) =>
           <div class='relative aspect-square overflow-hidden md:aspect-auto md:min-h-[520px]'>
             <SanityImage
               image={dean.data?.image}
-              fallback='/images/default_avatar.png'
+              fallback='/images/default_avatar.svg'
               width={800}
               height={800}
               class='size-full object-cover transition-transform duration-700 group-hover:scale-105'
             />
             <div
               class='absolute inset-0 bg-linear-to-t from-background/80 via-background/10 to-transparent md:bg-linear-to-r md:from-transparent md:to-background/30'>
-            </div>
-
-            {/* Role badge */}
-            <div
-              class='absolute left-6 top-6 flex items-center gap-2 rounded-full border border-white/15 bg-black/40 px-4 py-1.5 backdrop-blur-md'>
-              <span
-                class='size-1.5 rounded-full bg-accent shadow-[0_0_8px_2px_rgb(from_var(--color-accent)_r_g_b_/_0.5)]'
-              ></span>
-              <span class='text-[10px] tracking-[0.3em] uppercase text-stone-100'>Dean</span>
             </div>
           </div>
 
@@ -126,7 +117,7 @@ const socialLinks = (data: any) =>
             {
               socialLinks(dean.data).length > 0 && (
                 <div class='flex flex-col gap-3'>
-                  <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>Connect</span>
+                  <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>Official Accounts</span>
                   <div class='flex flex-wrap gap-2'>
                     {socialLinks(dean.data).map((s) => (
                       <a
@@ -167,7 +158,7 @@ const socialLinks = (data: any) =>
                 <div class='relative aspect-[4/5] overflow-hidden'>
                   <SanityImage
                     image={s.data?.image}
-                    fallback='/images/default_avatar.png'
+                    fallback={`/images/default_avatar.svg`}
                     width={512}
                     height={640}
                     class='size-full object-cover saturate-[0.85] transition-all duration-700 group-hover:scale-105 group-hover:saturate-100'
