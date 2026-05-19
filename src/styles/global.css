@@ -194,6 +194,18 @@
     --swiper-navigation-color: var(--color-accent);
   }
 
+  #swiper-curriculum {
+    .swiper-button-disabled {
+      @apply !opacity-0 pointer-events-none cursor-default;
+    }
+    .swiper-button-next,
+    .swiper-button-prev {
+      @apply opacity-25;
+    }
+
+    --swiper-navigation-color: var(--color-accent);
+  }
+
   .news-card {
     position: relative;
   }

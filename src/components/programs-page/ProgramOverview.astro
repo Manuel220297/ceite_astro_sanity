@@ -25,14 +25,29 @@ const duration =
     (year) => (year.firstSemester?.subjects?.length ?? 0) > 0 || (year.secondSemester?.subjects?.length ?? 0) > 0,
   ) + 1;
 
-const totalUnits = program.data.curriculum
-  .map((c) => {
-    const units = c.firstSemester?.units ?? 0;
-    const units2 = c.secondSemester?.units ?? 0;
+const totalUnits = program.data.curriculum.reduce((total, c) => {
+  const subjects = [...(c.firstSemester?.subjects ?? []), ...(c.secondSemester?.subjects ?? [])];
 
-    return units + units2;
-  })
-  .reduce((sum, curr) => sum + curr, 0);
+  let specializationCounted = false;
+
+  const semesterUnits = subjects.reduce((sum, s) => {
+    const units = s.units ?? 0;
+
+    // No specialization count normally. If has specialization skip to next.
+    if (!s.specialization) {
+      return sum + units;
+    }
+
+    // Subject with specialization skip above and execute this code once.
+    if (!specializationCounted) {
+      specializationCounted = true;
+      return sum + units;
+    }
+    return sum;
+  }, 0);
+
+  return total + semesterUnits;
+}, 0);
 ---
 
 <section id='program-overview'>
@@ -42,7 +57,9 @@ const totalUnits = program.data.curriculum
         <span
           class='size-2 shrink-0 rounded-full animate-pulse bg-accent shadow-[0px_0px_0px_5px_rgb(from_var(--color-accent)_r_g_b_/_0.15)]'
         ></span>
-        <p class='tracking-wider text-stone-400 whitespace-nowrap'>About {program.data.title}</p>
+        <div class='tracking-[0.25em] text-xs text-stone-500 whitespace-nowrap'>
+          <span class='text-stone-300'>CEITE</span> / PROGRAMS / {program.data.title}
+        </div>
         <span class='w-full h-px mb-2 bg-linear-to-r from-stone-400/40 to-transparent'></span>
       </div>
       <div class='flex lg:flex-row flex-col justify-between border-b border-stone-400/40 mb-16 py-8'>
@@ -133,10 +150,10 @@ const totalUnits = program.data.curriculum
     <article>
       <div class='mb-8'>
         <h2 class='text-[clamp(2rem,5vw,3rem)] leading-tight font-bold w-full'>
-          PROGRAM
-          <span class='text-accent'>SPECIALIZATION</span>
+          SPECIALIZATION
+          <span class='text-accent'>TRACKS</span>
         </h2>
-        <p class='font-light text-stone-400'>Find the specialization that fits you best</p>
+        <span class='font-light text-stone-400'>Find the specialization that fits you best</span>
       </div>
       <div class='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
         {

@@ -41,7 +41,7 @@ export const structure: StructureResolver = (S, context) =>
           S.list()
             .title('School Details')
             .items([
-              S.documentTypeListItem('news').title('News and Events'),
+              S.documentTypeListItem('news').title('Happenings'),
               singletonDocumentListItem({ S, context, type: 'about', title: 'About' }),
               singletonDocumentListItem({ S, context, type: 'announcement', title: 'Announcement' }),
             ]),

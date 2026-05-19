@@ -15,11 +15,11 @@ const specializationSchema = z.object({
 
 const subjectSchema = z.object({
   subject: z.string(),
+  units: z.number().nullish(),
   specialization: specializationSchema.nullish(),
 });
 
 const semesterSchema = z.object({
-  units: z.number().nullish(),
   subjects: z.array(subjectSchema).nullish(),
 });
 
@@ -264,9 +264,9 @@ const programs = defineCollection({
         curriculum[]{
           year,
           firstSemester{
-            units,
             subjects[]{
               subject,
+              units,
               specialization->{
                 specialization,
                 "color": color.hex
@@ -274,9 +274,9 @@ const programs = defineCollection({
             }
           },
           secondSemester{
-            units,
             subjects[]{
               subject,
+              units,
               specialization->{
                 specialization,
                 "color": color.hex
