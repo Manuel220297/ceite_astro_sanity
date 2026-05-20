@@ -19,35 +19,6 @@ const components = {
     highlight: SanityHighlight,
   },
 };
-
-const duration =
-  program.data.curriculum.findLastIndex(
-    (year) => (year.firstSemester?.subjects?.length ?? 0) > 0 || (year.secondSemester?.subjects?.length ?? 0) > 0,
-  ) + 1;
-
-const totalUnits = program.data.curriculum.reduce((total, c) => {
-  const subjects = [...(c.firstSemester?.subjects ?? []), ...(c.secondSemester?.subjects ?? [])];
-
-  let specializationCounted = false;
-
-  const semesterUnits = subjects.reduce((sum, s) => {
-    const units = s.units ?? 0;
-
-    // No specialization count normally. If has specialization skip to next.
-    if (!s.specialization) {
-      return sum + units;
-    }
-
-    // Subject with specialization skip above and execute this code once.
-    if (!specializationCounted) {
-      specializationCounted = true;
-      return sum + units;
-    }
-    return sum;
-  }, 0);
-
-  return total + semesterUnits;
-}, 0);
 ---
 
 <section id='program-overview'>
@@ -87,21 +58,7 @@ const totalUnits = program.data.curriculum.reduce((total, c) => {
                   hover:inset-shadow-[1px_1px_0px_0.1px_rgba(190,179,173,0.44)]
                   hover:shadow-[5px_5px_15px_0px_rgba(0,0,0,0.27)]
                   active:scale-[0.985]'>
-            <span>
-              <span class='font-extrabold'>
-                {duration}-Year
-              </span>{' '}
-              Program
-            </span>
-
-            <span class='text-stone-700'> — ♦ — </span>
-
-            <span>
-              <span class='font-extrabold'>
-                {totalUnits}
-              </span>{' '}
-              Total Units
-            </span>
+            <span>View Curriculum ↓</span>
           </a>
         </div>
         <div class='portable-text mb-8 max-w-full lg:max-w-[50%]'>

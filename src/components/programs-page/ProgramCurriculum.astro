@@ -41,7 +41,7 @@ const totalUnits = curriculum.reduce((sum, c) => {
 
 <article id='program-curriculum' class='relative w-full overflow-hidden bg-background py-20 md:py-28'>
   {/* Ambient glow */}
-  <div class='pointer-events-none absolute top-36 right-1/4 size-[600px] rounded-full bg-accent/[0.04] blur-[140px]'>
+  <div class='pointer-events-none absolute top-36 right-1/4 size-[600px] rounded-full bg-accent/[0.05] blur-[140px]'>
   </div>
 
   {/* Headline */}
@@ -217,9 +217,9 @@ const totalUnits = curriculum.reduce((sum, c) => {
       prevEl: '#swiper-curriculum .swiper-button-prev',
     },
     breakpoints: {
-      640: { slidesPerView: 2 },
-      1024: { slidesPerView: 3 },
-      1280: { slidesPerView: 4 },
+      640: { slidesPerView: 2, centeredSlides: false },
+      1024: { slidesPerView: 3, centeredSlides: false },
+      1280: { slidesPerView: 4, centeredSlides: false },
     },
   });
 </script>
