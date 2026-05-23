@@ -16,8 +16,10 @@ const specializationSchema = z.object({
 const subjectSchema = z.object({
   subject: z.string(),
   units: z.number().nullish(),
-  specialization: specializationSchema.nullish(),
+  isSpecialization: z.boolean().nullish(),
 });
+
+export type Subject = z.infer<typeof subjectSchema>;
 
 const semesterSchema = z.object({
   subjects: z.array(subjectSchema).nullish(),
@@ -267,20 +269,14 @@ const programs = defineCollection({
             subjects[]{
               subject,
               units,
-              specialization->{
-                specialization,
-                "color": color.hex
-              }
+              isSpecialization
             }
           },
           secondSemester{
             subjects[]{
               subject,
               units,
-              specialization->{
-                specialization,
-                "color": color.hex
-              }
+              isSpecialization
             }
           }
         },

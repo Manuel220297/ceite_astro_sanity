@@ -8,9 +8,10 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
-import type { CollectionEntry } from 'astro:content';
 import SanityPortableImage from './SanityPortableImage.astro';
 import SanityHighlight from './SanityHighlight.astro';
+import { getProgramDuration } from '../lib/utils/getProgramDuration';
+import { getProgramUnits } from '../lib/utils/getProgramUnits';
 
 const components = {
   type: {
@@ -22,39 +23,6 @@ const components = {
 };
 
 const programs = (await getCollection('programs')).sort().reverse();
-
-function getDuration(program: CollectionEntry<'programs'>) {
-  return (
-    program.data.curriculum.findLastIndex(
-      (year) => (year.firstSemester?.subjects?.length ?? 0) > 0 || (year.secondSemester?.subjects?.length ?? 0) > 0,
-    ) + 1
-  );
-}
-
-function getSemesterUnits(subjects: any[] | null | undefined = []) {
-  let specializationCounted = false;
-
-  return subjects?.reduce((sum, s) => {
-    const units = s.units ?? 0;
-
-    if (!s.specialization) {
-      return sum + units;
-    }
-
-    if (!specializationCounted) {
-      specializationCounted = true;
-      return sum + units;
-    }
-
-    return sum;
-  }, 0);
-}
-
-function getProgramUnits(prog: CollectionEntry<'programs'>) {
-  return prog.data.curriculum.reduce((sum, c) => {
-    return sum + getSemesterUnits(c.firstSemester?.subjects) + getSemesterUnits(c.secondSemester?.subjects);
-  }, 0);
-}
 
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
@@ -153,7 +121,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
                         Duration
                       </span>
                       <span class='font-(family-name:--font-tiktok) text-3xl text-accent'>
-                        {getDuration(p)}
+                        {getProgramDuration(p)}
                         <span class='ml-1 text-sm font-medium tracking-wider uppercase text-stone-400'>yrs</span>
                       </span>
                     </div>
