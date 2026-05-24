@@ -190,20 +190,6 @@
     .swiper-button-disabled {
       @apply !opacity-0 pointer-events-none cursor-default;
     }
-
-    --swiper-navigation-color: var(--color-accent);
-  }
-
-  #swiper-curriculum {
-    .swiper-button-disabled {
-      @apply !opacity-0 pointer-events-none cursor-default;
-    }
-    .swiper-button-next,
-    .swiper-button-prev {
-      @apply opacity-25;
-    }
-
-    --swiper-navigation-color: var(--color-accent);
   }
 
   .news-card {
@@ -230,6 +216,109 @@
     .news-card {
       animation: card-rise 600ms ease-out both;
       animation-delay: calc(var(--row-index, 0) * 60ms);
+    }
+  }
+
+  .swiper-pagination {
+    position: static !important;
+    width: 100% !important;
+    bottom: auto !important;
+    --swiper-pagination-bullet-width: auto;
+    --swiper-pagination-bullet-height: auto;
+    --swiper-pagination-bullet-inactive-opacity: 1;
+    --swiper-pagination-bullet-inactive-color: transparent;
+    --swiper-pagination-color: transparent;
+    --swiper-pagination-bullet-horizontal-gap: 0;
+    --swiper-pagination-bullet-border-radius: 0;
+    @apply !flex flex-wrap items-center justify-center gap-1 sm:gap-6;
+  }
+  .program-bullet {
+    @apply flex flex-col items-center gap-1.5 sm:gap-3 cursor-pointer p-1 sm:p-2;
+
+    opacity: 1 !important;
+    width: auto !important;
+    height: auto !important;
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+
+    transform: scale(0.8);
+    filter: brightness(0.5) saturate(0.15);
+
+    transition:
+      transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1),
+      filter 500ms ease-out;
+
+    &:hover {
+      filter: brightness(0.85) saturate(0.85);
+      transform: scale(0.9);
+    }
+
+    &.swiper-pagination-bullet-active {
+      transform: scale(1);
+      filter: brightness(1) saturate(1);
+
+      .program-bullet__logo-wrap {
+        @apply border-transparent;
+        box-shadow: 0 8px 32px -8px rgb(from var(--color-accent) r g b / 0.45);
+
+        &::before,
+        &::after {
+          opacity: 1;
+        }
+      }
+
+      .program-bullet__title {
+        @apply text-accent tracking-[0.25em];
+      }
+    }
+  }
+
+  .program-bullet__logo-wrap {
+    @apply relative flex items-center justify-center size-12 sm:size-24 rounded-full border border-white/15 bg-stone-900/60 p-2 sm:p-3.5 backdrop-blur-sm;
+    transition:
+      border-color 400ms ease-out,
+      background-color 400ms ease-out,
+      box-shadow 400ms ease-out;
+  }
+
+  /* Rotating accent ring — only visible on active */
+  .program-bullet__logo-wrap::before {
+    content: '';
+    @apply absolute -inset-1 rounded-full pointer-events-none;
+    background: conic-gradient(
+      from 0deg,
+      rgb(from var(--color-accent) r g b / 0.8),
+      rgb(from var(--color-accent) r g b / 0) 50%,
+      rgb(from var(--color-accent) r g b / 0.8)
+    );
+    opacity: 0;
+    transition: opacity 400ms ease-out;
+    animation: pagination-ring-spin 4s linear infinite;
+  }
+
+  /* Inner mask to make the conic gradient look like a ring, not a disk */
+  .program-bullet__logo-wrap::after {
+    content: '';
+    @apply absolute inset-0 rounded-full bg-stone-900 pointer-events-none;
+    opacity: 0;
+    transition: opacity 400ms ease-out;
+  }
+
+  .program-bullet__logo {
+    @apply size-full object-contain relative z-10;
+  }
+
+  .program-bullet__title {
+    @apply text-[8px] sm:text-[10px] font-bold tracking-[0.15em] sm:tracking-[0.2em] uppercase text-stone-300;
+    transition:
+      color 400ms ease-out,
+      letter-spacing 400ms ease-out;
+  }
+  @keyframes pagination-ring-spin {
+    to {
+      transform: rotate(360deg);
     }
   }
 

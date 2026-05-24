@@ -12,6 +12,7 @@ import SanityPortableImage from './SanityPortableImage.astro';
 import SanityHighlight from './SanityHighlight.astro';
 import { getProgramDuration } from '../lib/utils/getProgramDuration';
 import { getProgramUnits } from '../lib/utils/getProgramUnits';
+import { urlFor } from '@/lib/sanity/image';
 
 const components = {
   type: {
@@ -24,10 +25,14 @@ const components = {
 
 const programs = (await getCollection('programs')).sort().reverse();
 
+const programLogos = programs.map((p) =>
+  p.data.logo ? urlFor(p.data.logo).width(96).height(96).url() : '/images/asiatech_logo.avif',
+);
+
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
-<section class='relative w-full overflow-hidden bg-background py-16 md:py-24'>
+<section class='relative w-full overflow-hidden bg-background py-24 md:py-32'>
   <!-- Top meta bar -->
   <div class='pointer-events-none absolute inset-0 opacity-[1] pattern-graph'></div>
   <div
@@ -36,12 +41,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
       <span class='relative inline-block size-1.5 rounded-full bg-accent'>
         <span class='absolute inset-0 animate-ping rounded-full bg-accent/70'></span>
       </span>
-      <span class='uppercase text-stone-300'>CEITE</span>
-      <span class='text-stone-600'>/</span>
       <span class='uppercase'>Academic Programs</span>
     </span>
     <span class='h-px flex-1 bg-linear-to-r from-stone-700/80 via-stone-700/30 to-transparent'></span>
-    <span class='uppercase tabular-nums'>SY 2025–2026</span>
+    <span class='uppercase'>CEITE</span>
   </div>
 
   <!-- Headline -->
@@ -64,14 +67,19 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <strong class='font-bold text-stone-100'>Associate</strong>
   </header>
 
+  <!-- Pagination -->
+  <div class='relative z-10 mx-auto mt-8 mb-0 sm:mb-6 w-full max-w-[1600px] px-6 md:px-10'>
+    <div class='swiper-pagination !static !flex flex-wrap items-center justify-center gap-4 sm:gap-6'></div>
+  </div>
+
   <!-- Slider -->
   <div
     id='swiper-program'
-    class='swiper relative mt-16 w-full max-w-[1920px] h-[680px] md:h-[clamp(640px,780px,85vh)] !px-4 !py-4 sm:!px-0'>
+    class='swiper relative mb-12 w-full max-w-[1920px] h-[680px] md:h-[clamp(640px,780px,85vh)] !px-4 !py-4 sm:!px-0'>
     <div class='swiper-wrapper w-full h-full'>
       {
         programs.map((p, i) => (
-          <div class='swiper-slide group'>
+          <div class='swiper-slide group' data-logo={programLogos[i]} data-title={p.data.title}>
             <div class='img-wrapper'>
               <SanityImage image={p.data.image} Xparallax={30} loading='lazy' width={1920} height={1080} />
               {/* Gradient layers */}
@@ -103,7 +111,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
               {/* Title */}
               <div class='flex flex-1 flex-col justify-start' data-swiper-parallax='-75'>
-                <h2 class='font-(family-name:--font-tiktok) leading-none tracking-wider text-stone-50 text-6xl sm:text-[clamp(55px,10vh,96vh)] drop-shadow-[0_4px_30px_rgba(0,0,0,0.6)]'>
+                <h2 class='font-(family-name:--font-tiktok) leading-none tracking-wider text-stone-50 text-6xl sm:text-[clamp(55px,10vh,96px)] drop-shadow-[0_4px_30px_rgba(0,0,0,0.6)]'>
                   {p.data.title}
                 </h2>
 
@@ -120,9 +128,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
                       <span class='mb-2 text-[10px] tracking-[0.3em] uppercase text-stone-400 font-medium'>
                         Duration
                       </span>
-                      <span class='font-(family-name:--font-tiktok) text-3xl text-accent'>
+                      <span class='font-(family-name:--font-tiktok) text-xl sm:text-3xl text-accent'>
                         {getProgramDuration(p)}
-                        <span class='ml-1 text-sm font-medium tracking-wider uppercase text-stone-400'>yrs</span>
+                        <span class='ml-1 text-xs sm:text-sm font-medium tracking-wider uppercase text-stone-400'>
+                          yrs
+                        </span>
                       </span>
                     </div>
                     <div class='h-10 w-px bg-stone-700/60' />
@@ -130,9 +140,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
                       <span class='mb-2 text-[11px] tracking-[0.3em] uppercase text-stone-400 font-medium'>
                         Total Units
                       </span>
-                      <span class='font-(family-name:--font-tiktok) text-3xl tabular-nums text-accent'>
+                      <span class='font-(family-name:--font-tiktok) text-xl sm:text-3xl tabular-nums text-accent'>
                         {getProgramUnits(p)}
-                        <span class='ml-1 text-sm font-medium tracking-wider uppercase text-stone-400'>units</span>
+                        <span class='ml-1 text-xs sm:text-sm font-medium tracking-wider uppercase text-stone-400'>
+                          units
+                        </span>
                       </span>
                     </div>
                   </div>
@@ -186,38 +198,48 @@ const pad = (n: number) => String(n).padStart(2, '0');
         ))
       }
     </div>
-
-    <!--  Navigation -->
-    <div class='swiper-button-prev'></div>
-    <div class='swiper-button-next'></div>
   </div>
 </section>
 
 <script>
   import Swiper from 'swiper';
-  import { Navigation, Pagination, Parallax, Keyboard } from 'swiper/modules';
+  import { Pagination, Parallax, Keyboard } from 'swiper/modules';
   import 'swiper/css';
   import 'swiper/css/navigation';
   import 'swiper/css/pagination';
 
   new Swiper('#swiper-program', {
-    modules: [Parallax, Navigation, Pagination, Keyboard],
+    modules: [Parallax, Pagination, Keyboard],
     grabCursor: true,
-    // cssMode: true,
     speed: 600,
     spaceBetween: 28,
     parallax: true,
     slidesPerView: 1,
     centeredSlides: true,
     keyboard: { enabled: true },
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev',
+    pagination: {
+      el: '.swiper-pagination',
+      clickable: true,
+      renderBullet: (index, className) => {
+        const el = document.querySelector(
+          `#swiper-program .swiper-slide:nth-child(${index + 1})`,
+        ) as HTMLElement | null;
+        const logo = el?.dataset.logo ?? '';
+        const title = el?.dataset.title ?? '';
+        return `
+        <button class="${className} program-bullet" type="button" aria-label="Go to ${title}">
+          <span class="program-bullet__logo-wrap">
+            <img src="${logo}" alt="" class="program-bullet__logo" loading="lazy" />
+          </span>
+          <span class="program-bullet__title">${title}</span>
+        </button>
+      `;
+      },
     },
     breakpoints: {
       768: { slidesPerView: 1.25, spaceBetween: 32 },
       1080: { slidesPerView: 1.33, spaceBetween: 40 },
-      1440: { slidesPerView: 1.5, spaceBetween: 48 },
+      1440: { slidesPerView: 1.67, spaceBetween: 50 },
     },
   });
 </script>
