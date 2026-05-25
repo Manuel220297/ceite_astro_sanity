@@ -78,30 +78,32 @@ const about = defineCollection({
   loader: async () => {
     const posts = await client.fetch(`
       *[_type == 'about']{
+      _id,
       body,
-      image{
-        ...,
-        asset->{
-          _id,
-          url,
-          size
-        }
-      },
-      title,
+      youtubeUrl,
+      stats,
     }`);
 
     return posts.map((post: any) => ({
-      id: post.title.replace(/\s+/g, ''),
+      id: post._id,
       body: post.body,
-      title: post.title,
-      image: post.image,
+      youtubeUrl: post.youtubeUrl,
+      stats: post.stats,
     }));
   },
 
   schema: z.object({
-    title: z.string(),
+    youtubeUrl: z.string().nullish(),
     body: z.any(),
-    image: z.any(),
+    stats: z
+      .array(
+        z.object({
+          title: z.string(),
+          value: z.string(),
+          description: z.string(),
+        }),
+      )
+      .nullish(),
   }),
 });
 

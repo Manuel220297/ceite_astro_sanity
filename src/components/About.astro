@@ -1,3 +1,18 @@
+---
+import { PortableText } from 'astro-portabletext';
+import { getCollection } from 'astro:content';
+import SanityPortableImage from './SanityPortableImage.astro';
+import SanityHighlight from './SanityHighlight.astro';
+
+const [about] = await getCollection('about');
+
+const components = {
+  mark: {
+    highlight: SanityHighlight,
+  },
+};
+---
+
 <section class='relative bg-neutral-950 px-6 py-20 sm:px-10 lg:px-16 lg:py-28'>
   {/* Decorative grid background */}
   <div class='pointer-events-none absolute inset-0 opacity-[0.45] pattern-circuit'></div>
@@ -48,31 +63,23 @@
 
       {/* Content */}
       <div class='flex flex-col lg:col-span-5'>
-        <p class='text-lg leading-relaxed text-white/70'>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae incidunt, possimus aut eligendi, libero
-          eveniet veritatis impedit nostrum consequuntur saepe aperiam. Nisi, beatae ipsam accusantium tenetur magni
-          labore in esse voluptate assumenda doloribus ipsa.
-        </p>
+        <div class='portable-text'>
+          <PortableText value={about.data.body} components={components} />
+        </div>
 
         {/* Stats */}
         <dl class='mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4'>
-          <div
-            class='group relative rounded-xl border border-white/10 bg-white/[0.02] p-6 transition-colors hover:border-accent/40 hover:bg-accent/[0.03]'>
-            <dt class='text-[11px] font-medium uppercase tracking-[0.2em] text-white/50'>Career Success</dt>
-            <dd class='mt-2 text-5xl font-bold text-white'>
-              95<span class='text-accent'>%</span>
-            </dd>
-            <p class='mt-1 text-xs text-white/40'>Graduate placement rate</p>
-          </div>
+          {
+            about.data.stats?.map((s) => (
+              <div class='group relative rounded-xl border border-white/10 bg-white/[0.02] p-6 transition-colors hover:border-accent/40 hover:bg-accent/[0.03]'>
+                <dt class='text-[11px] font-medium uppercase tracking-[0.2em] text-accent'>{s.title}</dt>
 
-          <div
-            class='group relative rounded-xl border border-white/10 bg-white/[0.02] p-6 transition-colors hover:border-accent/40 hover:bg-accent/[0.03]'>
-            <dt class='text-[11px] font-medium uppercase tracking-[0.2em] text-white/50'>Active Students</dt>
-            <dd class='mt-2 text-5xl font-bold text-white'>
-              200<span class='text-accent'>+</span>
-            </dd>
-            <p class='mt-1 text-xs text-white/40'>Currently enrolled</p>
-          </div>
+                <dd class='mt-2 text-5xl font-bold text-white'>{s.value}</dd>
+
+                <p class='mt-1 text-xs text-white/40'>{s.description}</p>
+              </div>
+            ))
+          }
         </dl>
       </div>
     </div>

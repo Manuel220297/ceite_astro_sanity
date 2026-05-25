@@ -48,9 +48,7 @@ function formatDate(date: Date) {
       <span class='relative inline-block size-1.5 rounded-full bg-accent'>
         <span class='absolute inset-0 animate-ping rounded-full bg-accent/70'></span>
       </span>
-      <span class='uppercase text-stone-300'>CEITE</span>
-      <span class='text-stone-600'>/</span>
-      <span class='uppercase'>News</span>
+      <span class='uppercase'>Happenings</span>
     </span>
     <span class='h-px flex-1 bg-linear-to-r from-stone-700/80 via-stone-700/30 to-transparent'></span>
   </div>
@@ -62,9 +60,6 @@ function formatDate(date: Date) {
         <span class='block text-stone-50'>News &</span>
         <span class='block text-accent'>Happenings</span>
       </h1>
-      <p class='max-w-md text-sm leading-relaxed text-stone-400 sm:text-base md:text-right'>
-        Stay updated with the happenings in the School
-      </p>
     </div>
   </header>
 
@@ -152,10 +147,10 @@ function formatDate(date: Date) {
               <PortableText value={latestNews.data.body} />
             </div>
 
-            {/* CTA */}
+            {/* Read */}
             <div
               class='mt-5 inline-flex items-center gap-2 text-[11px] sm:text-xs font-semibold tracking-[0.2em] uppercase text-accent transition-all group-hover:gap-3 sm:mt-6'>
-              <span>Read story</span>
+              <span>Read Now</span>
               <svg
                 class='size-4 transition-transform group-hover:translate-x-1'
                 viewBox='0 0 24 24'
@@ -177,8 +172,8 @@ function formatDate(date: Date) {
       {/* Sidebar header */}
       <div class='mb-6 flex items-center gap-3'>
         <span class='h-px w-6 bg-accent'></span>
-        <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>·</span>
-        <span class='text-[10px] tracking-[0.3em] uppercase text-stone-400'>More Stories</span>
+        <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>♠</span>
+        <span class='text-[10px] tracking-[0.3em] uppercase text-stone-400'>More Happenings</span>
       </div>
 
       <ul class='flex flex-col gap-3'>
@@ -233,9 +228,10 @@ function formatDate(date: Date) {
       </ul>
 
       {/* View all link */}
-      <span
+      <a
+        href='/news'
         class='view-all group mt-5 flex w-full items-center justify-between rounded-2xl border border-white/10 bg-white/[0.02] px-5 py-4 text-xs font-semibold tracking-[0.2em] uppercase text-stone-300 transition-all hover:border-accent/40 hover:bg-accent/5 hover:text-accent cursor-pointer'>
-        <span>View all stories</span>
+        <span>View all News & Happenings</span>
         <span class='flex items-center gap-2'>
           <span class='tabular-nums text-stone-500 group-hover:text-accent/70'>{pad(news.length)}</span>
           <svg
@@ -249,7 +245,7 @@ function formatDate(date: Date) {
             <path d='M5 12h14M13 5l7 7-7 7'></path>
           </svg>
         </span>
-      </span>
+      </a>
     </aside>
   </div>
 </section>

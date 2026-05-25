@@ -7,6 +7,7 @@ const navLinks = [
   { href: '/faculty', label: 'Faculty' },
   { href: '/news', label: 'Happenings' },
   { href: '/projects', label: 'Projects' },
+  { href: '#footer', label: 'Contact' },
 ];
 ---
 
@@ -113,23 +114,28 @@ const navLinks = [
 </nav>
 
 <script>
-  const button = document.getElementById('mobile-menu-button');
-  const menu = document.getElementById('mobile-menu');
+  function initMobileMenu() {
+    const button = document.getElementById('mobile-menu-button');
+    const menu = document.getElementById('mobile-menu');
+    const openIcon = document.getElementById('menu-open-icon');
+    const closeIcon = document.getElementById('menu-close-icon');
 
-  const openIcon = document.getElementById('menu-open-icon');
-  const closeIcon = document.getElementById('menu-close-icon');
+    if (!button || !menu) return;
 
-  let isOpen = false;
+    let isOpen = false;
 
-  button?.addEventListener('click', () => {
-    isOpen = !isOpen;
+    button.addEventListener('click', () => {
+      isOpen = !isOpen;
 
-    menu?.classList.toggle('grid-rows-[1fr]');
-    menu?.classList.toggle('grid-rows-[0fr]');
+      menu.classList.toggle('grid-rows-[1fr]');
+      menu.classList.toggle('grid-rows-[0fr]');
 
-    openIcon?.classList.toggle('hidden');
-    closeIcon?.classList.toggle('hidden');
-  });
+      openIcon?.classList.toggle('hidden');
+      closeIcon?.classList.toggle('hidden');
+    });
+  }
+
+  document.addEventListener('astro:page-load', initMobileMenu);
 </script>
 
 {/* SVG filter */}

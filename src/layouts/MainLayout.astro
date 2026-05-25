@@ -2,12 +2,17 @@
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
 import { Font } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
 ---
 
 <!doctype html>
 <html lang='en' class='bg-background text-foreground scroll-smooth'>
   <head>
+    <ClientRouter />
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width' />
     <meta name='generator' content={Astro.generator} />

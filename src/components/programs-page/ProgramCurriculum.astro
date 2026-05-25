@@ -51,7 +51,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   <div id='swiper-curriculum-pagination' class='swiper-pagination mb-3'></div>
 
   {/* Swiper */}
-  <div class='relative z-10 mx-auto w-full max-w-[1600px] md:px-10'>
+  <div class='relative z-10 mx-auto w-full max-w-[1600px] xl:px-10'>
     <div id='swiper-curriculum' class='swiper relative !overflow-visible'>
       <div class='swiper-wrapper'>
         {
@@ -117,9 +117,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
                               {/* Specialization tracks — shown ONLY for specialization rows */}
                               {isSpec && specs.length > 0 && (
                                 <div class='flex flex-wrap items-center gap-x-1.5 gap-y-1'>
-                                  <span class='text-[9px] sm:text-[10px] font-medium tracking-[0.15em] uppercase text-stone-500 w-full sm:w-auto'>
+                                  <span class='text-[9px] sm:text-[10px] font-medium tracking-[0.15em] uppercase text-stone-500 w-full'>
                                     Specialization:
                                   </span>
+
                                   {specs.map((s) => (
                                     <span
                                       class='inline-flex items-center gap-1 sm:gap-1.5 rounded-full border px-1.5 py-0.5 sm:px-2 text-[9px] sm:text-[10px] font-semibold tracking-wide whitespace-nowrap'
@@ -185,7 +186,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
                               {/* Specialization tracks — shown ONLY for specialization rows */}
                               {isSpec && specs.length > 0 && (
                                 <div class='flex flex-wrap items-center gap-x-1.5 gap-y-1'>
-                                  <span class='text-[9px] sm:text-[10px] font-medium tracking-[0.15em] uppercase text-stone-500 w-full sm:w-auto'>
+                                  <span class='text-[9px] sm:text-[10px] font-medium tracking-[0.15em] uppercase text-stone-500 w-full'>
                                     Specialization:
                                   </span>
                                   {specs.map((s) => (
@@ -220,24 +221,43 @@ const pad = (n: number) => String(n).padStart(2, '0');
 <script>
   import Swiper from 'swiper';
   import { Keyboard, Pagination } from 'swiper/modules';
-  import 'swiper/css';
-  import 'swiper/css/pagination';
 
-  new Swiper('#swiper-curriculum', {
-    modules: [Keyboard, Pagination],
-    slidesPerView: 1.25,
-    spaceBetween: 20,
-    speed: 400,
-    cssMode: true,
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: true,
-    },
-    centeredSlides: true,
-    breakpoints: {
-      640: { slidesPerView: 2, centeredSlides: false },
-      1024: { slidesPerView: 3, centeredSlides: false },
-      1280: { slidesPerView: 4, centeredSlides: false },
-    },
+  let swiperInstance: Swiper | null = null;
+
+  function initCurriculumSwiper() {
+    const el = document.querySelector('#swiper-curriculum');
+    if (!el) return;
+
+    if (swiperInstance) {
+      swiperInstance.destroy(true, true);
+      swiperInstance = null;
+    }
+
+    swiperInstance = new Swiper('#swiper-curriculum', {
+      modules: [Keyboard, Pagination],
+      slidesPerView: 1.25,
+      spaceBetween: 20,
+      speed: 400,
+      cssMode: true,
+      pagination: {
+        el: '#swiper-curriculum-pagination',
+        clickable: true,
+      },
+      centeredSlides: true,
+      breakpoints: {
+        640: { slidesPerView: 2.33, centeredSlides: false },
+        1024: { slidesPerView: 3.33, centeredSlides: false },
+        1280: { slidesPerView: 4, centeredSlides: false },
+      },
+    });
+  }
+
+  document.addEventListener('astro:page-load', initCurriculumSwiper);
+
+  document.addEventListener('astro:before-swap', () => {
+    if (swiperInstance) {
+      swiperInstance.destroy(true, true);
+      swiperInstance = null;
+    }
   });
 </script>

@@ -3,11 +3,6 @@ import { getCollection } from 'astro:content';
 import SanityImage from './SanityImage.astro';
 import { PortableText } from 'astro-portabletext';
 
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
-
 import SanityPortableImage from './SanityPortableImage.astro';
 import SanityHighlight from './SanityHighlight.astro';
 import { getProgramDuration } from '../lib/utils/getProgramDuration';
@@ -26,7 +21,7 @@ const components = {
 const programs = (await getCollection('programs')).sort().reverse();
 
 const programLogos = programs.map((p) =>
-  p.data.logo ? urlFor(p.data.logo).width(96).height(96).url() : '/images/asiatech_logo.avif',
+  p.data.logo ? urlFor(p.data.logo).width(128).height(128).url() : '/images/asiatech_logo.avif',
 );
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -41,7 +36,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
       <span class='relative inline-block size-1.5 rounded-full bg-accent'>
         <span class='absolute inset-0 animate-ping rounded-full bg-accent/70'></span>
       </span>
-      <span class='uppercase'>Academic Programs</span>
+      <span class='uppercase'>Programs Offered</span>
     </span>
     <span class='h-px flex-1 bg-linear-to-r from-stone-700/80 via-stone-700/30 to-transparent'></span>
     <span class='uppercase'>CEITE</span>
@@ -85,8 +80,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
             <div class='img-wrapper'>
               <SanityImage image={p.data.image} Xparallax={30} loading='lazy' width={1920} height={1080} />
               {/* Gradient layers */}
-              <div class='gradient-layer absolute inset-0 bg-linear-to-t from-background/75 via-background/40 via-33% to-transparent' />
-              <div class='gradient-layer absolute inset-0 bg-linear-to-r from-background/90 from-20% via-background/55 via-55% to-transparent' />
+              <div class='gradient-layer absolute inset-0 bg-linear-to-t from-background/75 via-background/40 via-30% to-transparent' />
+              <div class='gradient-layer absolute inset-0 bg-linear-to-r from-background/85 from-15% via-background/50 via-45% to-transparent' />
             </div>
 
             {/* Content */}
@@ -120,23 +115,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
                 <h3 class='mb-2 font-medium text-stone-300 text-base sm:text-[clamp(16px,10vh,20px)]'>
                   {p.data.titleLong}
                 </h3>
-
-                <a
-                  href={`/programs/${p.data.slug}`}
-                  class='group/cta shrink-0 inline-flex w-fit items-center gap-2 bg-accent px-5 py-2.5 text-sm font-semibold text-background transition-all hover:border-accent hover:bg-orange-300 hover: hover:font-black'>
-                  <span>Learn more</span>
-                  <svg
-                    class='size-4 transition-transform group-hover/cta:translate-x-1'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    stroke-width='2'>
-                    <path d='M5 12h14M13 5l7 7-7 7' stroke-linecap='round' stroke-linejoin='round' />
-                  </svg>
-                </a>
               </div>
 
-              {/* Stats */}
               {/* Stats */}
               <div class='flex flex-col gap-8' data-swiper-parallax='-25'>
                 <div class='flex flex-col gap-6'>
@@ -148,7 +128,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
                       <span class='font-(family-name:--font-tiktok) text-xl sm:text-3xl text-accent'>
                         {getProgramDuration(p)}
                         <span class='ml-1 text-xs sm:text-sm font-medium tracking-wider uppercase text-stone-400'>
-                          yrs
+                          years
                         </span>
                       </span>
                     </div>
@@ -189,12 +169,25 @@ const pad = (n: number) => String(n).padStart(2, '0');
                       <span class='mb-3 text-[11px] tracking-[0.2em] uppercase text-stone-400'>Career Paths</span>
                       <div class='flex flex-col career-paths text-xs sm:text-sm text-stone-300 [&_ul]:flex [&_ul]:flex-col [&_ul]:gap-2 [&_li:nth-child(n+4)]:hidden'>
                         <PortableText value={p.data.careers} components={components} />
-                        <span class='mt-2 text-stone-500'>+ More...</span>
+                        <span class='mt-2 text-accent'>+ More...</span>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
+              <a
+                href={`/programs/${p.data.slug}`}
+                class='group/cta mt-14 shrink-0 inline-flex w-fit items-center gap-2 bg-accent px-5 py-2.5 text-sm font-semibold text-background transition-all hover:border-accent hover:bg-orange-300 hover: hover:font-black'>
+                <span>Learn more</span>
+                <svg
+                  class='size-4 transition-transform group-hover/cta:translate-x-1'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  stroke-width='2'>
+                  <path d='M5 12h14M13 5l7 7-7 7' stroke-linecap='round' stroke-linejoin='round' />
+                </svg>
+              </a>
             </div>
           </div>
         ))
@@ -206,42 +199,63 @@ const pad = (n: number) => String(n).padStart(2, '0');
 <script>
   import Swiper from 'swiper';
   import { Pagination, Parallax, Keyboard } from 'swiper/modules';
-  import 'swiper/css';
-  import 'swiper/css/navigation';
-  import 'swiper/css/pagination';
 
-  new Swiper('#swiper-program', {
-    modules: [Parallax, Pagination, Keyboard],
-    grabCursor: true,
-    speed: 600,
-    spaceBetween: 28,
-    parallax: true,
-    slidesPerView: 1,
-    centeredSlides: true,
-    keyboard: { enabled: true },
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: true,
-      renderBullet: (index, className) => {
-        const el = document.querySelector(
-          `#swiper-program .swiper-slide:nth-child(${index + 1})`,
-        ) as HTMLElement | null;
-        const logo = el?.dataset.logo ?? '';
-        const title = el?.dataset.title ?? '';
-        return `
-        <button class="${className} program-bullet" type="button" aria-label="Go to ${title}">
-          <span class="program-bullet__logo-wrap">
-            <img src="${logo}" alt="" class="program-bullet__logo" loading="lazy" />
-          </span>
-          <span class="program-bullet__title">${title}</span>
-        </button>
-      `;
+  let swiperInstance: Swiper | null = null;
+
+  function initSwiper() {
+    const el = document.querySelector('#swiper-program');
+    if (!el) return; // not on this page
+
+    // Clean up any previous instance
+    if (swiperInstance) {
+      swiperInstance.destroy(true, true);
+      swiperInstance = null;
+    }
+
+    swiperInstance = new Swiper('#swiper-program', {
+      modules: [Parallax, Pagination, Keyboard],
+      grabCursor: true,
+      speed: 600,
+      spaceBetween: 28,
+      parallax: true,
+      slidesPerView: 1,
+      centeredSlides: true,
+      keyboard: { enabled: true },
+      pagination: {
+        el: '#swiper-program-pagination .swiper-pagination',
+        clickable: true,
+        renderBullet: (index, className) => {
+          const slide = document.querySelector(
+            `#swiper-program .swiper-slide:nth-child(${index + 1})`,
+          ) as HTMLElement | null;
+          const logo = slide?.dataset.logo ?? '';
+          const title = slide?.dataset.title ?? '';
+          return `
+            <button class="${className} program-bullet" type="button" aria-label="Go to ${title}">
+              <span class="program-bullet__logo-wrap">
+                <img src="${logo}" alt="" class="program-bullet__logo" loading="lazy" />
+              </span>
+              <span class="program-bullet__title">${title}</span>
+            </button>
+          `;
+        },
       },
-    },
-    breakpoints: {
-      768: { slidesPerView: 1.25, spaceBetween: 32 },
-      1080: { slidesPerView: 1.33, spaceBetween: 40 },
-      1440: { slidesPerView: 1.5, spaceBetween: 50 },
-    },
+      breakpoints: {
+        768: { slidesPerView: 1.25, spaceBetween: 32 },
+        1080: { slidesPerView: 1.33, spaceBetween: 40 },
+        1440: { slidesPerView: 1.5, spaceBetween: 50 },
+      },
+    });
+  }
+
+  // Run on initial load AND every subsequent navigation
+  document.addEventListener('astro:page-load', initSwiper);
+
+  // Optional: clean up before navigating away
+  document.addEventListener('astro:before-swap', () => {
+    if (swiperInstance) {
+      swiperInstance.destroy(true, true);
+      swiperInstance = null;
+    }
   });
 </script>

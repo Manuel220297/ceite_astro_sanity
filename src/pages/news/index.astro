@@ -59,7 +59,7 @@ const latestDate = news[0]?.data._createdAt;
         <span class='uppercase text-stone-400'>Happenings</span>
       </span>
       <span class='h-px flex-1 bg-linear-to-r from-stone-700/80 via-stone-700/30 to-transparent'></span>
-      <span class='uppercase tabular-nums'>{pad(news.length)} Stories</span>
+      <span class='uppercase tabular-nums'>{pad(news.length)} Articles</span>
     </div>
 
     {/* Headline */}
@@ -67,8 +67,8 @@ const latestDate = news[0]?.data._createdAt;
       <div class='flex flex-col gap-8 md:flex-row md:items-end md:justify-between mb-12'>
         <div>
           <h1 class='font-extrabold text-5xl leading-[0.95] sm:text-6xl md:text-7xl lg:text-8xl'>
-            <span class='block text-stone-50'>Happenings</span>
-            <span class='block text-accent'>Archive</span>
+            <span class='block text-stone-50'>News &</span>
+            <span class='block text-accent'>Happenings</span>
           </h1>
           <p class='mt-5 max-w-md text-sm leading-relaxed text-stone-400 sm:text-base'>
             Browse past updates and school happenings
@@ -164,8 +164,8 @@ const latestDate = news[0]?.data._createdAt;
                     </h2>
 
                     {/* Footer CTA */}
-                    <div class='mt-auto flex items-center gap-2 pt-3 text-[10px] font-semibold tracking-[0.25em] uppercase text-stone-400 transition-all group-hover:text-accent group-hover:gap-3'>
-                      <span>Read story</span>
+                    <div class='mt-auto flex items-center gap-2 pt-3 text-[10px] font-semibold tracking-[0.2em] uppercase text-stone-400 transition-all group-hover:text-accent group-hover:gap-3'>
+                      <span>Read article</span>
                       <svg
                         class='size-3.5 transition-transform group-hover:translate-x-1'
                         viewBox='0 0 24 24'
@@ -194,29 +194,33 @@ const latestDate = news[0]?.data._createdAt;
   </section>
 
   <script>
-    const chips = document.querySelectorAll<HTMLElement>('.filter-chip');
-    const cards = document.querySelectorAll<HTMLElement>('.news-card');
-    const emptyState = document.getElementById('empty-state');
+    function initNewsPage() {
+      const chips = document.querySelectorAll<HTMLElement>('.filter-chip');
+      const cards = document.querySelectorAll<HTMLElement>('.news-card');
+      const emptyState = document.getElementById('empty-state');
 
-    chips.forEach((chip) => {
-      chip.addEventListener('click', () => {
-        const target = chip.dataset.category;
+      chips.forEach((chip) => {
+        chip.addEventListener('click', () => {
+          const target = chip.dataset.category;
 
-        chips.forEach((c) => c.classList.remove('is-active'));
-        chip.classList.add('is-active');
+          chips.forEach((c) => c.classList.remove('is-active'));
+          chip.classList.add('is-active');
 
-        let visibleCount = 0;
-        cards.forEach((card) => {
-          const match = target === 'all' || card.dataset.category === target;
-          card.style.display = match ? '' : 'none';
-          if (match) visibleCount++;
+          let visibleCount = 0;
+          cards.forEach((card) => {
+            const match = target === 'all' || card.dataset.category === target;
+            card.style.display = match ? '' : 'none';
+            if (match) visibleCount++;
+          });
+
+          if (emptyState) {
+            emptyState.classList.toggle('hidden', visibleCount > 0);
+            emptyState.classList.toggle('flex', visibleCount === 0);
+          }
         });
-
-        if (emptyState) {
-          emptyState.classList.toggle('hidden', visibleCount > 0);
-          emptyState.classList.toggle('flex', visibleCount === 0);
-        }
       });
-    });
+    }
+
+    document.addEventListener('astro:page-load', initNewsPage);
   </script>
 </MainLayout>
