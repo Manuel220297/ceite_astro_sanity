@@ -1,8 +1,8 @@
 import { defineField, defineType } from 'sanity';
 
-export const staffType = defineType({
-  name: 'staffs',
-  title: 'Staffs',
+export const facultyType = defineType({
+  name: 'faculty',
+  title: 'Faculty',
   type: 'document',
 
   fields: [
@@ -29,7 +29,7 @@ export const staffType = defineType({
 
     defineField({
       name: 'title',
-      title: 'Staff Title',
+      title: 'Faculty Title',
       type: 'string',
     }),
 
@@ -58,28 +58,28 @@ export const staffType = defineType({
       name: 'facebook',
       title: 'Facebook',
       type: 'url',
-      description: 'Facebook profile or page URL',
+      description: 'Facebook profile or page URL (Optional)',
     }),
 
     defineField({
       name: 'twitter',
       title: 'Twitter (X)',
       type: 'url',
-      description: 'X/Twitter profile URL',
+      description: 'X/Twitter profile URL (Optional)',
     }),
 
     defineField({
       name: 'tiktok',
       title: 'TikTok',
       type: 'url',
-      description: 'TikTok profile URL',
+      description: 'TikTok profile URL (Optional)',
     }),
 
     defineField({
       name: 'instagram',
       title: 'Instagram',
       type: 'url',
-      description: 'Instagram profile URL',
+      description: 'Instagram profile URL (Optional)',
     }),
 
     defineField({

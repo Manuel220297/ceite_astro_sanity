@@ -1,10 +1,179 @@
 import { defineCollection } from 'astro:content';
 
-import { glob, file } from 'astro/loaders';
-
 import { z } from 'astro/zod';
 import { client } from './lib/sanity/sanity';
-import { object } from 'astro:schema';
+import { parse } from 'csv-parse/sync';
+
+type CurriculumSheetsLoaderContext = {
+  store: {
+    clear: () => void;
+    set: (entry: { id: string; data: any }) => void;
+  };
+  logger: {
+    info: (message: string) => void;
+    warn: (message: string) => void;
+    error: (message: string) => void;
+  };
+};
+
+function curriculumSheetsLoader(options: { spreadsheetId: string; sheetName: string }) {
+  return {
+    name: 'google-sheets-curriculum-loader',
+    load: async ({ store, logger }: CurriculumSheetsLoaderContext) => {
+      logger.info('Fetching curriculum from Google Sheets...');
+
+      try {
+        const url = `https://docs.google.com/spreadsheets/d/${options.spreadsheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(options.sheetName)}`;
+
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch sheet: ${response.statusText}`);
+        }
+
+        const csvText = await response.text();
+        const rows = parse(csvText);
+
+        if (!rows || rows.length <= 1) {
+          logger.warn('No data rows found in the sheet.');
+          return;
+        }
+
+        const transformedData = transformRowsToCurriculum(rows);
+
+        store.clear();
+        for (const item of transformedData) {
+          store.set({
+            // The unique entry ID is now just the program (e.g., "bsit")
+            id: item.program,
+            data: item,
+          });
+        }
+
+        logger.info(`Successfully loaded ${transformedData.length} program curriculums.`);
+      } catch (error) {
+        logger.error(`Failed to load Google Sheets data: ${error}`);
+        throw error;
+      }
+    },
+  };
+}
+
+/**
+ * Maps your CSV columns:
+ * row[0]=program, row[1]=year, row[2]=semester, row[3]=code,
+ * row[4]=subject, row[5]=units, row[6]=prerequisite, row[7]=isSpecialized
+ */
+function transformRowsToCurriculum(rows: string[][]) {
+  const dataRows = rows.slice(1); // Skip header row
+
+  // A deeply nested map structure to group data:
+  // program -> Map(year -> Map(semester -> subjects[]))
+  const programMap = new Map<string, Map<number, Map<number, any[]>>>();
+
+  for (const row of dataRows) {
+    const program = row[0]?.toLowerCase().trim();
+    const yearNum = parseInt(row[1], 10);
+    const semesterNum = parseInt(row[2], 10);
+    const code = row[3]?.trim();
+    const subject = row[4]?.trim();
+    const units = parseInt(row[5], 10);
+    const prerequisite = row[6]?.trim() || null;
+    const isSpecialization = row[7]?.toLowerCase().trim() === 'true';
+
+    if (!program || isNaN(yearNum) || isNaN(semesterNum) || !subject) continue;
+
+    // 1. Ensure program map exists
+    if (!programMap.has(program)) {
+      programMap.set(program, new Map());
+    }
+    const yearMap = programMap.get(program)!;
+
+    // 2. Ensure year map exists inside program
+    if (!yearMap.has(yearNum)) {
+      yearMap.set(yearNum, new Map());
+    }
+    const semesterMap = yearMap.get(yearNum)!;
+
+    // 3. Ensure semester array exists inside year
+    if (!semesterMap.has(semesterNum)) {
+      semesterMap.set(semesterNum, []);
+    }
+
+    // 4. Push the subject object
+    semesterMap.get(semesterNum)!.push({
+      code,
+      subject,
+      units,
+      prerequisite,
+      isSpecialization,
+    });
+  }
+
+  // Flatten the deep map structures down to the nested arrays Zod expects
+  return Array.from(programMap.entries()).map(([programName, yearMap]) => {
+    // Sort and construct the years array
+    const sortedYears = Array.from(yearMap.entries())
+      .sort(([yearA], [yearB]) => yearA - yearB)
+      .map(([yearNum, semesterMap]) => {
+        // Sort and construct the semesters array inside this specific year
+        const sortedSemesters = Array.from(semesterMap.entries())
+          .sort(([semA], [semB]) => semA - semB)
+          .map(([semesterNum, subjects]) => ({
+            semester: semesterNum,
+            subjects,
+          }));
+
+        return {
+          year: yearNum,
+          semesters: sortedSemesters,
+        };
+      });
+
+    return {
+      program: programName,
+      years: sortedYears,
+    };
+  });
+}
+
+const curriculum = defineCollection({
+  loader: curriculumSheetsLoader({
+    spreadsheetId: '11Oj8BJpkWZ1OFAOq8o6AaWXlNccraKZzhN21HyF8P3w',
+    sheetName: 'Curriculum',
+  }),
+  schema: z.object({
+    program: z.string(),
+
+    // year[]
+    years: z.array(
+      z
+        .object({
+          year: z.number(),
+
+          // semester[]
+          semesters: z.array(
+            z
+              .object({
+                semester: z.number(),
+
+                // subjects{} inside semester[]
+                subjects: z.array(
+                  z.object({
+                    code: z.string(),
+                    subject: z.string(),
+                    units: z.number(),
+                    prerequisite: z.string().nullish(),
+                    isSpecialization: z.boolean(),
+                  }),
+                ),
+              })
+              .nullish(),
+          ),
+        })
+        .nullish(),
+    ),
+  }),
+});
 
 const specializationSchema = z.object({
   specialization: z.string(),
@@ -25,12 +194,6 @@ const semesterSchema = z.object({
   subjects: z.array(subjectSchema).nullish(),
 });
 
-const curriculumItemSchema = z.object({
-  year: z.string(),
-  firstSemester: semesterSchema.nullish(),
-  secondSemester: semesterSchema.nullish(),
-});
-
 const news = defineCollection({
   loader: async () => {
     const posts = await client.fetch(`
@@ -47,7 +210,7 @@ const news = defineCollection({
               }
             },
           category,
-
+          pin,
           body,
       }`);
 
@@ -57,7 +220,7 @@ const news = defineCollection({
       slug: post.slug,
       _createdAt: new Date(post._createdAt),
       category: post.category,
-
+      pin: post.pin,
       image: post.image,
       body: post.body,
     }));
@@ -68,7 +231,7 @@ const news = defineCollection({
     slug: z.string(),
     _createdAt: z.coerce.date(),
     category: z.string(),
-
+    pin: z.boolean().nullish(),
     image: z.any(),
     body: z.any(),
   }),
@@ -160,10 +323,10 @@ const dean = defineCollection({
   }),
 });
 
-const staffs = defineCollection({
+const faculty = defineCollection({
   loader: async () => {
     const posts = await client.fetch(`
-      *[_type == 'staffs'] {
+      *[_type == 'faculty'] {
           _id,
           firstName,
           middleName,
@@ -265,24 +428,6 @@ const programs = defineCollection({
         titleLong,
         "slug": slug.current,
 
-        curriculum[]{
-          year,
-          firstSemester{
-            subjects[]{
-              subject,
-              units,
-              isSpecialization
-            }
-          },
-          secondSemester{
-            subjects[]{
-              subject,
-              units,
-              isSpecialization
-            }
-          }
-        },
-
         specializations[]->{
           specialization,
           "color": color.hex,
@@ -334,7 +479,6 @@ const programs = defineCollection({
       title: post.title,
       titleLong: post.titleLong,
       slug: post.slug,
-      curriculum: post.curriculum,
       specializations: post.specializations,
       logo: post.logo,
       image: post.image,
@@ -348,8 +492,6 @@ const programs = defineCollection({
     title: z.string(),
     titleLong: z.string(),
     slug: z.string(),
-
-    curriculum: z.array(curriculumItemSchema),
 
     specializations: z.array(specializationSchema).nullish(),
     logo: z.any(),
@@ -366,6 +508,7 @@ export const collections = {
   programs,
   about,
   dean,
-  staffs,
+  faculty,
   projects,
+  curriculum,
 };

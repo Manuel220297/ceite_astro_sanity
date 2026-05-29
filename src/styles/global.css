@@ -58,15 +58,15 @@
       }
     }
     h1 {
-      @apply text-4xl sm:text-5xl font-bold tracking-tight leading-tight text-stone-300 my-2;
+      @apply text-4xl sm:text-5xl font-bold tracking-tight leading-tight text-stone-200 my-2;
     }
 
     h2 {
-      @apply text-3xl sm:text-4xl font-bold tracking-tight leading-snug text-stone-300 my-1.5;
+      @apply text-3xl sm:text-4xl font-bold tracking-tight leading-snug text-stone-200 my-1.5;
     }
 
     h3 {
-      @apply text-2xl sm:text-3xl font-semibold leading-snug text-stone-300 my-1;
+      @apply text-2xl sm:text-3xl font-semibold leading-snug text-stone-200 my-1;
     }
 
     h4 {
@@ -172,7 +172,7 @@
 
     /* Inactive slides — desaturated, scaled, faded */
     .swiper-slide:not(.swiper-slide-active) .img-wrapper {
-      @apply transform-[scale(1.4)] transition-all duration-700 opacity-15 sm:opacity-30 saturate-0 ease-out;
+      @apply transform-[scale(1.4)] transition-all duration-700 opacity-50 sm:opacity-25 saturate-0 ease-out;
     }
     .swiper-slide-active .img-wrapper {
       @apply transform-[scale(1.0)] sm:transform-[scale(1.2)] transition-all duration-700 ease-out;
@@ -491,6 +491,22 @@
     1.002619 98%,
     0.999586 99%,
     0.996779 100%
+  );
+}
+
+@utility ease-bounce-3 {
+  transition-timing-function: linear(
+    0,
+    0.394 20.6%,
+    1 37.8%,
+    0.773 45%,
+    0.702 51%,
+    0.763 56.6%,
+    0.998 65.4%,
+    0.889 73.4%,
+    0.999 84.4%,
+    0.977 89.4%,
+    1
   );
 }
 

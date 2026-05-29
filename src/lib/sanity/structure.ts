@@ -20,7 +20,7 @@ export const structure: StructureResolver = (S, context) =>
 
       S.divider(),
 
-      // Group 2: Dean and Staffs
+      // Group 2: Faculty
       S.listItem()
         .title('Faculty')
         .child(
@@ -29,7 +29,7 @@ export const structure: StructureResolver = (S, context) =>
             .items([
               // ← Replaced with singleton version
               singletonDocumentListItem({ S, context, type: 'dean', title: 'Dean' }),
-              S.documentTypeListItem('staffs').title('Staffs'),
+              S.documentTypeListItem('faculty').title('Faculty'),
             ]),
         ),
 
@@ -41,9 +41,8 @@ export const structure: StructureResolver = (S, context) =>
           S.list()
             .title('School Details')
             .items([
-              S.documentTypeListItem('news').title('Happenings'),
+              S.documentTypeListItem('news').title('News, Event, Happenings'),
               singletonDocumentListItem({ S, context, type: 'about', title: 'About' }),
-              singletonDocumentListItem({ S, context, type: 'announcement', title: 'Announcement' }),
             ]),
         ),
 
@@ -52,8 +51,6 @@ export const structure: StructureResolver = (S, context) =>
       // Keep any remaining types listed automatically (optional)
       ...S.documentTypeListItems().filter(
         (item) =>
-          !['programs', 'specialization', 'projects', 'dean', 'staffs', 'news', 'about', 'announcement'].includes(
-            item.getId() ?? '',
-          ),
+          !['programs', 'specialization', 'projects', 'dean', 'faculty', 'news', 'about'].includes(item.getId() ?? ''),
       ),
     ]);

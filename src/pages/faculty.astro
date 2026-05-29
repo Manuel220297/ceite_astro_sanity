@@ -5,7 +5,7 @@ import SanityImage from '../components/SanityImage.astro';
 import SocialIcon from '../components/SocialIcon.astro';
 
 const [dean] = await getCollection('dean');
-const staffs = await getCollection('staffs');
+const faculty = await getCollection('faculty');
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
@@ -40,17 +40,17 @@ const socialLinks = (data: any) =>
         </span>
         <span class='uppercase text-stone-300'>CEITE</span>
         <span class='text-stone-600'>/</span>
-        <span class='uppercase'>Faculty &amp; Staff</span>
+        <span class='uppercase'>Faculty</span>
       </span>
       <span class='h-px flex-1 bg-linear-to-r from-stone-700/80 via-stone-700/30 to-transparent'></span>
-      <span class='uppercase tabular-nums'>{pad(staffs.length + 1)} Members</span>
+      <span class='uppercase tabular-nums'>{pad(faculty.length + 1)} Members</span>
     </div>
 
     {/* Headline */}
     <header class='relative z-10 mx-auto max-w-4xl px-6 text-center'>
-      <h1 class='font-extrabold tracking-wider text-5xl sm:text-6xl md:text-7xl lg:text-8xl'>
-        <span class='block text-stone-50'>Faculty</span>
-        <span class='block text-accent'>&amp; Staff</span>
+      <h1 class='font-(family-name:--font-tiktok) tracking-wider text-5xl sm:text-6xl md:text-7xl lg:text-8xl'>
+        <span class='block text-stone-50'>C.E.I.T.E</span>
+        <span class='block text-accent'>FACULTY</span>
       </h1>
       <p class='mx-auto mt-6 max-w-xl text-sm leading-relaxed text-stone-400 sm:text-base'>
         Meet the educators, mentors, and administrators shaping the next generation of engineers and IT professionals.
@@ -79,7 +79,7 @@ const socialLinks = (data: any) =>
               fallback='/images/default_avatar.svg'
               width={800}
               height={800}
-              class='size-full object-cover transition-transform duration-700 group-hover:scale-105'
+              class='size-full object-cover transition-transform duration-700 group-hover:scale-102'
             />
             <div
               class='absolute inset-0 bg-linear-to-t from-background/80 via-background/10 to-transparent md:bg-linear-to-r md:from-transparent md:to-background/30'>
@@ -138,58 +138,57 @@ const socialLinks = (data: any) =>
       </article>
     </div>
 
-    {/* Staff Grid */}
+    {/* Faculty */}
     <div class='relative z-10 mx-auto mt-24 w-full max-w-[1400px] px-6 md:px-10'>
       <div class='mb-8 flex items-center gap-3 text-[10px] tracking-[0.3em] uppercase text-stone-500'>
         <span class='h-px w-8 bg-accent'></span>
         <span class='text-accent'>02</span>
         <span>·</span>
-        <span>Faculty &amp; Administrative Staff</span>
-        <span class='ml-auto tabular-nums text-stone-400'>{pad(staffs.length)} Members</span>
+        <span>CEITE Faculty</span>
+        <span class='ml-auto tabular-nums text-stone-400'>{pad(faculty.length)} Members</span>
       </div>
 
       <div class='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
         {
-          staffs.map((s, i) => {
-            const socials = socialLinks(s.data);
+          faculty.map((f, i) => {
+            const socials = socialLinks(f.data);
             return (
               <article class='staff-card group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-md transition-all duration-500 hover:border-accent/30 hover:bg-white/[0.04]'>
                 {/* Portrait */}
                 <div class='relative aspect-[4/5] overflow-hidden'>
                   <SanityImage
-                    image={s.data?.image}
+                    image={f.data?.image}
                     fallback={`/images/default_avatar.svg`}
                     width={512}
                     height={640}
-                    class='size-full object-cover saturate-[0.85] transition-all duration-700 group-hover:scale-105 group-hover:saturate-100'
+                    class='size-full object-cover saturate-[0.85] transition-all duration-700 group-hover:scale-102 group-hover:saturate-100'
                   />
                   <div class='absolute inset-0 bg-linear-to-t from-background via-background/40 via-30% to-transparent' />
 
                   {/* Name overlay */}
                   <div class='absolute inset-x-0 bottom-0 p-5'>
-                    <h3 class='text-lg font-bold leading-tight text-stone-50 sm:text-xl'>{fullName(s.data)}</h3>
+                    <h3 class='text-lg font-bold leading-tight text-stone-50 sm:text-xl'>{fullName(f.data)}</h3>
                   </div>
                 </div>
 
-                {/* Card body — role + email + socials */}
+                {/* Card body */}
                 <div class='flex flex-col gap-3 p-4'>
-                  {/* Role / title — shown below the image in full */}
-                  {s.data?.title && (
+                  {/* Title */}
+                  {f.data?.title && (
                     <div class='flex flex-col gap-1'>
-                      <span class='text-[9px] tracking-[0.3em] uppercase text-stone-500'>Role</span>
-                      <span class='text-sm font-medium text-accent leading-snug'>{s.data.title}</span>
+                      <span class='text-sm font-medium text-accent leading-snug'>{f.data.title}</span>
                     </div>
                   )}
 
                   {/* Email — visible, dedicated row */}
-                  {s.data?.email && (
+                  {f.data?.email && (
                     <a
-                      href={`mailto:${s.data.email}`}
+                      href={`mailto:${f.data.email}`}
                       class='group/email flex items-center gap-2 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2 text-xs text-stone-300 transition-all hover:border-accent/40 hover:bg-accent/10 hover:text-accent'>
                       <span class='shrink-0 text-stone-400 group-hover/email:text-accent'>
                         <SocialIcon name='email' />
                       </span>
-                      <span class='break-all font-medium leading-snug'>{s.data.email}</span>
+                      <span class='break-all font-medium leading-snug'>{f.data.email}</span>
                     </a>
                   )}
 

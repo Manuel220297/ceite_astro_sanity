@@ -22,6 +22,7 @@ export async function getStaticPaths() {
 const { program } = Astro.props;
 
 const allProjects = await getCollection('projects');
+
 const projects = allProjects.filter((p) => p.data.program?.slug === program.data.slug);
 ---
 

@@ -28,11 +28,21 @@ const components = {
         <span
           class='size-2 shrink-0 rounded-full animate-pulse bg-accent shadow-[0px_0px_0px_5px_rgb(from_var(--color-accent)_r_g_b_/_0.15)]'
         ></span>
+
+        <!-- Breadcrumb -->
+
         <div class='tracking-[0.25em] text-xs text-stone-500 whitespace-nowrap'>
-          <span class='text-stone-300'>CEITE</span> / PROGRAMS / {program.data.title}
+          <span class='text-stone-300 hover:text-accent transition-colors duration-200 ease-out'
+            ><a href='/'>CEITE</a></span
+          > / <span class='text-stone-300 hover:text-accent transition-colors duration-200 ease-out'
+            ><a href='/programs'>PROGRAMS</a></span
+          > / {program.data.title}
         </div>
         <span class='w-full h-px mb-2 bg-linear-to-r from-stone-400/40 to-transparent'></span>
       </div>
+
+      <!-- Overview -->
+
       <div class='flex lg:flex-row flex-col justify-between border-b border-stone-400/40 mb-16 py-8'>
         <div class='mb-8'>
           <h2 class='text-[clamp(3rem,5vw,4.5rem)] leading-tight font-bold mb-4 w-full'>
@@ -103,6 +113,8 @@ const components = {
         </div>
       </div>
     </article>
+
+    <!-- Specialization -->
 
     <article>
       <div class='mb-8'>

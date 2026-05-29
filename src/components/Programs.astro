@@ -1,12 +1,12 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, getEntry } from 'astro:content';
 import SanityImage from './SanityImage.astro';
 import { PortableText } from 'astro-portabletext';
 
 import SanityPortableImage from './SanityPortableImage.astro';
 import SanityHighlight from './SanityHighlight.astro';
-import { getProgramDuration } from '../lib/utils/getProgramDuration';
-import { getProgramUnits } from '../lib/utils/getProgramUnits';
+import { getCurriculumDuration } from '../lib/utils/getCurriculumDuration';
+import { getTotalUnits } from '../lib/utils/getTotalUnits';
 import { urlFor } from '@/lib/sanity/image';
 
 const components = {
@@ -20,8 +20,13 @@ const components = {
 
 const programs = (await getCollection('programs')).sort().reverse();
 
-const programLogos = programs.map((p) =>
-  p.data.logo ? urlFor(p.data.logo).width(128).height(128).url() : '/images/asiatech_logo.avif',
+// Pre-fetch curriculum + logo for each program (parallel)
+const programData = await Promise.all(
+  programs.map(async (p) => ({
+    program: p,
+    curriculum: await getEntry('curriculum', p.id),
+    logo: p.data.logo ? urlFor(p.data.logo).width(128).height(128).url() : '/images/asiatech_logo.avif',
+  })),
 );
 
 const pad = (n: number) => String(n).padStart(2, '0');
@@ -65,35 +70,35 @@ const pad = (n: number) => String(n).padStart(2, '0');
   <!-- Pagination -->
   <div
     id='swiper-program-pagination'
-    class='relative z-10 mx-auto mt-8 mb-0 sm:mb-6 w-full max-w-[1600px] px-6 md:px-10'>
+    class='relative z-10 mx-auto mt-8 mb-0 sm:mb-6 w-full max-w-[1600px] px-6 md:px-10 select-none'>
     <div class='swiper-pagination !static !flex flex-wrap items-center justify-center gap-4 sm:gap-6'></div>
   </div>
 
   <!-- Slider -->
   <div
     id='swiper-program'
-    class='swiper relative mb-12 w-full max-w-[1920px] h-[680px] md:h-[clamp(640px,780px,85vh)] !px-4 !py-4 sm:!px-0'>
+    class='swiper relative mb-12 w-full max-w-[1920px] h-[600px] md:h-[clamp(640px,780px,85vh)] !px-4 !py-4 sm:!px-0'>
     <div class='swiper-wrapper w-full h-full'>
       {
-        programs.map((p, i) => (
-          <div class='swiper-slide group' data-logo={programLogos[i]} data-title={p.data.title}>
+        programData.map(({ program: p, curriculum, logo }, i) => (
+          <div class='swiper-slide group select-none' data-logo={logo} data-title={p.data.title}>
             <div class='img-wrapper'>
               <SanityImage image={p.data.image} Xparallax={30} loading='lazy' width={1920} height={1080} />
               {/* Gradient layers */}
-              <div class='gradient-layer absolute inset-0 bg-linear-to-t from-background/75 via-background/40 via-30% to-transparent' />
-              <div class='gradient-layer absolute inset-0 bg-linear-to-r from-background/85 from-15% via-background/50 via-45% to-transparent' />
+              <div class='gradient-layer absolute inset-0 bg-background/83 sm:bg-background/0 sm:bg-linear-to-t from-background/75 via-background/40 via-30% to-transparent' />
+              <div class='gradient-layer absolute inset-0  sm:bg-linear-to-r from-background/85 from-15% via-background/50 via-45% to-transparent' />
             </div>
 
             {/* Content */}
             <div class='absolute inset-0 flex flex-col px-6 py-6 sm:px-10 sm:pt-2 pb-12 sm:pb-16 md:px-14 md:pt-4 md:pb-24'>
               {/* Top row: program counter + logo */}
               <div class='flex items-center justify-between gap-4'>
-                <div class='flex items-center gap-3 rounded-full border border-accent/50 bg-stone-900/60 px-4 py-1.5'>
-                  <span class='text-[10px] tracking-[0.3em] uppercase text-accent '>Program</span>
+                <div class='flex items-center text-[8px] gap-2 rounded-full border border-accent/50 bg-stone-900/60 px-4 py-1.5'>
+                  <span class='tracking-[0.3em] uppercase text-accent '>Program</span>
                   <span class='text-accent/50'>·</span>
-                  <span class='text-xs font-bold tabular-nums text-accent'>{pad(i + 1)}</span>
+                  <span class='font-bold tabular-nums text-accent'>{pad(i + 1)}</span>
                   <span class='text-accent/50'>/</span>
-                  <span class='text-xs tabular-nums text-accent/50'>{pad(programs.length)}</span>
+                  <span class='tabular-nums text-accent/50'>{pad(programs.length)}</span>
                 </div>
 
                 <SanityImage
@@ -108,11 +113,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
               {/* Title */}
               <div class='flex flex-1 flex-col justify-start' data-swiper-parallax='-75'>
-                <h2 class='font-(family-name:--font-tiktok) leading-none tracking-wider text-stone-50 text-6xl sm:text-[clamp(55px,10vh,96px)] drop-shadow-[0_4px_30px_rgba(0,0,0,0.6)]'>
+                <h2 class='font-(family-name:--font-tiktok) leading-none tracking-wider text-stone-50 text-4xl sm:text-[clamp(55px,10vh,96px)] drop-shadow-[0_4px_30px_rgba(0,0,0,0.6)]'>
                   {p.data.title}
                 </h2>
 
-                <h3 class='mb-2 font-medium text-stone-300 text-base sm:text-[clamp(16px,10vh,20px)]'>
+                <h3 class='mb-2 font-medium text-stone-300 text-xs sm:text-[clamp(16px,10vh,20px)]'>
                   {p.data.titleLong}
                 </h3>
               </div>
@@ -122,24 +127,25 @@ const pad = (n: number) => String(n).padStart(2, '0');
                 <div class='flex flex-col gap-6'>
                   <div class='flex items-end gap-8 sm:gap-12'>
                     <div class='flex flex-col'>
-                      <span class='mb-2 text-[10px] tracking-[0.3em] uppercase text-stone-400 font-medium'>
+                      <span class='mb-2 text-[8px] sm:text-[10px] tracking-wider uppercase text-stone-400 font-medium'>
                         Duration
                       </span>
-                      <span class='font-(family-name:--font-tiktok) text-xl sm:text-3xl text-accent'>
-                        {getProgramDuration(p)}
-                        <span class='ml-1 text-xs sm:text-sm font-medium tracking-wider uppercase text-stone-400'>
+                      <span class='font-(family-name:--font-tiktok) text-md sm:text-3xl text-accent'>
+                        {getCurriculumDuration(curriculum)}
+                        <span class='ml-0.5 text-[10px] sm:text-sm font-medium tracking-wider uppercase text-stone-400'>
                           years
                         </span>
                       </span>
                     </div>
                     <div class='h-10 w-px bg-stone-700/60' />
                     <div class='flex flex-col'>
-                      <span class='mb-2 text-[11px] tracking-[0.3em] uppercase text-stone-400 font-medium'>
+                      <span class='mb-2 text-[8px] sm:text-[10px] tracking-wider uppercase text-stone-400 font-medium'>
                         Total Units
                       </span>
-                      <span class='font-(family-name:--font-tiktok) text-xl sm:text-3xl tabular-nums text-accent'>
-                        {getProgramUnits(p)}
-                        <span class='ml-1 text-xs sm:text-sm font-medium tracking-wider uppercase text-stone-400'>
+                      {/* Total units — now reads from curriculum, not program */}
+                      <span class='font-(family-name:--font-tiktok) text-md sm:text-3xl tabular-nums text-accent'>
+                        {getTotalUnits(curriculum)}
+                        <span class='ml-0.5 text-[10px] sm:text-sm font-medium tracking-wider uppercase text-stone-400'>
                           units
                         </span>
                       </span>
@@ -150,13 +156,13 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
                   <div class='flex justify-between sm:justify-start sm:gap-8'>
                     <div class='flex flex-col'>
-                      <span class='mb-3 text-[10px] tracking-[0.2em] uppercase text-stone-400'>
+                      <span class='mb-3 text-[8px] sm:text-[10px] tracking-wider uppercase text-stone-400'>
                         Specialization Tracks
                       </span>
                       <ul class='flex flex-wrap gap-2'>
                         {p.data.specializations?.map((s) => (
                           <li
-                            class='flex items-center gap-2 rounded-full border border-[var(--program-color)]/40 bg-[var(--program-color)]/10 px-3 py-1.5 text-xs font-semibold text-[var(--program-color)] transition-colors hover:bg-[var(--program-color)]/20'
+                            class='flex items-center gap-2 rounded-full border border-[var(--program-color)]/60 bg-[var(--program-color)]/25 px-2 py-1 sm:px-3 sm:py-1.5 text-[9px] sm:text-xs font-semibold text-[var(--program-color)] transition-colors hover:bg-[var(--program-color)]/33'
                             style={`--program-color: ${s.color}`}>
                             <span class='size-1.5 shrink-0 animate-pulse brightness-125 saturate-150 rounded-full bg-[var(--program-color)] shadow-[0_0_8px_2px_rgb(from_var(--program-color)_r_g_b_/_0.5)]' />
                             <span class='tracking-wide'>{s.specialization}</span>
@@ -166,7 +172,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
                     </div>
 
                     <div class='flex flex-col'>
-                      <span class='mb-3 text-[11px] tracking-[0.2em] uppercase text-stone-400'>Career Paths</span>
+                      <span class='mb-3 text-[8px] sm:text-[10px] tracking-wider uppercase text-stone-400'>
+                        Career Paths
+                      </span>
                       <div class='flex flex-col career-paths text-xs sm:text-sm text-stone-300 [&_ul]:flex [&_ul]:flex-col [&_ul]:gap-2 [&_li:nth-child(n+4)]:hidden'>
                         <PortableText value={p.data.careers} components={components} />
                         <span class='mt-2 text-accent'>+ More...</span>
@@ -204,9 +212,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
   function initSwiper() {
     const el = document.querySelector('#swiper-program');
-    if (!el) return; // not on this page
+    if (!el) return;
 
-    // Clean up any previous instance
     if (swiperInstance) {
       swiperInstance.destroy(true, true);
       swiperInstance = null;
@@ -216,9 +223,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
       modules: [Parallax, Pagination, Keyboard],
       grabCursor: true,
       speed: 600,
-      spaceBetween: 28,
+      spaceBetween: 8,
       parallax: true,
-      slidesPerView: 1,
+      slidesPerView: 1.2,
       centeredSlides: true,
       keyboard: { enabled: true },
       pagination: {
@@ -241,17 +248,15 @@ const pad = (n: number) => String(n).padStart(2, '0');
         },
       },
       breakpoints: {
-        768: { slidesPerView: 1.25, spaceBetween: 32 },
-        1080: { slidesPerView: 1.33, spaceBetween: 40 },
-        1440: { slidesPerView: 1.5, spaceBetween: 50 },
+        768: { slidesPerView: 1.25, spaceBetween: 24 },
+        1080: { slidesPerView: 1.33, spaceBetween: 36 },
+        1440: { slidesPerView: 1.5, spaceBetween: 48 },
       },
     });
   }
 
-  // Run on initial load AND every subsequent navigation
   document.addEventListener('astro:page-load', initSwiper);
 
-  // Optional: clean up before navigating away
   document.addEventListener('astro:before-swap', () => {
     if (swiperInstance) {
       swiperInstance.destroy(true, true);

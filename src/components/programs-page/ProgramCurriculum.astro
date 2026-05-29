@@ -1,9 +1,9 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { getSemesterUnits } from '@/lib/utils/getSemesterUnits';
-import { getProgramUnits } from '@/lib/utils/getProgramUnits';
-import { getProgramDuration } from '@/lib/utils/getProgramDuration';
+import { getEntry } from 'astro:content';
 import clsx from 'clsx';
+import { getSemesterUnits } from '@/lib/utils/getSemesterUnits';
+import { getTotalUnits } from '@/lib/utils/getTotalUnits';
 
 interface Props {
   program: CollectionEntry<'programs'>;
@@ -11,9 +11,30 @@ interface Props {
 
 const { program } = Astro.props;
 
-const duration = getProgramDuration(program);
-const curriculum = program.data.curriculum.slice(0, duration);
-const totalUnits = getProgramUnits(program);
+const curriculum = await getEntry('curriculum', program.id);
+const years = (curriculum?.data.years ?? []).filter(Boolean);
+
+// Sort by year number, just in case
+years.sort((a, b) => (a?.year ?? 0) - (b?.year ?? 0));
+
+const curriculumYears = years.map((y) => y?.year ?? 0);
+const duration = curriculumYears.length > 0 ? Math.max(...curriculumYears) : 0;
+
+const totalUnits = getTotalUnits(curriculum);
+
+// Ordinal formatter — 1st, 2nd, 3rd, 4th, ...
+const enOrdinalRules = new Intl.PluralRules('en-US', { type: 'ordinal' });
+const suffixes = new Map([
+  ['one', 'st'],
+  ['two', 'nd'],
+  ['few', 'rd'],
+  ['other', 'th'],
+]);
+const formatOrdinals = (n: number) => {
+  const rule = enOrdinalRules.select(n);
+  const suffix = suffixes.get(rule) ?? 'th';
+  return `${n}${suffix}`;
+};
 
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
@@ -48,6 +69,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
       </div>
     </div>
   </header>
+
   <div id='swiper-curriculum-pagination' class='swiper-pagination mb-3'></div>
 
   {/* Swiper */}
@@ -55,163 +77,130 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <div id='swiper-curriculum' class='swiper relative !overflow-visible'>
       <div class='swiper-wrapper'>
         {
-          curriculum.map((c, i) => (
-            <div class='swiper-slide !h-auto'>
-              <div class='group/card flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.015] backdrop-blur-md transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.025]'>
-                {/* Header Title */}
-                <div class='relative flex flex-col gap-1 border-b border-white/[0.06] px-6 pt-6 pb-5'>
-                  <div class='swiper-no-swiping flex items-center justify-between'>
-                    <h3 class='font-(family-name:--font-tiktok) text-2xl leading-tight text-stone-50'>{c.year}</h3>
-                    <span class='font-bold text-[11px] tabular-nums text-accent'>
-                      {(getSemesterUnits(c.firstSemester?.subjects) ?? 0) +
-                        (getSemesterUnits(c.secondSemester?.subjects) ?? 0)}
-                      <span class='ml-1 font-light text-stone-400'>units</span>
-                    </span>
+          years.map((y) => {
+            if (!y) return null;
+            const semesters = (y.semesters ?? []).filter(Boolean);
+            semesters.sort((a, b) => (a?.semester ?? 0) - (b?.semester ?? 0));
+
+            const yearTotal = semesters.reduce((sum, sem) => sum + getSemesterUnits(sem?.subjects), 0);
+
+            return (
+              <div class='swiper-slide !h-auto'>
+                <div class='group/card flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.015] backdrop-blur-md transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.025]'>
+                  {/* Header Title */}
+                  <div class='relative flex flex-col gap-1 border-b border-white/[0.06] px-6 pt-6 pb-5'>
+                    <div class='swiper-no-swiping flex items-center justify-between'>
+                      <h3 class='font-(family-name:--font-tiktok) text-2xl leading-tight text-stone-50'>
+                        {formatOrdinals(y.year)} Year
+                      </h3>
+                      <span class='font-bold text-[11px] tabular-nums text-accent'>
+                        {yearTotal}
+                        <span class='ml-1 font-light text-stone-300'>Units</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Body */}
+                  <div class='swiper-no-swiping flex flex-1 flex-col divide-y divide-white/[0.05]'>
+                    {semesters.map((sem) => {
+                      if (!sem || !sem.subjects || sem.subjects.length === 0) return null;
+                      const specs = program.data.specializations ?? [];
+
+                      return (
+                        <div class='flex flex-col gap-4 px-6 py-5'>
+                          <div class='flex items-center justify-between'>
+                            <h4 class='text-[15px] font-semibold tracking-wide text-stone-200'>
+                              {formatOrdinals(sem.semester)} Semester
+                            </h4>
+
+                            <div class='flex flex-col items-baseline'>
+                              <span class='font-mono text-[10px] font-medium tabular-nums text-stone-300'>
+                                <span class='font-extrabold text-accent'>{getSemesterUnits(sem.subjects)}</span> Units
+                              </span>
+                              <span class='font-mono text-[10px] font-medium tabular-nums text-stone-300'>
+                                <span class='font-extrabold text-accent'>{sem.subjects.length}</span>{' '}
+                                {sem.subjects.length > 1 ? 'Subjects' : 'Subject'}
+                              </span>
+                            </div>
+                          </div>
+
+                          <ul class='flex flex-col'>
+                            {sem.subjects.map((subject) => {
+                              const isSpec = subject?.isSpecialization;
+
+                              return (
+                                <li
+                                  class={clsx(
+                                    'group/sub relative flex flex-col gap-2 border-b border-stone-200/[0.06] py-3 last:border-b-0 transition-colors',
+                                    isSpec
+                                      ? 'border-l-2 border-l-accent/60 bg-stone-700/15 pl-3 pr-3 mt-2 -mx-3 rounded-r-md hover:bg-accent/[0.07]'
+                                      : 'hover:bg-white/[0.02]',
+                                  )}>
+                                  {/* Top row: subject code + subject name + units */}
+                                  <div class='flex items-baseline justify-between gap-3'>
+                                    <div class='flex min-w-0 flex-1 items-baseline gap-2'>
+                                      {isSpec && (
+                                        <span class='shrink-0 font-mono text-[9px] font-bold tracking-[0.2em] uppercase text-accent'>
+                                          ♦
+                                        </span>
+                                      )}
+                                      <div class='flex min-w-0 flex-col gap-0.5'>
+                                        <span class='text-[13px] sm:text-sm font-extralight tracking-wide leading-snug text-stone-200'>
+                                          {subject.subject}
+                                        </span>
+                                        <div class='flex flex-col flex-wrap justify-center gap-x-2'>
+                                          {subject.code && (
+                                            <span class='font-mono text-[10.75px] tracking-wider text-stone-400'>
+                                              {subject.code}
+                                            </span>
+                                          )}
+                                          {subject.prerequisite && (
+                                            <>
+                                              <span class='font-medium text-[10px] tracking-wider text-stone-500'>
+                                                Prerequisite:{' '}
+                                                <span class='font-mono text-stone-400'>{subject.prerequisite}</span>
+                                              </span>
+                                            </>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <span class='shrink-0 font-mono text-[11px] tabular-nums text-stone-400'>
+                                      {subject.units}
+                                    </span>
+                                  </div>
+
+                                  {/* Specialization tracks — shown ONLY for specialization rows */}
+                                  {isSpec && specs.length > 0 && (
+                                    <div class='flex flex-wrap items-center gap-x-1.5 gap-y-1'>
+                                      <span class='text-[9px] sm:text-[10px] font-medium tracking-[0.15em] uppercase text-stone-500 w-full'>
+                                        Specialization:
+                                      </span>
+                                      {specs.map((s) => (
+                                        <span
+                                          class='inline-flex items-center gap-1 sm:gap-1.5 rounded-full border px-1.5 py-0.5 sm:px-2 text-[9px] sm:text-[10px] font-semibold tracking-wide whitespace-nowrap'
+                                          style={`border-color: rgb(from ${s.color} r g b / 0.4); background-color: rgb(from ${s.color} r g b / 0.1); color: ${s.color};`}>
+                                          <span
+                                            class='size-1 shrink-0 rounded-full'
+                                            style={`background-color: ${s.color};`}
+                                          />
+                                          {s.specialization}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  )}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-
-                {/* Body */}
-                <div class='swiper-no-swiping flex flex-1 flex-col divide-y divide-white/[0.05]'>
-                  {/* First semester */}
-                  {c.firstSemester?.subjects && c.firstSemester.subjects.length > 0 && (
-                    <div class='flex flex-col gap-4 px-6 py-5'>
-                      <div class='flex items-baseline justify-between'>
-                        <div class='flex items-baseline gap-2.5'>
-                          <span class='font-mono text-[10px] font-bold tabular-nums text-stone-500'>01</span>
-                          <h4 class='text-xs font-semibold tracking-wide text-stone-200'>First Semester</h4>
-                        </div>
-                        <span class='font-mono text-[10px] font-medium tabular-nums text-stone-300'>
-                          <span class='font-extrabold text-accent'>{getSemesterUnits(c.firstSemester?.subjects)}</span>{' '}
-                          units
-                        </span>
-                      </div>
-
-                      <ul class='flex flex-col'>
-                        {c.firstSemester.subjects.map((subject) => {
-                          const isSpec = subject?.isSpecialization;
-                          const specs = program.data.specializations ?? [];
-
-                          return (
-                            <li
-                              class={clsx(
-                                'group/sub relative flex flex-col gap-2 border-b border-stone-200/[0.06] py-3 last:border-b-0 transition-colors',
-                                isSpec
-                                  ? 'border-l-2 border-l-accent/60 bg-stone-400/[0.1] pl-3 pr-3 mt-2 -mx-3 rounded-r-md'
-                                  : 'hover:bg-white/[0.02]',
-                              )}>
-                              {/* Top row: subject name + units */}
-                              <div class='flex items-baseline justify-between gap-3'>
-                                <div class='flex min-w-0 flex-1 items-center gap-2'>
-                                  {isSpec && (
-                                    <span class='shrink-0 font-mono text-[9px] font-bold tracking-[0.2em] uppercase text-accent'>
-                                      ♦
-                                    </span>
-                                  )}
-                                  <span class='text-xs sm:text-sm leading-snug text-stone-100'>{subject.subject}</span>
-                                </div>
-                                <span class='shrink-0 font-mono text-[11px] tabular-nums text-stone-400'>
-                                  {subject.units}
-                                </span>
-                              </div>
-
-                              {/* Specialization tracks — shown ONLY for specialization rows */}
-                              {isSpec && specs.length > 0 && (
-                                <div class='flex flex-wrap items-center gap-x-1.5 gap-y-1'>
-                                  <span class='text-[9px] sm:text-[10px] font-medium tracking-[0.15em] uppercase text-stone-500 w-full'>
-                                    Specialization:
-                                  </span>
-
-                                  {specs.map((s) => (
-                                    <span
-                                      class='inline-flex items-center gap-1 sm:gap-1.5 rounded-full border px-1.5 py-0.5 sm:px-2 text-[9px] sm:text-[10px] font-semibold tracking-wide whitespace-nowrap'
-                                      style={`border-color: rgb(from ${s.color} r g b / 0.4); background-color: rgb(from ${s.color} r g b / 0.1); color: ${s.color};`}>
-                                      <span
-                                        class='size-1 shrink-0 rounded-full'
-                                        style={`background-color: ${s.color};`}
-                                      />
-                                      {s.specialization}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  )}
-
-                  {/* Second semester */}
-                  {c.secondSemester?.subjects && c.secondSemester.subjects.length > 0 && (
-                    <div class='flex flex-col gap-4 px-6 py-5'>
-                      <div class='flex items-baseline justify-between'>
-                        <div class='flex items-baseline gap-2.5'>
-                          <span class='font-mono text-[10px] font-bold tabular-nums text-stone-500'>02</span>
-                          <h4 class='text-xs font-semibold tracking-wide text-stone-200'>Second Semester</h4>
-                        </div>
-                        <span class='font-mono text-[10px] font-medium tabular-nums text-stone-300'>
-                          <span class='font-extrabold text-accent'>{getSemesterUnits(c.secondSemester?.subjects)}</span>{' '}
-                          units
-                        </span>
-                      </div>
-
-                      <ul class='flex flex-col'>
-                        {c.secondSemester?.subjects?.map((subject) => {
-                          const isSpec = subject?.isSpecialization;
-                          const specs = program.data.specializations ?? [];
-
-                          return (
-                            <li
-                              class={clsx(
-                                'group/sub relative flex flex-col gap-2 border-b border-stone-200/[0.06] py-3 last:border-b-0 transition-colors',
-                                isSpec
-                                  ? 'border-l-2 border-l-accent/60 bg-stone-400/[0.1] pl-3 pr-3 mt-2 -mx-3 rounded-r-md'
-                                  : 'hover:bg-white/[0.02]',
-                              )}>
-                              {/* Top row: subject name + units */}
-                              <div class='flex items-baseline justify-between gap-3'>
-                                <div class='flex min-w-0 flex-1 items-center gap-2'>
-                                  {isSpec && (
-                                    <span class='shrink-0 font-mono text-[9px] font-bold tracking-[0.2em] uppercase text-accent'>
-                                      ♦
-                                    </span>
-                                  )}
-                                  <span class='text-xs sm:text-sm leading-snug text-stone-100'>{subject.subject}</span>
-                                </div>
-                                <span class='shrink-0 font-mono text-[11px] tabular-nums text-stone-400'>
-                                  {subject.units}
-                                </span>
-                              </div>
-
-                              {/* Specialization tracks — shown ONLY for specialization rows */}
-                              {isSpec && specs.length > 0 && (
-                                <div class='flex flex-wrap items-center gap-x-1.5 gap-y-1'>
-                                  <span class='text-[9px] sm:text-[10px] font-medium tracking-[0.15em] uppercase text-stone-500 w-full'>
-                                    Specialization:
-                                  </span>
-                                  {specs.map((s) => (
-                                    <span
-                                      class='inline-flex items-center gap-1 sm:gap-1.5 rounded-full border px-1.5 py-0.5 sm:px-2 text-[9px] sm:text-[10px] font-semibold tracking-wide whitespace-nowrap'
-                                      style={`border-color: rgb(from ${s.color} r g b / 0.4); background-color: rgb(from ${s.color} r g b / 0.1); color: ${s.color};`}>
-                                      <span
-                                        class='size-1 shrink-0 rounded-full'
-                                        style={`background-color: ${s.color};`}
-                                      />
-                                      {s.specialization}
-                                    </span>
-                                  ))}
-                                </div>
-                              )}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </div>
-                  )}
-                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         }
       </div>
     </div>
