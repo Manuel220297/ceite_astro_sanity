@@ -86,7 +86,7 @@ const latestDate = news[0]?.data._createdAt;
             </div>
             <div class='flex flex-wrap gap-2'>
               <span
-                class='filter-chip is-active flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-4 py-1.5 text-xs font-medium text-stone-300 backdrop-blur-md cursor-pointer transition-all hover:border-accent/40 hover:bg-accent/10 hover:text-accent'
+                class='filter-chip is-active flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-4 py-1.5 text-xs font-medium text-stone-300 cursor-pointer transition-all hover:border-accent/40 hover:bg-accent/10 hover:text-accent'
                 data-category='all'>
                 <span>All Categories</span>
                 <span class='chip tabular-nums text-stone-500'>{pad(news.length)}</span>
@@ -95,7 +95,7 @@ const latestDate = news[0]?.data._createdAt;
                 const count = news.filter((n) => n.data.category === cat).length;
                 return (
                   <span
-                    class='filter-chip flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-4 py-1.5 text-xs font-medium text-stone-300 backdrop-blur-md cursor-pointer transition-all hover:border-accent/40 hover:bg-accent/10 hover:text-accent'
+                    class='filter-chip flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.02] px-4 py-1.5 text-xs font-medium text-stone-300 cursor-pointer transition-all hover:border-accent/40 hover:bg-accent/10 hover:text-accent'
                     data-category={cat}>
                     <span>{cat}</span>
                     <span class='chip-count tabular-nums text-stone-500'>{pad(count)}</span>
@@ -121,7 +121,7 @@ const latestDate = news[0]?.data._createdAt;
           {
             news.map((n, i) => (
               <article
-                class='news-card group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-md transition-all duration-500 hover:border-accent/30 hover:bg-white/[0.04] basis-full sm:basis-[calc((100%-1.5rem)/2)] lg:basis-[calc((100%-3rem)/3)]'
+                class='news-card group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] transition-all duration-500 hover:border-accent/30 hover:bg-white/[0.04] basis-full sm:basis-[calc((100%-1.5rem)/2)] lg:basis-[calc((100%-3rem)/3)]'
                 data-category={n.data.category}
                 style={`--row-index: ${i}`}>
                 <a href={`/news/${n.data.slug}`} class='flex h-full flex-col'>
@@ -139,7 +139,7 @@ const latestDate = news[0]?.data._createdAt;
 
                     {/* Top-right: category */}
                     {n.data.category && (
-                      <div class='absolute flex items-center justify-center right-4 top-4 rounded-full border border-white/15 bg-black/50 px-4 py-2 backdrop-blur-md'>
+                      <div class='absolute flex items-center justify-center right-4 top-4 rounded-full border border-white/15 bg-black/50 px-4 py-2'>
                         <span class='text-[9px] tracking-[0.25em] uppercase text-stone-100 font-bold'>
                           {n.data.category}
                         </span>

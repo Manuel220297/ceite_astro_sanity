@@ -70,7 +70,7 @@ const year = new Date().getFullYear();
     <div class='flex flex-col xl:flex-row gap-12 xl:gap-16 border-b border-stone-700/50 pb-12'>
       {/* COLUMN 1 — Brand + Socials */}
       <div class='flex flex-col gap-8 xl:w-[34%] xl:shrink-0'>
-        {/* CEITE brand */}
+        {/* CEITE Logo */}
         <div class='flex items-center gap-3 text-white'>
           <img src='/images/ceite_small.webp' alt='CEITE Logo' class='shrink-0 size-14 md:size-16' />
           <div class='flex flex-col'>
@@ -78,11 +78,11 @@ const year = new Date().getFullYear();
               class='text-3xl md:text-4xl text-transparent tracking-wider bg-clip-text font-(family-name:--font-tiktok) bg-[linear-gradient(to_top,_#ffffff_33%,_#9f9f9f_50%,_#ffffff_67%)] leading-none'>
               C.E.I.T.E.
             </h3>
-            <p class='text-[8px] sm:text-[9px] text-stone-400 mt-1 whitespace-nowrap'>
+            <h5 class='text-[8px] sm:text-[9px] text-stone-400 mt-1 whitespace-nowrap'>
               College of <span class='text-accent'>Engineering</span> and <span class='text-accent'
                 >Information Technology</span
               > Education
-            </p>
+            </h5>
           </div>
         </div>
 
@@ -94,9 +94,9 @@ const year = new Date().getFullYear();
               class='text-3xl md:text-4xl text-transparent tracking-wider bg-clip-text font-serif font-bold bg-linear-to-tr from-stone-300 to-stone-100 leading-none'>
               ASIATECH
             </h3>
-            <p class='text-[7px] tracking-wide uppercase text-stone-400 mt-1 whitespace-nowrap'>
+            <h5 class='text-[7px] tracking-wide uppercase text-stone-400 mt-1 whitespace-nowrap'>
               Asia Technological School of Science and Arts
-            </p>
+            </h5>
           </div>
         </div>
 
@@ -112,7 +112,7 @@ const year = new Date().getFullYear();
                 <a
                   href={s.url}
                   target='_blank'
-                  class='group/social flex items-center gap-2 rounded-full border border-stone-700/70 bg-white/[0.02] px-3 py-1.5 text-xs text-stone-300 backdrop-blur-md transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent'>
+                  class='group/social flex items-center gap-2 rounded-full border border-stone-700/70 bg-white/[0.02] px-3 py-1.5 text-xs text-stone-300 transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent'>
                   <span class='shrink-0 [&_svg]:size-3.5'>
                     <s.icon />
                   </span>
@@ -189,7 +189,7 @@ const year = new Date().getFullYear();
         </div>
         {/* "View on map" tag */}
         <div
-          class='absolute bottom-3 left-3 flex items-center gap-2 rounded-full border border-white/15 bg-black/50 px-3 py-1 backdrop-blur-md cursor-pointer'>
+          class='absolute bottom-3 left-3 flex items-center gap-2 rounded-full border border-white/15 bg-black/50 px-3 py-1 cursor-pointer'>
           <span class='size-1.5 rounded-full bg-accent animate-bounce'></span>
           <span class='text-[10px] tracking-[0.2em] uppercase text-stone-100'>View on Google maps</span>
         </div>

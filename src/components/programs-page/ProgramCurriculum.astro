@@ -56,7 +56,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
       {/* Stats panel */}
       <div
-        class='flex justify-center items-end gap-6 sm:gap-10 rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-md px-6 py-5'>
+        class='flex justify-center items-end gap-6 sm:gap-10 rounded-2xl border border-white/10 bg-white/[0.02] px-6 py-5'>
         <div class='flex flex-col'>
           <span class='text-[11px] tracking-[0.25em] uppercase text-stone-400'>Years</span>
           <span class='font-(family-name:--font-tiktok) text-3xl text-stone-50 tabular-nums'>{pad(duration)}</span>
@@ -86,7 +86,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
             return (
               <div class='swiper-slide !h-auto'>
-                <div class='group/card flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.015] backdrop-blur-md transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.025]'>
+                <div class='group/card flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.015] transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.025]'>
                   {/* Header Title */}
                   <div class='relative flex flex-col gap-1 border-b border-white/[0.06] px-6 pt-6 pb-5'>
                     <div class='swiper-no-swiping flex items-center justify-between'>
@@ -165,7 +165,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
                                         </div>
                                       </div>
                                     </div>
-                                    <span class='shrink-0 font-mono text-[11px] tabular-nums text-stone-400'>
+                                    <span
+                                      aria-label={
+                                        subject.units > 1 ? `${subject.units} units` : `${subject.units} unit`
+                                      }
+                                      class='shrink-0 font-mono text-[11px] tabular-nums text-stone-400'>
                                       {subject.units}
                                     </span>
                                   </div>

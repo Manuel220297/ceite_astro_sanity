@@ -66,8 +66,7 @@ const socialLinks = (data: any) =>
         <span>Office of the Dean</span>
       </div>
 
-      <article
-        class='dean-card group relative overflow-hidden rounded-[40px] border border-white/10 bg-white/[0.02] backdrop-blur-md'>
+      <article class='dean-card group relative overflow-hidden rounded-[40px] border border-white/10 bg-white/[0.02]'>
         {/* Soft accent glow */}
         <div class='pointer-events-none absolute -right-20 -top-20 size-96 rounded-full bg-accent/10 blur-3xl'></div>
 
@@ -79,7 +78,7 @@ const socialLinks = (data: any) =>
               fallback='/images/default_avatar.svg'
               width={800}
               height={800}
-              class='size-full object-cover transition-transform duration-700 group-hover:scale-102'
+              class='size-full object-cover transition-transform duration-700'
             />
             <div
               class='absolute inset-0 bg-linear-to-t from-background/80 via-background/10 to-transparent md:bg-linear-to-r md:from-transparent md:to-background/30'>
@@ -103,7 +102,7 @@ const socialLinks = (data: any) =>
                   <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>Email</span>
                   <a
                     href={`mailto:${dean.data.email}`}
-                    class='group/email inline-flex w-fit items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm text-stone-200 backdrop-blur-md transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent'>
+                    class='group/email inline-flex w-fit items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm text-stone-200 transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent'>
                     <span class='flex size-8 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-accent transition-colors group-hover/email:bg-accent/20'>
                       <SocialIcon name='email' />
                     </span>
@@ -124,7 +123,7 @@ const socialLinks = (data: any) =>
                         href={s.href}
                         target='_blank'
                         rel='noopener noreferrer'
-                        class='social-link group/s flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-medium text-stone-300 backdrop-blur-md transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent'>
+                        class='social-link group/s flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-medium text-stone-300 transition-all hover:border-accent/50 hover:bg-accent/10 hover:text-accent'>
                         <SocialIcon name={s.key} />
                         <span>{s.label}</span>
                       </a>
@@ -153,7 +152,7 @@ const socialLinks = (data: any) =>
           faculty.map((f, i) => {
             const socials = socialLinks(f.data);
             return (
-              <article class='staff-card group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] backdrop-blur-md transition-all duration-500 hover:border-accent/30 hover:bg-white/[0.04]'>
+              <article class='staff-card group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] transition-all duration-500 hover:border-accent/30 hover:bg-white/[0.04]'>
                 {/* Portrait */}
                 <div class='relative aspect-[4/5] overflow-hidden'>
                   <SanityImage
@@ -161,7 +160,7 @@ const socialLinks = (data: any) =>
                     fallback={`/images/default_avatar.svg`}
                     width={512}
                     height={640}
-                    class='size-full object-cover saturate-[0.85] transition-all duration-700 group-hover:scale-102 group-hover:saturate-100'
+                    class='size-full object-cover saturate-[0.85] transition-all duration-700 group-hover:saturate-100'
                   />
                   <div class='absolute inset-0 bg-linear-to-t from-background via-background/40 via-30% to-transparent' />
 

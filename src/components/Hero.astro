@@ -1,76 +1,165 @@
-<main class='relative min-h-screen w-full flex items-center justify-center'>
+---
+import { getCollection } from 'astro:content';
+import SanityImage from '@/components/SanityImage.astro';
+
+const news = await getCollection('news');
+const pinnedNews = news.filter((n) => n.data.pin ?? false);
+---
+
+<main class='relative min-h-screen w-full flex items-center justify-center overflow-hidden'>
   {/* Background Image */}
   <div class='absolute inset-0'>
     <img src='/images/home_background.avif' alt='Background' class='w-full h-full object-cover' />
-    <div class='absolute inset-0 bg-gradient-to-t from-black/75 from-10% to-black/33 to-90%'></div>
+    <div class='absolute inset-0 bg-black/55'></div>
   </div>
 
-  <div class='relative z-10 flex flex-col items-center text-center px-2 sm:px-6 mt-18 sm:mt-8'>
+  <div class='relative z-10 flex flex-col items-center text-center px-2 sm:px-6 mt-18 sm:mt-26 w-full'>
     {/* Logo */}
     <div class='flex flex-col justify-center items-center gap-6 mb-6 sm:mb-12'>
       <div
         class="relative inline-flex
           after:absolute
-          after:-inset-3.25
+          after:-inset-2
           after:rounded-full
-          after:animate-[spin_24s_linear_infinite]
+          after:animate-[spin_48s_linear_infinite]
           after:bg-[repeating-conic-gradient(theme(colors.accent/.35)_3deg_22deg,transparent_12deg_24deg)]
           after:[mask:radial-gradient(farthest-side,transparent_calc(100%-2px),white_0)]
           after:content-['']">
         <img
           width={80}
           src='/images/ceite_small.webp'
-          class='drop-shadow-lg rounded-full p-2 bg-black/25 border border-accent/50'
+          class='drop-shadow-lg rounded-full p-1.5 bg-black/25 border border-accent/50'
           alt='Asiatech logo'
         />
       </div>
       <div class='text-white'>
         <div class='flex items-center gap-3 text-[12.5px] font-medium uppercase tracking-[0.35em] text-white/75'>
           <span class='h-[2px] w-16 bg-linear-to-r from-transparent via-accent to-transparent'></span>
-          <div
-            class='flex items-center gap-4 bg-black/50 px-4 py-2 sm:px-12 border-accent/67 rounded-tr-3xl rounded-tl-3xl corner-bevel border'>
-            <h3
-              class='text-[7.75px] sm:text-[9px] font-light text-white/75 uppercase tracking-widest sm:tracking-[0.3em]'>
-              College of Engineering &amp; IT Education
-            </h3>
-          </div>
-          <span class='h-[2px] w-16 bg-linear-to-r from-transparent via-accent to-transparent' '></span>
+          <h3
+            class='text-[7.75px] sm:text-[9px] font-light text-white/75 uppercase tracking-widest sm:tracking-[0.3em]'>
+            College of Engineering &amp; IT Education
+          </h3>
+          <span class='h-[2px] w-16 bg-linear-to-r from-transparent via-accent to-transparent'></span>
         </div>
       </div>
     </div>
 
     {/* Main Title */}
-    <h1 class='text-6xl sm:text-7xl md:text-8xl font-(family-name:--font-tiktok) text-white tracking-wide mb-2'>
+    <h1 class='text-[clamp(36px,4vw,72px)] font-(family-name:--font-tiktok) text-white leading-none tracking-wide mb-2'>
       Build. Code. Engineer.
     </h1>
 
     {/* Subtitle */}
-    <h2 class='text-[clamp(0.9rem,2vw,1.2rem)] max-w-[65ch] font-light text-stone-300 mb-8 w-full tracking-wider'>
+    <h2 class='text-[clamp(10px,1.25vw,20px)] max-w-[65ch] font-light text-stone-300 mb-8 w-full tracking-wider'>
       Become the Next Generation of Asiatechian Tech Pioneers. Lorem ipsum dolor sit amet consectetur adipisicing elit.
     </h2>
 
-    {/* Scroll indicator */}
-    <div class='flex flex-col items-center gap-3 mt-8'>
-      <span class='text-[10px] tracking-[0.3em] uppercase text-stone-300'>Explore</span>
-
-      <div class='relative flex items-center justify-center'>
-        {/* Pulsing glow ring */}
-
-        {/* Bouncing arrow */}
-        <span class='relative flex size-12 items-center justify-center animate-bounce'>
-          <svg
-            class='h-8 w-5 text-white'
-            viewBox='0 0 24 32'
-            fill='none'
-            stroke='currentColor'
-            stroke-width='1.5'
-            stroke-linecap='round'
-            stroke-linejoin='round'
-            aria-hidden='true'>
-            <path d='M12 2v26M19 22l-7 7-7-7'></path>
-          </svg>
-        </span>
-      </div>
+    <div class='group flex flex-col items-center gap-3 mt-8'>
+      <a href='#about' class='custom-button'>Explore ↓</a>
     </div>
+
+    {/* Pinned Posts Slider */}
+    {
+      pinnedNews.length > 0 && (
+        <div class='mt-8 w-full max-w-4xl px-4'>
+          <div class='mb-4 flex items-center justify-center gap-3 text-[10px] tracking-[0.3em] uppercase text-white/60'>
+            <span class='size-1.5 rounded-full bg-accent animate-pulse' />
+            <span>Pinned Posts</span>
+          </div>
+          <div id='hero-pagination' class='swiper-pagination mb-3 !static' />
+
+          <div
+            id='swiper-pinned'
+            class='swiper relative rounded-2xl overflow-hidden border border-white/10 bg-black/30 backdrop-blur-xs'>
+            <div class='swiper-wrapper'>
+              {pinnedNews.map((n) => (
+                <div class='swiper-slide'>
+                  <a
+                    href={`/news/${n.data.slug}`}
+                    class='block relative aspect-video sm:aspect-[16/9] w-full overflow-hidden group/pin'>
+                    <SanityImage
+                      image={n.data.image}
+                      width={1366}
+                      height={768}
+                      loading='lazy'
+                      class='absolute inset-0 size-full object-cover transition-transform duration-700 group-hover/pin:scale-105'
+                    />
+                    {/* Gradient overlay for text legibility */}
+                    <div class='absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/10' />
+
+                    {/* Content */}
+                    <div class='absolute inset-0 flex flex-col justify-end p-6 sm:p-8 md:p-10 text-left'>
+                      {n.data.category && (
+                        <span class='mb-3 inline-flex w-fit items-center gap-2 rounded-full border border-accent/50 bg-accent/15 px-3 py-1 text-[10px] font-bold tracking-[0.25em] uppercase text-accent backdrop-blur-xs'>
+                          <span class='size-1.5 rounded-full bg-accent' />
+                          {n.data.category}
+                        </span>
+                      )}
+                      <h3 class='font-extrabold text-[clamp(20px,2vw,36px)] text-2xl sm:text-3xl md:text-4xl leading-tight text-white drop-shadow-lg max-w-3xl'>
+                        {n.data.title}
+                      </h3>
+                    </div>
+                  </a>
+                </div>
+              ))}
+            </div>
+
+            {/* navigator */}
+            <div class='swiper-button-prev' />
+            <div class='swiper-button-next' />
+          </div>
+        </div>
+      )
+    }
   </div>
 </main>
+
+<script>
+  import Swiper from 'swiper';
+  import { Navigation, Pagination, Autoplay, Keyboard } from 'swiper/modules';
+  import 'swiper/css';
+  import 'swiper/css/navigation';
+  import 'swiper/css/pagination';
+
+  let pinnedSwiper: Swiper | null = null;
+
+  function initPinnedSwiper() {
+    const el = document.querySelector('#swiper-pinned');
+    if (!el) return;
+
+    if (pinnedSwiper) {
+      pinnedSwiper.destroy(true, true);
+      pinnedSwiper = null;
+    }
+
+    pinnedSwiper = new Swiper('#swiper-pinned', {
+      modules: [Navigation, Pagination, Autoplay, Keyboard],
+      slidesPerView: 1,
+      spaceBetween: 0,
+      loop: true,
+      speed: 600,
+      keyboard: { enabled: true },
+      autoplay: {
+        delay: 5000,
+        disableOnInteraction: false,
+      },
+      navigation: {
+        nextEl: '#swiper-pinned .swiper-button-next',
+        prevEl: '#swiper-pinned .swiper-button-prev',
+      },
+      pagination: {
+        el: '#hero-pagination',
+        clickable: true,
+      },
+    });
+  }
+
+  document.addEventListener('astro:page-load', initPinnedSwiper);
+
+  document.addEventListener('astro:before-swap', () => {
+    if (pinnedSwiper) {
+      pinnedSwiper.destroy(true, true);
+      pinnedSwiper = null;
+    }
+  });
+</script>

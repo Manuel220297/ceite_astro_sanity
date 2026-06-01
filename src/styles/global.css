@@ -5,13 +5,14 @@
   --color-background: #161514;
   --color-foreground: #f7f7f7;
   --color-accent: #ff9c45;
-  --color-neutral: #b1a49f;
+  --color-neutral: #cec2b8;
 }
 
 @layer base {
   :root {
     --background: #ffffff;
     --accent: #ff9c45;
+    --swiper-navigation-color: var(--color-accent);
     color-scheme: dark;
   }
 
@@ -32,6 +33,13 @@
 }
 
 @layer components {
+  .custom-button {
+    @apply text-sm px-14 py-2 border-4 border-y-stone-900 bg-stone-700/40 border-accent text-accent inset-shadow-[0_0_24px_-8px_rgb(from_var(--accent)_r_g_b_/_1)] backdrop-blur-xs
+  rounded-tl-4xl rounded-br-4xl corner-bevel font-(family-name:--font-tiktok) uppercase tracking-widest
+  hover:bg-accent hover:px-16 hover:rounded-bl-4xl hover:rounded-tr-3xl hover:rounded-tl-3xl hover:rounded-br-4xl hover:scale-103 hover:border-stone-800 hover:tracking-[0.2em] hover:text-stone-800 hover:text-shadow-2xs hover:text-shadow-orange-200 hover:outline hover:outline-offset-2 outline-accent hover:shadow-[0_0_32px_1px_rgb(from_var(--accent)_r_g_b_/_0.5)]
+  transition-all ease-out duration-333 select-none cursor-pointer
+  active:scale-98 active:ease-float-spring active:brightness-75 active:tracking-widest active:duration-100;
+  }
   .footer {
     @apply relative;
 
@@ -45,8 +53,13 @@
     @apply text-2xl font-semibold;
   }
 
-  .announcement a {
-    @apply underline;
+  .text-stroke {
+    --stroke: clamp(0.25px, 0.1vw, 1px);
+    text-shadow:
+      calc(-1 * var(--stroke)) calc(-1 * var(--stroke)) 0 #ffffff52,
+      var(--stroke) calc(-1 * var(--stroke)) 0 #ffffff52,
+      calc(-1 * var(--stroke)) var(--stroke) 0 #ffffff52,
+      var(--stroke) var(--stroke) 0 #ffffff52;
   }
 
   .portable-text {
@@ -152,11 +165,11 @@
 
   #swiper-program {
     .swiper-slide {
-      @apply h-full overflow-hidden rounded-[40px] relative;
+      @apply h-full overflow-hidden rounded-2xl corner-squircle relative;
     }
 
     .swiper-slide::before {
-      @apply content-[''] absolute inset-0 rounded-[40px] pointer-events-none z-10 border-2 shadow-[inset_12px_-12px_64px_-32px_rgb(from_var(--color-accent)_r_g_b_/_0.26)];
+      @apply content-[''] absolute inset-0 rounded-2xl corner-squircle pointer-events-none z-10 border-2 shadow-[inset_12px_-12px_64px_-32px_rgb(from_var(--color-accent)_r_g_b_/_0.26)];
       border: 1.5px solid rgb(from var(--color-accent) r g b / 1);
       opacity: 0;
       transition: opacity 400ms ease-in 400ms;
@@ -164,10 +177,6 @@
 
     .swiper-slide-active::before {
       opacity: 1;
-    }
-
-    .img-wrapper {
-      @apply w-full h-full rounded-[40px];
     }
 
     /* Inactive slides — desaturated, scaled, faded */
@@ -180,29 +189,51 @@
 
     /* Inactive slides hide overlays + content */
     .swiper-slide:not(.swiper-slide-active) .gradient-layer {
-      @apply opacity-0 transition-opacity duration-500 ease-out;
+      @apply opacity-0 transition-opacity duration-275 ease-in-out;
     }
     .swiper-slide .gradient-layer {
-      @apply opacity-100 transition-opacity duration-500 ease-out;
+      @apply opacity-100 transition-opacity duration-275 ease-in-out;
     }
 
     .swiper-slide:not(.swiper-slide-active) > .absolute:last-child {
-      @apply opacity-0 transition-opacity duration-500 ease-out pointer-events-none;
+      @apply opacity-0 transition-opacity duration-275 ease-in-out pointer-events-none;
     }
     .swiper-slide-active > .absolute:last-child {
-      @apply opacity-100 transition-opacity duration-500 delay-150 ease-out;
+      @apply opacity-100 transition-opacity duration-275 delay-150 ease-in-out;
+    }
+
+    .swiper-button-disabled {
+      @apply !opacity-0 pointer-events-none cursor-default;
+    }
+
+    .img-wrapper {
+      @apply w-full h-full rounded-[40px];
     }
 
     .img-wrapper img {
       @apply w-full h-full object-cover select-none;
     }
 
-    .career-paths li::before {
-      @apply content-['–'] text-accent shrink-0 mr-1;
-    }
+    .career-paths {
+      ul {
+        @apply flex flex-row flex-wrap gap-1;
 
-    .swiper-button-disabled {
-      @apply !opacity-0 pointer-events-none cursor-default;
+        &::after {
+          content: '+ More...';
+          @apply px-2 sm:px-3 py-0.75 sm:py-1.5 font-bold  text-[7.5px] sm:text-[10px] backdrop-blur-xs border border-accent bg-accent/25 text-accent;
+        }
+      }
+
+      li {
+        @apply px-2 sm:px-3 py-0.75 sm:py-1.5 font-bold  text-[7.5px] sm:text-[10px] backdrop-blur-xs border border-stone-700 text-neutral bg-stone-100/8;
+        &::before {
+          @apply content-['•'] text-accent shrink-0 mr-1;
+        }
+
+        &:nth-child(n + 4) {
+          @apply hidden;
+        }
+      }
     }
   }
 
@@ -266,7 +297,7 @@
   }
 
   .program-bullet__logo-wrap {
-    @apply relative flex items-center justify-center size-12 sm:size-24 rounded-full border border-white/15 bg-stone-900/60 p-2 sm:p-3.5 backdrop-blur-sm;
+    @apply relative flex items-center justify-center size-12 sm:size-24 rounded-full border border-white/15 bg-stone-900/60 p-2 sm:p-3.5 backdrop-blur-xs;
     transition:
       border-color 400ms ease-out,
       background-color 400ms ease-out,
@@ -307,6 +338,7 @@
       letter-spacing 400ms ease-out;
   }
 
+  #hero-pagination,
   #swiper-curriculum-pagination {
     .swiper-pagination-bullet {
       @apply !bg-white !size-2.5 transition-all duration-535 ease-out;
@@ -506,6 +538,42 @@
     0.889 73.4%,
     0.999 84.4%,
     0.977 89.4%,
+    1
+  );
+}
+
+@utility ease-overshoot-out {
+  transition-timing-function: linear(
+    0,
+    0.217 3.5%,
+    0.409 7.1%,
+    0.575 10.8%,
+    0.717 14.6%,
+    0.781 16.6%,
+    0.838 18.6%,
+    0.889 20.6%,
+    0.935 22.7%,
+    0.978 24.9%,
+    1.014 27.1%,
+    1.045 29.4%,
+    1.071 31.7%,
+    1.087 33.5%,
+    1.101 35.3%,
+    1.112 37.2%,
+    1.121 39.2%,
+    1.127 41.3%,
+    1.131 43.4%,
+    1.132 45.6%,
+    1.13 47.9%,
+    1.124 51.7%,
+    1.112 55.9%,
+    1.097 60.1%,
+    1.045 73%,
+    1.031 77.2%,
+    1.02 81.1%,
+    1.01 85.5%,
+    1.004 89.9%,
+    1.001 94.5%,
     1
   );
 }

@@ -1,94 +1,20 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
-import { getSemesterUnits } from '@/lib/utils/getSemesterUnits';
-import { getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 
-const bsitCurriculum = await getEntry('curriculum', 'bsit');
-const enOrdinalRules = new Intl.PluralRules("en-US", { type: "ordinal" });
+const news = await getCollection('news');
 
-const suffixes = new Map([
-  ["one", "st"],
-  ["two", "nd"],
-  ["few", "rd"],
-  ["other", "th"],
-]);
-const formatOrdinals = (n: number) => {
-  const rule = enOrdinalRules.select(n);
-  const suffix = suffixes.get(rule);
-  return `${n}${suffix}`;
-};
+const filteredNews = news.filter((n) => n.data.pin ?? false);
 
-console.log('1st Semester Units: ', getSemesterUnits(bsitCurriculum?.data.years[0]?.semesters[0]?.subjects))
-console.log('second Semester Units: ', getSemesterUnits(bsitCurriculum?.data.years[0]?.semesters[1]?.subjects))
-
+console.log(filteredNews.map((n) => n.data.title));
 ---
 
 <MainLayout>
-<section class='mt-24'>
-    <div class='border border-stone-600 rounded-xl p-6 m-6'>
-      <h1 class='font-bold text-4xl mb-8'>Program Name: {bsitCurriculum?.data.program}</h1>
-      {
-        bsitCurriculum?.data.years.map((year) => (
-          <h1 class="font-bold text-4xl">{formatOrdinals(year?.year ?? 0)} Year </h1>
-          <div class='flex gap-4 mb-12'>
-            <div class='flex flex-col gap-2'>
-              <h2 class='font-bold text-3xl text-accent'>Code:</h2>
-              {year?.semesters.map((semester) => (
-                <div class='flex flex-col gap-2'>
-                  <h2 class='font-semibold text-2xl text-accent'>Semester {semester?.semester}</h2>
-                  {semester?.subjects.map((subject) => (
-                    <span>{subject.code}</span>
-                  ))}
-                </div>
-              ))}
-            </div>
-            <div class='flex flex-col gap-2'>
-              <h2 class='font-bold text-3xl text-accent'>Subject:</h2>
-              {year?.semesters.map((semester) => (
-                <div class='flex flex-col gap-2'>
-                  <h2 class='font-semibold text-2xl text-accent'>Semester {semester?.semester}</h2>
-                  {semester?.subjects.map((subject) => (
-                    <span>{subject.subject}</span>
-                  ))}
-                </div>
-              ))}
-            </div>
-            <div class='flex flex-col gap-2'>
-              <h2 class='font-bold text-3xl text-accent'>Units:</h2>
-              {year?.semesters.map((semester) => (
-                <div class='flex flex-col gap-2'>
-                  <h2 class='font-semibold text-2xl text-accent'>Semester {semester?.semester}</h2>
-                  {semester?.subjects.map((subject) => (
-                    <span>{subject.units}</span>
-                  ))}
-                </div>
-              ))}
-            </div>
-            <div class='flex flex-col gap-2'>
-              <h2 class='font-bold text-3xl text-accent'>Prerequisite:</h2>
-              {year?.semesters.map((semester) => (
-                <div class='flex flex-col gap-2'>
-                  <h2 class='font-semibold text-2xl text-accent'>Semester {semester?.semester}</h2>
-                  {semester?.subjects.map((subject) => (
-                    <span>{subject.prerequisite ?? 'undefined'}</span>
-                  ))}
-                </div>
-              ))}
-            </div>
-            <div class='flex flex-col gap-2'>
-              <h2 class='font-bold text-3xl text-accent'>isSpecialization:</h2>
-              {year?.semesters.map((semester) => (
-                <div class='flex flex-col gap-2'>
-                  <h2 class='font-semibold text-2xl text-accent'>Semester {semester?.semester}</h2>
-                  {semester?.subjects.map((subject) => (
-                    <span>{subject.isSpecialization ? 'TRUE' : 'FALSE'}</span>
-                  ))}
-                </div>
-              ))}
-            </div>
-          </div>
-        ))
-      }
-    </div>
+  <section class='mt-24'>
+    <h1 class='text-4xl font-bold'>Pinned News</h1>
+    {filteredNews.map((n) => <h3 class='text-xl'>{n.data.title} </h3>)}
   </section>
+  <div class='flex justify-center items-center'>
+    <div class='custom-button'>About ↓</div>
+  </div>
 </MainLayout>
