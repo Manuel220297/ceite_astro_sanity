@@ -3,6 +3,7 @@ import { PortableText } from 'astro-portabletext';
 import { getCollection } from 'astro:content';
 import SanityPortableImage from './SanityPortableImage.astro';
 import SanityHighlight from './SanityHighlight.astro';
+import Breadcrumb from './Breadcrumb.astro';
 
 const [about] = await getCollection('about');
 
@@ -13,29 +14,32 @@ const components = {
 };
 ---
 
-<section id='about' class='relative bg-neutral-950 px-6 py-20 sm:px-10 lg:px-16 lg:py-28'>
+<section id='about' class='relative px-6 py-20 sm:px-10 lg:px-16 lg:py-28'>
   {/* Decorative grid background */}
-  <div class='pointer-events-none absolute inset-0 opacity-[0.45] pattern-circuit'></div>
+  <div class='pointer-events-none absolute inset-0 opacity-[0.45]'></div>
 
-  {/* Glow accent */}
-  <div
-    class='pointer-events-none absolute -top-50 right-1/2 h-[500px] w-[500px] rounded-full bg-accent/20 blur-[180px]'>
-  </div>
+  {/* Glow */}
+  <div class='pointer-events-none absolute top-50 right-1/2 h-[300px] w-[300px] bg-accent/20 blur-[140px]'></div>
 
   <div class='relative mx-auto max-w-7xl'>
     {/* Eyebrow */}
-    <div class='mb-16 flex items-center gap-3'>
-      <span class='h-px w-12 bg-accent'></span>
-      <span class='text-xs font-semibold uppercase tracking-[0.3em] text-accent'> About </span>
-    </div>
+    <Breadcrumb class='mb-8 sm:mb-24' items={[{ label: 'ABOUT • C.E.I.T.E.' }]} />
 
-    <div class='flex justify-center items-center gap-2 sm:gap-4 text-white mb-30'>
+    <div class='flex justify-center items-center gap-2 sm:gap-4 text-white mb-8 sm:mb-16 md::mb-30'>
       <img src='/images/ceite_small.webp' alt='CEITE Logo' class='shrink-0 size-[clamp(48px,6vw,96px)]' />
       <div class='flex flex-col items-center'>
-        <h2
-          class='font-(family-name:--font-tiktok) leading-none tracking-wider text-transparent bg-clip-text bg-[linear-gradient(to_top,_#ffffff_8%,_#8e8e8e_50%,_#ffffff_72%)] text-[clamp(40px,5vw,90px)] text-shadow-[0px_0px_12px_5px_rgba(0,0,0,1)]'>
-          C.E.I.T.E.
-        </h2>
+        <div class='relative inline-block'>
+          <h2
+            class='absolute inset-0 z-0 text-stroke text-[clamp(40px,5vw,90px)] font-(family-name:--font-tiktok) leading-none tracking-wider'
+            aria-hidden='true'>
+            C.E.I.T.E.
+          </h2>
+
+          <h2
+            class='relative z-10 text-transparent bg-clip-text bg-[linear-gradient(to_top,_#ffffff_8%,_#8e8e8e_50%,_#ffffff_72%)] text-[clamp(40px,5vw,90px)] font-(family-name:--font-tiktok) leading-none tracking-wider'>
+            C.E.I.T.E.
+          </h2>
+        </div>
         <h5 class='text-[clamp(7px,1vw,16px)] text-stone-400 mt-1 whitespace-nowrap'>
           College of <span class='text-accent'>Engineering</span> and <span class='text-accent'
             >Information Technology</span

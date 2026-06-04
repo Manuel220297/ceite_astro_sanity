@@ -4,6 +4,7 @@ import SanityImage from '../SanityImage.astro';
 import SanityPortableImage from '../SanityPortableImage.astro';
 import SanityHighlight from '../SanityHighlight.astro';
 import type { CollectionEntry } from 'astro:content';
+import Breadcrumb from '../Breadcrumb.astro';
 
 interface Props {
   program: CollectionEntry<'programs'>;
@@ -22,24 +23,12 @@ const components = {
 ---
 
 <section id='program-overview'>
-  <div class='max-w-[1366px] mx-auto px-8 sm:px-16 py-8'>
+  <div class='max-w-[1600px] mx-auto px-8 sm:px-16 py-8'>
     <article class='mb-18'>
-      <div class='flex items-center gap-5 mb-2'>
-        <span
-          class='size-2 shrink-0 rounded-full animate-pulse bg-accent shadow-[0px_0px_0px_5px_rgb(from_var(--color-accent)_r_g_b_/_0.15)]'
-        ></span>
-
-        <!-- Breadcrumb -->
-
-        <div class='tracking-[0.25em] text-xs text-stone-500 whitespace-nowrap'>
-          <span class='text-stone-300 hover:text-accent transition-colors duration-200 ease-out'
-            ><a href='/'>CEITE</a></span
-          > / <span class='text-stone-300 hover:text-accent transition-colors duration-200 ease-out'
-            ><a href='/programs'>PROGRAMS</a></span
-          > / {program.data.title}
-        </div>
-        <span class='w-full h-px mb-2 bg-linear-to-r from-stone-400/40 to-transparent'></span>
-      </div>
+      <Breadcrumb
+        tail='01 / 04'
+        items={[{ label: 'CEITE', href: '/' }, { label: 'PROGRAMS', href: '/programs' }, { label: program.data.title }]}
+      />
 
       <!-- Overview -->
 
@@ -116,7 +105,8 @@ const components = {
 
     <!-- Specialization -->
 
-    <article>
+    <article id='program-overview-specialization'>
+      <Breadcrumb class='mb-8' tail='02 / 04' items={[{ label: `${program.data.title} #SPECIALIZATION` }]} />
       <div class='mb-8'>
         <h2 class='text-[clamp(2rem,5vw,3rem)] leading-tight font-bold w-full'>
           SPECIALIZATION
@@ -128,12 +118,12 @@ const components = {
         {
           program.data.specializations?.map((s) => (
             <div
-              class='flex flex-col border border-stone-700 rounded-2xl bg-stone-900 overflow-hidden'
+              class='flex flex-col border border-stone-700 rounded-2xl corner-squircle bg-stone-900 overflow-hidden'
               style={`--program-color: ${s.color}`}>
               <div class='relative w-full overflow-hidden'>
                 <SanityImage class='w-full h-full aspect-[16/10] object-cover' image={s.image} />
 
-                <div class='absolute inset-0 bg-gradient-to-t from-stone-900 from-10% to-transparent' />
+                <div class='absolute inset-0 bg-gradient-to-t from-stone-900 from-7% to-42% to-transparent' />
               </div>
               <div
                 class='flex 
@@ -158,12 +148,12 @@ const components = {
               [&_li]:py-[5.5px]
               
               '>
-                <h4 class='text-xs font-regular tracking-wider text-[var(--program-color)]'>
+                <h4 class='text-[11px] font-light tracking-widest text-[var(--program-color)]'>
                   — {program.data.title} SPECIALIZATION
                 </h4>
-                <h2 class='text-3xl my-2'>{s.specialization}</h2>
+                <h2 class='text-3xl my-1'>{s.specialization}</h2>
                 <span
-                  class='block w-full h-px mb-4'
+                  class='block w-full h-1 mb-4'
                   style={`background: linear-gradient(90deg, ${s.color}, transparent)`}
                 />
                 <PortableText value={s.body} components={components} />

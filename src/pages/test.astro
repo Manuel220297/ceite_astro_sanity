@@ -1,9 +1,7 @@
 ---
 import MainLayout from '@/layouts/MainLayout.astro';
 import { getCollection } from 'astro:content';
-
 const news = await getCollection('news');
-
 const filteredNews = news.filter((n) => n.data.pin ?? false);
 
 console.log(filteredNews.map((n) => n.data.title));

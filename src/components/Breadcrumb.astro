@@ -1,0 +1,43 @@
+---
+import clsx from 'clsx';
+
+type BreadcrumbItem = {
+  label: string;
+  href?: string;
+};
+
+interface Props {
+  tail?: string;
+  class?: string;
+  items: BreadcrumbItem[];
+}
+
+const { items = [] as BreadcrumbItem[], tail, class: className } = Astro.props;
+---
+
+<div class={clsx('flex items-center justify-center gap-2 sm:gap-5 mb-2 text-[clamp(8px,1vw,12px)]', className)}>
+  <span
+    class='size-1 sm:size-2 shrink-0 rounded-full animate-pulse bg-accent shadow-[0px_0px_0px_3px_rgb(from_var(--color-accent)_r_g_b_/_0.15)] sm:shadow-[0px_0px_0px_5px_rgb(from_var(--color-accent)_r_g_b_/_0.15)]'
+  ></span>
+
+  <nav class='tracking-[0.25em] text-stone-500 whitespace-nowrap'>
+    {
+      items.map((item: BreadcrumbItem, index: number) => (
+        <>
+          {item.href ? (
+            <a href={item.href} class='text-stone-300 hover:text-accent transition-colors duration-200 ease-out'>
+              {item.label}
+            </a>
+          ) : (
+            <span class='text-stone-500'>{item.label}</span>
+          )}
+
+          {index < items.length - 1 && ' / '}
+        </>
+      ))
+    }
+  </nav>
+
+  <span class='w-full h-px bg-linear-to-r from-stone-400/40 to-transparent'></span>
+  {tail ? <span class='tracking-[0.25em] text-stone-500 whitespace-nowrap'>{tail}</span> : ''}
+</div>

@@ -4,8 +4,21 @@
   --font-serif: 'Times New Roman', Times, serif;
   --color-background: #161514;
   --color-foreground: #f7f7f7;
-  --color-accent: #ff9c45;
+  --color-accent: var(--color-accent-400);
   --color-neutral: #cec2b8;
+
+  --color-accent-50: #fff7ed;
+  --color-accent-100: #ffedd4;
+  --color-accent-200: #ffd8a8;
+  --color-accent-300: #ffbc71;
+  --color-accent-400: #ff9c45;
+  --color-accent-500: #fe7611;
+  --color-accent-600: #ef5a07;
+  --color-accent-700: #c64308;
+  --color-accent-800: #9d350f;
+  --color-accent-900: #7e2e10;
+  --color-accent-950: #441506;
+  --color-accent-1000: #1d0e09;
 }
 
 @layer base {
@@ -33,10 +46,22 @@
 }
 
 @layer components {
+  .hero-logo {
+    &::after {
+      @apply absolute
+          -inset-2
+          rounded-full
+          animate-[spin_48s_linear_infinite]
+          bg-[repeating-conic-gradient(rgb(from_var(--color-accent)_r_g_b_/_0.4)_3deg_22deg,transparent_12deg_24deg)]
+          [mask:radial-gradient(farthest-side,transparent_calc(100%-2px),white_0)]
+          content-[''];
+    }
+  }
+
   .custom-button {
-    @apply text-sm px-14 py-2 border-4 border-y-stone-900 bg-stone-700/40 border-accent text-accent inset-shadow-[0_0_24px_-8px_rgb(from_var(--accent)_r_g_b_/_1)] backdrop-blur-xs
+    @apply text-sm px-14 py-2 border-4 border-y-stone-900 bg-stone-700/40 border-accent text-accent inset-shadow-[0_0_24px_-8px_rgb(from_var(--accent)_r_g_b_/_1)]
   rounded-tl-4xl rounded-br-4xl corner-bevel font-(family-name:--font-tiktok) uppercase tracking-widest
-  hover:bg-accent hover:px-16 hover:rounded-bl-4xl hover:rounded-tr-3xl hover:rounded-tl-3xl hover:rounded-br-4xl hover:scale-103 hover:border-stone-800 hover:tracking-[0.2em] hover:text-stone-800 hover:text-shadow-2xs hover:text-shadow-orange-200 hover:outline hover:outline-offset-2 outline-accent hover:shadow-[0_0_32px_1px_rgb(from_var(--accent)_r_g_b_/_0.5)]
+  hover:bg-accent hover:px-16 hover:rounded-bl-4xl hover:rounded-tr-3xl hover:rounded-tl-3xl hover:rounded-br-4xl hover:scale-103 hover:border-accent-950 hover:tracking-[0.2em] hover:text-accent-900 hover:text-shadow-2xs hover:text-shadow-accent-200 hover:outline hover:outline-offset-2 outline-accent hover:shadow-[0_0_32px_1px_rgb(from_var(--accent)_r_g_b_/_0.5)]
   transition-all ease-out duration-333 select-none cursor-pointer
   active:scale-98 active:ease-float-spring active:brightness-75 active:tracking-widest active:duration-100;
   }
@@ -51,15 +76,6 @@
 
   .about-data-body h2 {
     @apply text-2xl font-semibold;
-  }
-
-  .text-stroke {
-    --stroke: clamp(0.25px, 0.1vw, 1px);
-    text-shadow:
-      calc(-1 * var(--stroke)) calc(-1 * var(--stroke)) 0 #ffffff52,
-      var(--stroke) calc(-1 * var(--stroke)) 0 #ffffff52,
-      calc(-1 * var(--stroke)) var(--stroke) 0 #ffffff52,
-      var(--stroke) var(--stroke) 0 #ffffff52;
   }
 
   .portable-text {
@@ -95,33 +111,22 @@
       @apply my-4  space-y-1.5;
     }
 
-    /* ul {
-      @apply list-disc;
-    }
-
-    ol {
-      @apply list-decimal;
-    }*/
-
     li {
       @apply marker:text-sm marker:text-accent;
     }
   }
 
   .portable-text-article {
-    /* Generous paragraph spacing for reading */
     p {
       @apply leading-relaxed text-neutral mb-5 text-base sm:text-lg;
     }
 
-    /* Headings get breathing room */
     h2,
     h3,
     h4 {
       @apply mt-10 mb-4 text-stone-200;
     }
 
-    /* Lists */
     ul,
     ol {
       @apply pl-6 mb-5 space-y-2;
@@ -136,28 +141,23 @@
       @apply text-stone-300 leading-relaxed pl-1;
     }
 
-    /* Blockquote */
     blockquote {
       @apply my-8 border-l-2 border-accent pl-6 italic text-stone-200 text-lg;
     }
 
-    /* Inline code */
     code {
       @apply rounded bg-white/5 border border-white/10 px-1.5 py-0.5 text-sm text-accent font-mono;
     }
 
-    /* Links inside articles */
     a {
       @apply text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent;
     }
 
-    /* Images get rounded + spacing */
     figure,
     img {
       @apply my-8 rounded-xl;
     }
 
-    /* Horizontal rule */
     hr {
       @apply my-10 border-stone-700/50;
     }
@@ -220,12 +220,12 @@
 
         &::after {
           content: '+ More...';
-          @apply px-2 sm:px-3 py-0.75 sm:py-1.5 font-bold  text-[7.5px] sm:text-[10px] backdrop-blur-xs border border-accent bg-accent/25 text-accent;
+          @apply px-2 sm:px-3 py-0.75 sm:py-1.5 tracking-wider  text-[8px] sm:text-xs border border-accent bg-accent/25 text-accent;
         }
       }
 
       li {
-        @apply px-2 sm:px-3 py-0.75 sm:py-1.5 font-bold  text-[7.5px] sm:text-[10px] backdrop-blur-xs border border-stone-700 text-neutral bg-stone-100/8;
+        @apply px-2 sm:px-3 py-0.75 sm:py-1.5 tracking-wider  text-[8px] sm:text-xs border border-stone-700 text-neutral bg-stone-100/8;
         &::before {
           @apply content-['•'] text-accent shrink-0 mr-1;
         }
@@ -237,101 +237,57 @@
     }
   }
 
-  #swiper-program-pagination {
-    --swiper-pagination-bullet-width: auto;
-    --swiper-pagination-bullet-height: auto;
-    --swiper-pagination-bullet-inactive-opacity: 1;
-    --swiper-pagination-bullet-inactive-color: transparent;
-    --swiper-pagination-color: transparent;
-    --swiper-pagination-bullet-horizontal-gap: 0;
-    --swiper-pagination-bullet-border-radius: 0;
+  /* Program Thumbs*/
+  #swiper-program-thumbs {
+    .swiper-slide {
+      @apply w-auto h-auto;
+    }
   }
 
-  .swiper-pagination {
-    position: static !important;
-    width: 100% !important;
-    bottom: auto !important;
-    @apply !flex flex-wrap items-center justify-center gap-1 sm:gap-6;
-  }
-  .program-bullet {
-    @apply flex flex-col items-center gap-1.5 sm:gap-3 cursor-pointer p-1 sm:p-2;
+  .program-thumb {
+    @apply flex flex-col items-center gap-1.5 sm:gap-3 cursor-pointer p-1 sm:p-2 
+    bg-transparent border-0 scale-80 brightness-50 saturate-15 
+    transition-[filter_scale] duration-300 ease-overshoot-out;
 
-    opacity: 1 !important;
-    width: auto !important;
-    height: auto !important;
-    background: transparent !important;
-    border: 0 !important;
-    border-radius: 0 !important;
-    margin: 0 !important;
-
-    transform: scale(0.8);
+    /* transform: scale(0.8);
     filter: brightness(0.5) saturate(0.15);
 
     transition:
       transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1),
-      filter 500ms ease-out;
+      filter 500ms ease-out; */
 
     &:hover {
-      filter: brightness(0.85) saturate(0.85);
-      transform: scale(0.9);
-    }
-
-    &.swiper-pagination-bullet-active {
-      transform: scale(1);
-      filter: brightness(1) saturate(1);
-
-      .program-bullet__logo-wrap {
-        @apply border-transparent;
-        box-shadow: 0 8px 32px -8px rgb(from var(--color-accent) r g b / 0.45);
-
-        &::before,
-        &::after {
-          opacity: 1;
-        }
-      }
-
-      .program-bullet__title {
-        @apply text-accent tracking-[0.25em];
-      }
+      @apply scale-90 brightness-85 saturate-85;
     }
   }
 
-  .program-bullet__logo-wrap {
-    @apply relative flex items-center justify-center size-12 sm:size-24 rounded-full border border-white/15 bg-stone-900/60 p-2 sm:p-3.5 backdrop-blur-xs;
+  /* Active thumb — Swiper adds .swiper-slide-thumb-active to the parent slide */
+  .swiper-slide-thumb-active .program-thumb {
+    @apply scale-100 brightness-100 saturate-100;
+
+    .program-thumb__logo-wrap {
+      @apply border-accent/60;
+      box-shadow: 0 8px 32px -8px rgb(from var(--color-accent) r g b / 0.45);
+    }
+
+    .program-thumb__title {
+      @apply text-accent tracking-[0.25em];
+    }
+  }
+
+  .program-thumb__logo-wrap {
+    @apply relative flex items-center justify-center size-12 sm:size-24 rounded-full border border-white/15 bg-stone-900/60 p-2 sm:p-3.5;
     transition:
       border-color 400ms ease-out,
       background-color 400ms ease-out,
       box-shadow 400ms ease-out;
   }
 
-  /* Rotating accent ring — only visible on active */
-  .program-bullet__logo-wrap::before {
-    content: '';
-    @apply absolute -inset-1 rounded-full pointer-events-none;
-    background: conic-gradient(
-      from 0deg,
-      rgb(from var(--color-accent) r g b / 0.8),
-      rgb(from var(--color-accent) r g b / 0) 50%,
-      rgb(from var(--color-accent) r g b / 0.8)
-    );
-    opacity: 0;
-    transition: opacity 400ms ease-out;
-    animation: pagination-ring-spin 4s linear infinite;
+  .program-thumb__logo {
+    @apply size-full object-contain;
   }
 
-  /* Inner mask to make the conic gradient look like a ring, not a disk */
-  .program-bullet__logo-wrap::after {
-    content: '';
-    @apply absolute inset-0 rounded-full bg-stone-900 pointer-events-none;
-    opacity: 0;
-    transition: opacity 400ms ease-out;
-  }
-
-  .program-bullet__logo {
-    @apply size-full object-contain relative z-10;
-  }
-
-  .program-bullet__title {
+  .program-thumb__title {
     @apply text-[8px] sm:text-[10px] font-bold tracking-[0.15em] sm:tracking-[0.2em] text-stone-300;
     transition:
       color 400ms ease-out,
@@ -375,12 +331,6 @@
     opacity: 1;
   }
 
-  @keyframes pagination-ring-spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
   @keyframes card-rise {
     from {
       opacity: 0;
@@ -391,6 +341,11 @@
       transform: translateY(0);
     }
   }
+}
+
+@utility text-stroke {
+  --stroke: clamp(0.5px, 0.1vw, 1px);
+  -webkit-text-stroke: var(--stroke) white;
 }
 
 @utility corner-round {
@@ -580,6 +535,6 @@
 
 @utility pattern-graph {
   background-repeat: repeat;
-  background-size: 130px;
+  background-size: 160px;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-rule='evenodd'%3E%3Cg fill='%23969696' fill-opacity='0.11'%3E%3Cpath opacity='.5' d='M96 95h4v1h-4v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4h-9v4h-1v-4H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15v-9H0v-1h15V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h9V0h1v15h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9h4v1h-4v9zm-1 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm9-10v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-10 0v-9h-9v9h9zm-9-10h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9zm10 0h9v-9h-9v9z'/%3E%3Cpath d='M6 5V0H5v5H0v1h5v94h1V6h94V5H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
 }

@@ -20,8 +20,8 @@ const { program } = Astro.props;
         image={program.data.image}
       />
 
-      <div class='absolute inset-0 sm:bg-gradient-to-r from-black to-transparent'></div>
-      <div class='absolute inset-0 bg-gradient-to-t from-background from-10% to-transparent'></div>
+      <div class='absolute inset-0 sm:bg-linear-to-r from-black/75 to-transparent'></div>
+      <div class='absolute inset-0 bg-linear-to-t from-background from-0% to-50% to-transparent'></div>
       <div class='absolute inset-0 py-12 max-w-[90%] mx-auto flex flex-col-reverse'>
         <h2 class='text-xl tracking-widest text-stone-300'>{program.data.titleLong}</h2>
         <h1 class='text-6xl md:text-8xl font-(family-name:--font-tiktok) tracking-wider mb-2'>

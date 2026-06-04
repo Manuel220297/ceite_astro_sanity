@@ -4,6 +4,7 @@ import { getEntry } from 'astro:content';
 import clsx from 'clsx';
 import { getSemesterUnits } from '@/lib/utils/getSemesterUnits';
 import { getTotalUnits } from '@/lib/utils/getTotalUnits';
+import Breadcrumb from '../Breadcrumb.astro';
 
 interface Props {
   program: CollectionEntry<'programs'>;
@@ -46,6 +47,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
   {/* Headline */}
   <header class='relative z-10 mx-auto mb-20 max-w-[1600px] px-6 md:px-10'>
+    <Breadcrumb class='mb-8' tail='03 / 04' items={[{ label: `${program.data.title} #CURRICULUM` }]} />
+
     <div class='flex flex-col gap-8 md:flex-row md:items-end md:justify-between'>
       <div>
         <h2 class='font-extrabold tracking-wider text-5xl leading-[0.95] sm:text-6xl md:text-7xl'>
@@ -56,7 +59,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
       {/* Stats panel */}
       <div
-        class='flex justify-center items-end gap-6 sm:gap-10 rounded-2xl border border-white/10 bg-white/[0.02] px-6 py-5'>
+        class='flex justify-center items-end gap-6 sm:gap-10 corner-squircle rounded-2xl border border-white/10 bg-white/[0.02] px-6 py-5'>
         <div class='flex flex-col'>
           <span class='text-[11px] tracking-[0.25em] uppercase text-stone-400'>Years</span>
           <span class='font-(family-name:--font-tiktok) text-3xl text-stone-50 tabular-nums'>{pad(duration)}</span>
@@ -70,7 +73,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     </div>
   </header>
 
-  <div id='swiper-curriculum-pagination' class='swiper-pagination mb-3'></div>
+  <div id='swiper-curriculum-pagination' class='swiper-pagination !static mb-3'></div>
 
   {/* Swiper */}
   <div class='relative z-10 mx-auto w-full max-w-[1600px] xl:px-10'>
@@ -86,7 +89,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
             return (
               <div class='swiper-slide !h-auto'>
-                <div class='group/card flex h-full flex-col overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.015] transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.025]'>
+                <div class='group/card flex h-full flex-col overflow-hidden corner-squircle rounded-2xl border border-white/[0.08] bg-white/[0.015] transition-all duration-300 hover:border-white/[0.15] hover:bg-white/[0.025]'>
                   {/* Header Title */}
                   <div class='relative flex flex-col gap-1 border-b border-white/[0.06] px-6 pt-6 pb-5'>
                     <div class='swiper-no-swiping flex items-center justify-between'>

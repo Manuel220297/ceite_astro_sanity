@@ -8,6 +8,7 @@ import SanityHighlight from './SanityHighlight.astro';
 import { getCurriculumDuration } from '../lib/utils/getCurriculumDuration';
 import { getTotalUnits } from '../lib/utils/getTotalUnits';
 import { urlFor } from '@/lib/sanity/image';
+import Breadcrumb from './Breadcrumb.astro';
 
 const components = {
   type: {
@@ -25,7 +26,6 @@ const programData = await Promise.all(
   programs.map(async (p) => ({
     program: p,
     curriculum: await getEntry('curriculum', p.id),
-    logo: p.data.logo ? urlFor(p.data.logo).width(128).height(128).url() : '/images/asiatech_logo.avif',
   })),
 );
 
@@ -33,22 +33,21 @@ const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
 <section id='program-section' class='relative w-full overflow-hidden bg-background py-24 md:py-32'>
-  <!-- Top meta bar -->
   <div class='pointer-events-none absolute inset-0 opacity-[1] pattern-graph'></div>
-  <div
-    class='relative z-10 mx-auto mb-12 flex w-full max-w-[1600px] items-center gap-4 px-6 md:px-10 text-[10px] md:text-xs tracking-[0.25em] text-stone-500'>
-    <span class='flex items-center gap-2'>
-      <span class='relative inline-block size-1.5 rounded-full bg-accent'>
-        <span class='absolute inset-0 animate-ping rounded-full bg-accent/70'></span>
-      </span>
-      <span class='uppercase'>Programs Offered</span>
-    </span>
-    <span class='h-px flex-1 bg-linear-to-r from-stone-700/80 via-stone-700/30 to-transparent'></span>
-    <span class='uppercase'>CEITE</span>
+  <div class='pointer-events-none absolute inset-0 bg-linear-to-b from-background from-7% to-35% to-transparent z-1'>
   </div>
 
   <!-- Headline -->
-  <header class='relative z-10 mx-auto max-w-4xl px-6 text-center'>
+  <header class='relative z-10 mx-auto max-w-[1600px] px-6 text-center'>
+    <Breadcrumb
+      class='mb-12'
+      tail='PROGRAMS OFFERED'
+      items={[
+        { label: 'CEITE', href: '/' },
+        { label: 'PROGRAMS', href: '/programs' },
+      ]}
+    />
+
     <h1 class='font-(family-name:--font-tiktok) text-5xl leading-[0.95] sm:text-6xl md:text-7xl lg:text-8xl'>
       <span class='block text-stone-50'>C.E.I.T.E.</span>
       <span class='block text-accent'>Programs</span>
@@ -67,26 +66,45 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <strong class='font-bold text-stone-100'>Associate</strong>
   </header>
 
-  <!-- Pagination -->
+  <!-- Thumbs -->
   <div
-    id='swiper-program-pagination'
-    class='relative z-10 mx-auto mt-8 mb-0 sm:mb-6 w-full max-w-[1600px] px-6 md:px-10 select-none'>
-    <div class='swiper-pagination !static !flex flex-wrap items-center justify-center gap-4 sm:gap-6'></div>
+    id='swiper-program-thumbs'
+    class='swiper relative z-10 mx-auto mt-8 mb-0 sm:mb-6 w-full max-w-[1600px] px-6 md:px-10 select-none'>
+    <div class='swiper-wrapper'>
+      {
+        programData.map(({ program: p }) => (
+          <div class='swiper-slide !w-auto'>
+            <button type='button' class='program-thumb' aria-label={`Go to ${p.data.title}`}>
+              <span class='program-thumb__logo-wrap'>
+                <SanityImage
+                  class='program-thumb__logo'
+                  image={p.data.logo}
+                  fallback='/images/asiatech_logo.avif'
+                  format='none'
+                  width={128}
+                  height={128}
+                  loading='lazy'
+                />
+              </span>
+              <span class='program-thumb__title'>{p.data.title}</span>
+            </button>
+          </div>
+        ))
+      }
+    </div>
   </div>
 
   <!-- Slider -->
-  <div
-    id='swiper-program'
-    class='swiper relative mb-12 w-full max-w-[1920px] h-[clamp(490px,75vh,700px)] !px-4 !py-4 sm:!px-0'>
-    <div class='swiper-wrapper w-full h-full'>
+  <div id='swiper-program' class='swiper relative mb-12 w-full max-w-[1920px] h-[clamp(540px,77vh,645px)]'>
+    <div class='swiper-wrapper min-w-[400vw] h-full'>
       {
-        programData.map(({ program: p, curriculum, logo }, i) => (
-          <div class='swiper-slide group select-none' data-logo={logo} data-title={p.data.title}>
+        programData.map(({ program: p, curriculum }, i) => (
+          <div class='swiper-slide group select-none'>
             <div class='img-wrapper'>
               <SanityImage image={p.data.image} Xparallax={30} loading='lazy' width={1920} height={1080} />
               {/* Gradient layers */}
               <div class='gradient-layer absolute inset-0 bg-background/83 sm:bg-background/0 sm:bg-linear-to-t from-background/75 via-background/40 via-30% to-transparent' />
-              <div class='gradient-layer absolute inset-0  sm:bg-linear-to-r from-background/83 from-15% via-background/67 via-45% to-transparent' />
+              <div class='gradient-layer absolute inset-0  sm:bg-linear-to-r from-background/100 from-0% via-background/85 via-22% to-60% to-transparent' />
             </div>
 
             {/* Content */}
@@ -112,81 +130,77 @@ const pad = (n: number) => String(n).padStart(2, '0');
               </div>
 
               {/* Title */}
-              <div class='flex flex-col justify-start mb-4 sm:mb-8' data-swiper-parallax='-75'>
+              <div class='flex flex-col justify-start' data-swiper-parallax='-75'>
                 <div class='relative inline-block'>
-                  <h2 class='font-(family-name:--font-tiktok) leading-none tracking-wider text-transparent bg-clip-text bg-[linear-gradient(to_top,_#ffffff_8%,_#8e8e8e_50%,_#ffffff_72%)] text-[clamp(40px,5vw,90px)] text-shadow-[0px_0px_12px_5px_rgba(0,0,0,1)]'>
+                  <h2 class='py-2 font-(family-name:--font-tiktok) leading-none tracking-wider text-transparent bg-clip-text bg-[linear-gradient(to_top,_#dadada_8%,_#8b8b8b_50%,_#ffffff_72%)] text-[clamp(40px,5vw,90px)] text-shadow-[0px_0px_12px_5px_rgba(0,0,0,1)]'>
                     {p.data.title}
                   </h2>
                   <h2
-                    class='font-(family-name:--font-tiktok) leading-none tracking-wider text-stroke text-[clamp(40px,5vw,90px)] absolute inset-0 -z-10'
+                    class='py-2 font-(family-name:--font-tiktok) leading-none tracking-wider text-stroke text-[clamp(40px,5vw,90px)] absolute inset-0 -z-10'
                     aria-hidden='true'>
                     {p.data.title}
                   </h2>
                 </div>
-                <h3 class='my-2 text-neutral text-[clamp(8px,0.85vw,18px)]'>{p.data.titleLong}</h3>
+                <h3 class='text-neutral text-[clamp(8px,0.85vw,18px)]'>{p.data.titleLong}</h3>
               </div>
 
               {/* Stats */}
               <div class='flex flex-col gap-8' data-swiper-parallax='-25'>
-                <div class='flex flex-col gap-6'>
-                  <div class='flex items-end gap-8 sm:gap-12'>
-                    <div class='flex flex-col'>
-                      <span class='mb-2 text-[8px] sm:text-[10px] tracking-wider uppercase text-stone-400 font-medium'>
-                        Duration
-                      </span>
-                      <span class='font-extrabold text-md sm:text-xl text-accent'>
-                        {getCurriculumDuration(curriculum)}
-                        <span class='ml-0.5 text-[10px] sm:text-sm font-medium tracking-wider uppercase text-stone-400'>
-                          years
+                <div class='flex flex-col gap-4'>
+                  <span class='w-[50%] block h-px m-0 bg-linear-to-r from-stone-100/27 to-transparent' />
+
+                  <div class='flex flex-col'>
+                    <span class='mb-1.5 text-[8px] sm:text-[10px] tracking-wider uppercase text-stone-400'>
+                      Program Duration
+                    </span>
+
+                    <div class='flex items-end gap-1'>
+                      <div class='flex justify-end items-end gap-4 bg-black/8 py-1.5 px-4 border-stone-700 border'>
+                        <span class='font-bold text-sm sm:text-md text-stone-200'>
+                          {getCurriculumDuration(curriculum)}
+                          <span class='ml-0.5 text-[10px] font-medium tracking-wider uppercase text-stone-400'>
+                            years
+                          </span>
                         </span>
-                      </span>
-                    </div>
-                    <div class='h-10 w-px bg-stone-700/60' />
-                    <div class='flex flex-col'>
-                      <span class='mb-2 text-[8px] sm:text-[10px] tracking-wider uppercase text-stone-400 font-medium'>
-                        Total Units
-                      </span>
-                      {/* Total units — now reads from curriculum, not program */}
-                      <span class='font-extrabold text-md sm:text-xl tabular-nums text-accent'>
-                        {getTotalUnits(curriculum)}
-                        <span class='ml-0.5 text-[10px] sm:text-sm font-medium tracking-wider uppercase text-stone-400'>
+                        <span class='font-medium text-[9px] sm:text-[10px] tabular-nums text-stone-400'>/</span>
+                        <span class='font-medium text-[9px] sm:text-[10px] tabular-nums text-stone-400'>
+                          {getTotalUnits(curriculum)}
                           units
                         </span>
-                      </span>
-                    </div>
-                  </div>
-
-                  <span class='w-full block h-px m-0 bg-linear-to-r from-stone-700/67 to-transparent' />
-
-                  <div class='flex flex-col justify-between sm:justify-start gap-5'>
-                    <div class='flex flex-col'>
-                      <span class='mb-1.5 text-[8px] sm:text-[10px] tracking-wider uppercase text-stone-400'>
-                        Specialization Tracks
-                      </span>
-                      <ul class='flex flex-wrap gap-1.5 sm:gap-x-0 pl-5.5'>
-                        {p.data.specializations?.map((s) => (
-                          <li
-                            class='flex items-center gap-1 -ml-6 rounded-tr-full rounded-bl-full corner-bevel border border-[var(--program-color)]/50 bg-[var(--program-color)]/18 px-6 py-0.75 sm:px-9 sm:py-1.5 text-[7.5px] sm:text-[10px] font-extrabold text-[var(--program-color)] transition-colors hover:bg-[var(--program-color)]/25  backdrop-blur-xs'
-                            style={`--program-color: ${s.color}`}>
-                            <span class='size-1.5 shrink-0 animate-pulse brightness-125 saturate-150 rounded-full bg-[var(--program-color)] shadow-[0_0_8px_2px_rgb(from_var(--program-color)_r_g_b_/_0.5)]' />
-                            <span class='tracking-wide'>{s.specialization}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div class='flex flex-col'>
-                      <span class='mb-1.5 text-[8px] sm:text-[10px] tracking-wider uppercase text-stone-400'>
-                        Career Paths
-                      </span>
-                      <div class='career-paths'>
-                        <PortableText value={p.data.careers} components={components} />
                       </div>
                     </div>
                   </div>
+
+                  <div class='flex flex-col'>
+                    <span class='mb-1.5 text-[8px] sm:text-[10px] tracking-wider uppercase text-stone-400'>
+                      Specialization Tracks
+                    </span>
+                    <ul class='flex flex-wrap gap-2 sm:gap-x-0 pl-5.5'>
+                      {p.data.specializations?.map((s) => (
+                        <a
+                          href={`/programs/${p.data.slug}#program-overview-specialization`}
+                          class='flex items-center gap-1.5 -ml-6 rounded-tr-full rounded-bl-full corner-bevel border border-[var(--program-color)]/50 bg-[var(--program-color)]/18 px-6 py-0.75 sm:px-9 sm:py-1.5 text-[8px] sm:text-xs font-extrabold text-[var(--program-color)] transition-colors hover:bg-[var(--program-color)]/25'
+                          style={`--program-color: ${s.color}`}>
+                          <span class='size-0.75 sm:size-1.5 shrink-0 animate-pulse brightness-125 saturate-150 rounded-full bg-[var(--program-color)] shadow-[0_0_8px_2px_rgb(from_var(--program-color)_r_g_b_/_0.5)]' />
+                          <span class='tracking-wider'>{s.specialization}</span>
+                        </a>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div class='flex flex-col'>
+                    <span class='mb-1.5 text-[8px] sm:text-[10px] tracking-wider uppercase text-stone-400'>
+                      Career Paths
+                    </span>
+                    <div class='career-paths'>
+                      <PortableText value={p.data.careers} components={components} />
+                    </div>
+                  </div>
+
+                  <span class='w-[50%] block h-px m-0 bg-linear-to-r from-stone-100/27 to-transparent' />
                 </div>
               </div>
-              <div class='mt-auto mx-auto sm:mx-0'>
+              <div class='mt-auto mx-auto sm:mr-0'>
                 <a href={`/programs/${p.data.slug}`} class='custom-button'>
                   View
                 </a>
@@ -201,51 +215,58 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 <script>
   import Swiper from 'swiper';
-  import { Pagination, Parallax, Keyboard } from 'swiper/modules';
+  import { Parallax, Keyboard, Thumbs } from 'swiper/modules';
 
-  let swiperInstance: Swiper | null = null;
+  let mainSwiper: Swiper | null = null;
+  let thumbsSwiper: Swiper | null = null;
 
   function initSwiper() {
-    const el = document.querySelector('#swiper-program');
-    if (!el) return;
+    if (!document.querySelector('#swiper-program')) return;
 
-    if (swiperInstance) {
-      swiperInstance.destroy(true, true);
-      swiperInstance = null;
+    // Cleanup any existing instances
+    if (mainSwiper) {
+      mainSwiper.destroy(true, true);
+      mainSwiper = null;
+    }
+    if (thumbsSwiper) {
+      thumbsSwiper.destroy(true, true);
+      thumbsSwiper = null;
     }
 
-    swiperInstance = new Swiper('#swiper-program', {
-      modules: [Parallax, Pagination, Keyboard],
+    // Thumbs swiper must be initialized first
+    thumbsSwiper = new Swiper('#swiper-program-thumbs', {
+      modules: [Keyboard],
+      slidesPerView: 'auto',
+      spaceBetween: 16,
+
+      centerInsufficientSlides: true,
+      slideToClickedSlide: true,
+      watchSlidesProgress: true,
+      keyboard: { enabled: true },
+      breakpoints: {
+        768: { spaceBetween: 24 },
+        1080: { spaceBetween: 32 },
+      },
+    });
+
+    // Main swiper — pass thumbsSwiper reference
+    mainSwiper = new Swiper('#swiper-program', {
+      modules: [Parallax, Keyboard, Thumbs],
       grabCursor: true,
+
       speed: 600,
       spaceBetween: 8,
       parallax: true,
-      slidesPerView: 1.2,
+      slidesPerView: 1.1,
       centeredSlides: true,
       keyboard: { enabled: true },
-      pagination: {
-        el: '#swiper-program-pagination .swiper-pagination',
-        clickable: true,
-        renderBullet: (index, className) => {
-          const slide = document.querySelector(
-            `#swiper-program .swiper-slide:nth-child(${index + 1})`,
-          ) as HTMLElement | null;
-          const logo = slide?.dataset.logo ?? '';
-          const title = slide?.dataset.title ?? '';
-          return `
-            <button class="${className} program-bullet" type="button" aria-label="Go to ${title}">
-              <span class="program-bullet__logo-wrap">
-                <img src="${logo}" alt="" class="program-bullet__logo" loading="lazy" />
-              </span>
-              <span class="program-bullet__title">${title}</span>
-            </button>
-          `;
-        },
+      thumbs: {
+        swiper: thumbsSwiper,
       },
       breakpoints: {
         768: { slidesPerView: 1.33, spaceBetween: 12 },
-        1080: { slidesPerView: 1.5, spaceBetween: 16 },
-        1440: { slidesPerView: 1.85, spaceBetween: 20 },
+        1080: { slidesPerView: 1.4, spaceBetween: 16 },
+        1440: { slidesPerView: 1.6, spaceBetween: 20 },
       },
     });
   }
@@ -253,9 +274,13 @@ const pad = (n: number) => String(n).padStart(2, '0');
   document.addEventListener('astro:page-load', initSwiper);
 
   document.addEventListener('astro:before-swap', () => {
-    if (swiperInstance) {
-      swiperInstance.destroy(true, true);
-      swiperInstance = null;
+    if (mainSwiper) {
+      mainSwiper.destroy(true, true);
+      mainSwiper = null;
+    }
+    if (thumbsSwiper) {
+      thumbsSwiper.destroy(true, true);
+      thumbsSwiper = null;
     }
   });
 </script>

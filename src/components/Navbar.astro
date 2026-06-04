@@ -11,15 +11,15 @@ const navLinks = [
 ];
 ---
 
-<nav
-  class='fixed top-0 left-0 z-50 w-full font-(family-name:--font-tiktok) isolate shadow-[0_6px_24px_rgba(0,0,0,0.2),0_1px_3px_rgba(0,0,0,0.1)]'>
+<nav class='fixed top-0 left-0 z-50 w-full font-(family-name:--font-tiktok) isolate'>
   {/* Layer 1: displaced backdrop */}
   <div
-    class='absolute inset-0 rounded-[inherit] [filter:url(#glass-displacement)_saturate(150%)] backdrop-blur-[9px] isolate'>
+    class='absolute inset-0 rounded-[inherit] [filter:url(#glass-displacement)_saturate(150%)] backdrop-blur-[3px] sm:backdrop-blur-[6px] isolate'>
   </div>
 
   {/* Layer 2: subtle tint */}
-  <div class='absolute inset-0 rounded-[inherit] bg-linear-to-t from-0% from-white/7 to-33% to-black/33'></div>
+  <div class='absolute inset-0 rounded-[inherit] bg-linear-to-t from-0% from-accent-100/7 to-75% to-accent-1000/42'>
+  </div>
 
   {/* Layer 3: specular highlight */}
   <div
@@ -27,7 +27,7 @@ const navLinks = [
   </div>
 
   {/* Content */}
-  <div class='relative z-10 w-full px-6 py-4 lg:px-10 drop-shadow-md/50'>
+  <div class='relative z-10 w-full px-6 py-4 lg:px-10 drop-shadow-md/60'>
     <div class='flex items-center justify-between gap-8'>
       {/* Logo */}
       <a href='/' class='flex shrink-0 items-center gap-2.5 text-white'>
@@ -173,6 +173,6 @@ const navLinks = [
       href='data:image/webp;base64,UklGRk4AAABXRUJQVlA4TEEAAAAv/8A/AE0ASQL+f2+J6H/qvwASwv/7SiEK3v/UH2TSNvNvuhJ2Zv4zsvs+/Oc///nPf/7zn//85z//+c9//vNfwwA='
       preserveAspectRatio='none'></feImage>
 
-    <feDisplacementMap in='SourceGraphic' scale='37' xChannelSelector='R' yChannelSelector='G'></feDisplacementMap>
+    <feDisplacementMap in='SourceGraphic' scale='50' xChannelSelector='R' yChannelSelector='G'></feDisplacementMap>
   </filter>
 </svg>
