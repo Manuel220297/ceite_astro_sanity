@@ -2,6 +2,7 @@
 
 @theme {
   --font-serif: 'Times New Roman', Times, serif;
+  --font-mono: var(--font-jetbrains-mono), 'Consolas', 'monospace';
   --color-background: #161514;
   --color-foreground: #f7f7f7;
   --color-accent: var(--color-accent-400);
@@ -19,6 +20,8 @@
   --color-accent-900: #7e2e10;
   --color-accent-950: #441506;
   --color-accent-1000: #1d0e09;
+
+  --breakpoint-xs: 28rem;
 }
 
 @layer base {
@@ -26,7 +29,13 @@
     --background: #ffffff;
     --accent: #ff9c45;
     --swiper-navigation-color: var(--color-accent);
+    --bprogress-color: var(--color-accent) !important;
+    --bprogress-height: 3px !important;
     color-scheme: dark;
+  }
+
+  .bprogress .bar {
+    @apply top-[68px];
   }
 
   .dark {
@@ -37,7 +46,11 @@
   html,
   body {
     @apply selection:bg-accent selection:text-background 
-    scrollbar-thumb-accent scrollbar-track-background;
+    scrollbar-thumb-accent scrollbar-track-background scroll-smooth;
+  }
+
+  img {
+    @apply select-none;
   }
 
   body {
@@ -46,6 +59,20 @@
 }
 
 @layer components {
+  .pswp__img--placeholder {
+    @apply !hidden;
+  }
+
+  .pswp__swipe-hint {
+    @apply absolute top-8 left-1/2 -translate-x-1/2 hidden text-base whitespace-nowrap self-center;
+  }
+
+  @media (pointer: coarse) {
+    .pswp__swipe-hint {
+      @apply flex items-center justify-center;
+    }
+  }
+
   .hero-logo {
     &::after {
       @apply absolute
@@ -169,10 +196,10 @@
     }
 
     .swiper-slide::before {
-      @apply content-[''] absolute inset-0 rounded-2xl corner-squircle pointer-events-none z-10 border-2 shadow-[inset_12px_-12px_64px_-32px_rgb(from_var(--color-accent)_r_g_b_/_0.26)];
-      border: 1.5px solid rgb(from var(--color-accent) r g b / 1);
+      @apply content-[''] absolute inset-0 rounded-2xl corner-squircle pointer-events-none z-10;
+      /*       
       opacity: 0;
-      transition: opacity 400ms ease-in 400ms;
+      transition: opacity 400ms ease-in 400ms; */
     }
 
     .swiper-slide-active::before {
@@ -181,25 +208,25 @@
 
     /* Inactive slides — desaturated, scaled, faded */
     .swiper-slide:not(.swiper-slide-active) .img-wrapper {
-      @apply transform-[scale(1.4)] transition-all duration-700 opacity-50 sm:opacity-25 saturate-0 ease-out;
+      @apply transform-[scale(1.4)] transition-all duration-800 opacity-50 sm:opacity-25 delay-175 saturate-0 ease-in-out;
     }
     .swiper-slide-active .img-wrapper {
-      @apply transform-[scale(1.0)] sm:transform-[scale(1.2)] transition-all duration-700 ease-out;
+      @apply transform-[scale(1.0)] sm:transform-[scale(1.2)] transition-all duration-800 delay-175 ease-in-out;
     }
 
     /* Inactive slides hide overlays + content */
     .swiper-slide:not(.swiper-slide-active) .gradient-layer {
-      @apply opacity-0 transition-opacity duration-275 ease-in-out;
+      @apply opacity-0 transition-opacity duration-700 ease-in-out;
     }
     .swiper-slide .gradient-layer {
-      @apply opacity-100 transition-opacity duration-275 ease-in-out;
+      @apply opacity-100 transition-opacity duration-700 ease-in-out;
     }
 
     .swiper-slide:not(.swiper-slide-active) > .absolute:last-child {
-      @apply opacity-0 transition-opacity duration-275 ease-in-out pointer-events-none;
+      @apply opacity-0 transition-opacity duration-700 ease-in-out pointer-events-none;
     }
     .swiper-slide-active > .absolute:last-child {
-      @apply opacity-100 transition-opacity duration-275 delay-150 ease-in-out;
+      @apply opacity-100 transition-opacity duration-700 delay-325 ease-in-out;
     }
 
     .swiper-button-disabled {
@@ -295,6 +322,7 @@
   }
 
   #hero-pagination,
+  #swiper-testimonials-pagination,
   #swiper-curriculum-pagination {
     .swiper-pagination-bullet {
       @apply !bg-white !size-2.5 transition-all duration-535 ease-out;

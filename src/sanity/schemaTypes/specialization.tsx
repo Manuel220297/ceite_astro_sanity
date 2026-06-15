@@ -48,6 +48,8 @@ export const specializationType = defineType({
     defineField({
       name: 'body',
       title: 'Body',
+      description:
+        'Write a brief summary of the specialization, including what learners will study and the core skills covered. Tip: Use bullet points to highlight core skills, topics, etc.',
       type: 'array',
       of: [
         {
@@ -85,6 +87,7 @@ export const specializationType = defineType({
           name: 'alt',
           type: 'string',
           title: 'Alternative Text',
+          description: 'Optional. Provides a description for the image.',
         },
       ],
     }),

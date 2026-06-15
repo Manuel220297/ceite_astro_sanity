@@ -51,23 +51,22 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
     <div class='flex flex-col gap-8 md:flex-row md:items-end md:justify-between'>
       <div>
-        <h2 class='font-extrabold tracking-wider text-5xl leading-[0.95] sm:text-6xl md:text-7xl'>
-          <span class='block text-stone-50'>{program.data.title}</span>
+        <h2 class='font-extrabold tracking-wider text-[clamp(48px,5vw,72px)] leading-[1]'>
+          <span class='block text-[clamp(36px,3vw,48px)] text-stone-50'>{program.data.title}</span>
           <span class='block text-accent'>Curriculum</span>
         </h2>
       </div>
 
       {/* Stats panel */}
       <div
-        class='flex justify-center items-end gap-6 sm:gap-10 corner-squircle rounded-2xl border border-white/10 bg-white/[0.02] px-6 py-5'>
+        class='flex font-mono font-black justify-around items-end gap-6 sm:gap-10 corner-squircle rounded-2xl border border-white/10 bg-white/[0.02] px-6 py-5'>
         <div class='flex flex-col'>
           <span class='text-[11px] tracking-[0.25em] uppercase text-stone-400'>Years</span>
-          <span class='font-(family-name:--font-tiktok) text-3xl text-stone-50 tabular-nums'>{pad(duration)}</span>
+          <span class='text-3xl text-stone-50 tabular-nums'>{pad(duration)}</span>
         </div>
-        <div class='h-10 w-px bg-stone-700/60'></div>
         <div class='flex flex-col'>
           <span class='text-[11px] tracking-[0.25em] uppercase text-stone-400'>Total Units</span>
-          <span class='font-(family-name:--font-tiktok) text-3xl text-stone-50 tabular-nums'>{totalUnits}</span>
+          <span class='text-3xl text-stone-50 tabular-nums'>{totalUnits}</span>
         </div>
       </div>
     </div>
@@ -96,9 +95,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
                       <h3 class='font-(family-name:--font-tiktok) text-2xl leading-tight text-stone-50'>
                         {formatOrdinals(y.year)} Year
                       </h3>
-                      <span class='font-bold text-[11px] tabular-nums text-accent'>
+                      <span class='font-mono font-black text-[11px] tabular-nums text-accent'>
                         {yearTotal}
-                        <span class='ml-1 font-light text-stone-300'>Units</span>
+                        <span class='ml-1 text-stone-300'>units</span>
                       </span>
                     </div>
                   </div>
@@ -112,17 +111,17 @@ const pad = (n: number) => String(n).padStart(2, '0');
                       return (
                         <div class='flex flex-col gap-4 px-6 py-5'>
                           <div class='flex items-center justify-between'>
-                            <h4 class='text-[15px] font-semibold tracking-wide text-stone-200'>
+                            <h4 class='text-[15px] font-mono font-black tracking-wide text-stone-200'>
                               {formatOrdinals(sem.semester)} Semester
                             </h4>
 
                             <div class='flex flex-col items-baseline'>
                               <span class='font-mono text-[10px] font-medium tabular-nums text-stone-300'>
-                                <span class='font-extrabold text-accent'>{getSemesterUnits(sem.subjects)}</span> Units
+                                <span class='font-extrabold text-accent'>{getSemesterUnits(sem.subjects)}</span> units
                               </span>
                               <span class='font-mono text-[10px] font-medium tabular-nums text-stone-300'>
                                 <span class='font-extrabold text-accent'>{sem.subjects.length}</span>{' '}
-                                {sem.subjects.length > 1 ? 'Subjects' : 'Subject'}
+                                {sem.subjects.length > 1 ? 'subjects' : 'subject'}
                               </span>
                             </div>
                           </div>

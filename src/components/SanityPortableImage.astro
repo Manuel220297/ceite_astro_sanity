@@ -4,6 +4,16 @@ import { urlFor } from '../lib/sanity/image';
 const { node } = Astro.props;
 
 const url = urlFor(node).width(800).auto('format').url();
+
+const fullResUrl = urlFor(node).url();
+
+// Extract dimensions:
+const assetRef = node?.asset?._ref || '';
+const dimensionsMatch = assetRef.match(/-(\d+)x(\d+)-/);
+const width = dimensionsMatch ? dimensionsMatch[1] : 1200;
+const height = dimensionsMatch ? dimensionsMatch[2] : 800;
 ---
 
-<img class='max-h-[512px]' src={url} alt={node.alt || ''} loading='lazy' />
+<a href={fullResUrl} data-pswp-width={width} data-pswp-height={height} class='pswp-link block w-full cursor-zoom-in'>
+  <img class='max-h-[512px] w-full object-cover' src={url} alt={node.alt || ''} loading='lazy' />
+</a>

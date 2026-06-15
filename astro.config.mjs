@@ -17,6 +17,14 @@ export default defineConfig({
       fallbacks: ['sans-serif'],
     },
     {
+      name: 'JetBrains Mono',
+      cssVariable: '--font-jetbrains-mono',
+      provider: fontProviders.fontsource(),
+      weights: ['100 900'],
+      styles: ['normal', 'italic'],
+      fallbacks: ['monospace'],
+    },
+    {
       provider: fontProviders.local(),
       name: 'TikTok Sans',
       cssVariable: '--font-tiktok',

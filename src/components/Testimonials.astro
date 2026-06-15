@@ -1,0 +1,189 @@
+---
+// TODO: Replace with Sanity collection once schema is ready
+const testimonials = [
+  {
+    name: 'Maria Clara Reyes',
+    role: 'Software Engineer at Globe Telecom',
+    program: 'BSIT',
+    message:
+      'CEITE gave me the technical foundation and the confidence to land my first developer role. The faculty genuinely cared about our growth — not just our grades.',
+    image: '/images/default_avatar.svg  ',
+  },
+  {
+    name: 'Juan Miguel Santos',
+    role: 'Network Administrator at PLDT',
+    program: 'BSCpE',
+    message:
+      'The hands-on labs and industry-aligned curriculum made the transition to professional work seamless. I was solving real problems on day one of my job.',
+    image: '/images/default_avatar.svg  ',
+  },
+  {
+    name: 'Sophia Andrea Dela Cruz',
+    role: 'Data Analyst at Smart Communications',
+    program: 'BSCS',
+    message:
+      'What I appreciated most was the balance of theory and practice. Our capstone project actually got us interviews — companies want to see that you can build, not just study.',
+    image: '/images/default_avatar.svg  ',
+  },
+  {
+    name: 'Daniel Joshua Aquino',
+    role: 'Full-Stack Developer at Concentrix',
+    program: 'BSIT',
+    message:
+      "Asiatech opened doors I didn't know existed. The internship partnerships and alumni network are the reason I have the career I have today.",
+    image: '/images/default_avatar.svg  ',
+  },
+];
+
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<section id='testimonials-section' class='relative w-full overflow-hidden bg-background py-24 md:py-32'>
+  {/* Ambient glow */}
+  <div
+    class='pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 size-[700px] rounded-full bg-accent/[0.04] blur-[140px]'>
+  </div>
+  <div class='pointer-events-none absolute inset-0 opacity-[1] pattern-graph'></div>
+
+  {/* Meta bar */}
+  <div
+    class='relative z-10 mx-auto mb-12 flex w-full max-w-[1600px] items-center gap-4 px-6 md:px-10 text-[10px] md:text-xs tracking-[0.25em] text-stone-500'>
+    <span class='flex items-center gap-2'>
+      <span class='relative inline-block size-1.5 rounded-full bg-accent'>
+        <span class='absolute inset-0 animate-ping rounded-full bg-accent/70'></span>
+      </span>
+      <span class='uppercase text-stone-300'>Voices</span>
+      <span class='text-stone-600'>/</span>
+      <span class='uppercase'>Alumni &amp; Students</span>
+    </span>
+    <span class='h-px flex-1 bg-linear-to-r from-stone-700/80 via-stone-700/30 to-transparent'></span>
+    <span class='uppercase tabular-nums'>{pad(testimonials.length)} Stories</span>
+  </div>
+
+  {/* Headline */}
+  <header class='relative z-10 mx-auto mb-16 max-w-4xl px-6 text-center'>
+    <div class='mb-4 flex items-center justify-center gap-3'>
+      <span class='h-px w-8 bg-accent'></span>
+      <span class='text-[10px] tracking-[0.3em] uppercase text-accent'>Testimonials</span>
+      <span class='h-px w-8 bg-accent'></span>
+    </div>
+    <h2 class='font-(family-name:--font-tiktok) text-5xl leading-[0.95] sm:text-6xl md:text-7xl'>
+      <span class='block text-stone-50'>What Our</span>
+      <span class='block text-accent'>Pioneers<span class='text-accent/70'>.</span></span>
+      <span class='block text-stone-50'>Say</span>
+    </h2>
+    <p class='mx-auto mt-6 max-w-xl text-sm leading-relaxed text-stone-400 sm:text-base'>
+      Real stories from students and alumni who built their careers through the College of Engineering &amp; IT
+      Education.
+    </p>
+  </header>
+
+  {/* Swiper */}
+  <div class='relative z-10 mx-auto w-full max-w-4xl px-6 md:px-10'>
+    <div id='swiper-testimonials' class='swiper relative !overflow-visible'>
+      <div class='swiper-wrapper'>
+        {
+          testimonials.map((t, i) => (
+            <div class='swiper-slide !h-auto'>
+              <article class='testimonial-card group relative flex h-full flex-col gap-6 overflow-hidden rounded-3xl border border-white/10 bg-stone-900 p-8 md:p-10 transition-all duration-500 hover:border-accent/30 hover:bg-accent-950/20'>
+                {/* Quote mark */}
+                <svg
+                  class='absolute -top-2 -right-2 size-32 text-accent/[0.06] pointer-events-none'
+                  viewBox='0 0 24 24'
+                  fill='currentColor'
+                  aria-hidden='true'>
+                  <path d='M9.983 3v7.391c0 5.704-3.731 9.57-8.983 10.609l-.995-2.151c2.432-.917 3.995-3.638 3.995-5.849h-4v-10h9.983zm14.017 0v7.391c0 5.704-3.748 9.571-9 10.609l-.996-2.151c2.433-.917 3.996-3.638 3.996-5.849h-3.983v-10h9.983z' />
+                </svg>
+
+                {/* Message */}
+                <blockquote class='relative flex-1 text-base sm:text-lg leading-relaxed text-stone-200 italic'>
+                  "{t.message}"
+                </blockquote>
+
+                {/* Author block */}
+                <div class='relative flex items-center gap-4 border-t border-white/5 pt-6'>
+                  <img
+                    src={t.image}
+                    alt={t.name}
+                    width={56}
+                    height={56}
+                    class='size-14 shrink-0 rounded-xl corner-squircle border border-white/15 object-cover'
+                  />
+                  <div class='flex flex-col gap-0.5 min-w-0 flex-1'>
+                    <h3 class='text-base font-bold text-stone-50 leading-tight'>{t.name}</h3>
+                    <p class='text-xs text-stone-400 leading-snug'>{t.role}</p>
+                    <div class='mt-1 flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase'>
+                      <span class='font-bold text-accent'>{t.program}</span>
+                    </div>
+                  </div>
+                  <span class='shrink-0 font-mono text-[10px] tabular-nums text-stone-600'>
+                    {pad(i + 1)} / {pad(testimonials.length)}
+                  </span>
+                </div>
+              </article>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    {/* Pagination */}
+    <div id='swiper-testimonials-pagination' class='mt-8 flex justify-center'>
+      <div class='swiper-pagination !static !flex items-center justify-center gap-2'></div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import Swiper from 'swiper';
+  import { Pagination, Autoplay, Keyboard } from 'swiper/modules';
+  import 'swiper/css';
+  import 'swiper/css/pagination';
+
+  let swiperInstance: Swiper | null = null;
+
+  function initTestimonials() {
+    const el = document.querySelector('#swiper-testimonials');
+    if (!el) return;
+
+    if (swiperInstance) {
+      swiperInstance.destroy(true, true);
+      swiperInstance = null;
+    }
+
+    swiperInstance = new Swiper('#swiper-testimonials', {
+      modules: [Pagination, Autoplay, Keyboard],
+      slidesPerView: 'auto',
+      spaceBetween: 24,
+      grabCursor: true,
+      speed: 600,
+      loop: true,
+      centeredSlides: true,
+
+      // rewind: true,
+      keyboard: { enabled: true },
+      autoplay: {
+        delay: 3333,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      },
+      pagination: {
+        el: '#swiper-testimonials-pagination .swiper-pagination',
+        clickable: true,
+      },
+      breakpoints: {
+        768: { spaceBetween: 32 },
+        1024: { spaceBetween: 48 },
+      },
+    });
+  }
+
+  document.addEventListener('astro:page-load', initTestimonials);
+
+  document.addEventListener('astro:before-swap', () => {
+    if (swiperInstance) {
+      swiperInstance.destroy(true, true);
+      swiperInstance = null;
+    }
+  });
+</script>

@@ -36,6 +36,7 @@ export const projectType = defineType({
           name: 'alt',
           type: 'string',
           title: 'Alternative Text',
+          description: 'Optional. Provides a description for the image.',
         },
       ],
     }),

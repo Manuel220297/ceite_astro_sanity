@@ -194,6 +194,48 @@ const semesterSchema = z.object({
   subjects: z.array(subjectSchema).nullish(),
 });
 
+const dimensionsSchema = z.object({
+  height: z.number(),
+  width: z.number(),
+});
+
+const assetSchema = z.object({
+  _id: z.string(),
+  url: z.string().url(),
+  size: z.number().optional(),
+  metadata: z
+    .object({
+      dimensions: dimensionsSchema,
+    })
+    .optional(),
+});
+
+const imageSchema = z.object({
+  _type: z.string().optional(),
+  alt: z.string().nullable().optional(),
+  asset: assetSchema,
+
+  crop: z
+    .object({
+      _type: z.string().optional(),
+      top: z.number().optional(),
+      bottom: z.number().optional(),
+      left: z.number().optional(),
+      right: z.number().optional(),
+    })
+    .optional(),
+
+  hotspot: z
+    .object({
+      _type: z.string().optional(),
+      x: z.number(),
+      y: z.number(),
+      height: z.number(),
+      width: z.number(),
+    })
+    .optional(),
+});
+
 const news = defineCollection({
   loader: async () => {
     const posts = await client.fetch(`
@@ -202,13 +244,19 @@ const news = defineCollection({
           title,
           "slug": slug.current,
           image{
-              ...,
-              asset->{
-                _id,
-                url,
-                size
+            ...,
+            asset->{
+              _id,
+              url,
+              size,
+              metadata{
+                dimensions{
+                  height,
+                  width,
+                }
               }
-            },
+            }
+          },
           category,
           pin,
           body,
@@ -232,7 +280,7 @@ const news = defineCollection({
     _createdAt: z.coerce.date(),
     category: z.string(),
     pin: z.boolean().nullish(),
-    image: z.any(),
+    image: imageSchema.nullish(),
     body: z.any(),
   }),
 });
@@ -273,18 +321,19 @@ const about = defineCollection({
 const dean = defineCollection({
   loader: async () => {
     const posts = await client.fetch(`
-*[_type == 'dean'] {
-  _id,
-  firstName,
-  middleName,
-  lastName,
-  honorifics,
-            email,
-          facebook,
-          tiktok,
-          twitter,
-          instagram,
-  image{
+        *[_type == 'dean'] {
+          _id,
+          firstName,
+          middleName,
+          lastName,
+          honorifics,
+          customHonorific,
+                    email,
+                  facebook,
+                  tiktok,
+                  twitter,
+                  instagram,
+          image{
               ...,
               asset->{
                 _id,
@@ -292,7 +341,7 @@ const dean = defineCollection({
                 size
               }
             },
-}`);
+    }`);
 
     return posts.map((post: any) => ({
       id: post._id,
@@ -300,6 +349,7 @@ const dean = defineCollection({
       middleName: post.middleName,
       lastName: post.lastName,
       honorifics: post.honorifics,
+      customHonorific: post.customHonorific,
       email: post.email,
       facebook: post.facebook,
       tiktok: post.tiktok,
@@ -314,6 +364,7 @@ const dean = defineCollection({
     middleName: z.string().nullish(),
     lastName: z.string(),
     honorifics: z.string(),
+    customHonorific: z.string().nullish(),
     email: z.string().nullish(),
     facebook: z.string().nullish(),
     tiktok: z.string().nullish(),
@@ -333,19 +384,26 @@ const faculty = defineCollection({
           lastName,
           title,
           honorifics,
+          customHonorific,
           email,
           facebook,
           tiktok,
           twitter,
           instagram,
           image{
-              ...,
-              asset->{
-                _id,
-                url,
-                size
+            ...,
+            asset->{
+              _id,
+              url,
+              size,
+              metadata{
+                dimensions{
+                  height,
+                  width,
+                }
               }
-            },
+            }
+          },
       }`);
 
     return posts.map((post: any) => ({
@@ -355,6 +413,7 @@ const faculty = defineCollection({
       lastName: post.lastName,
       title: post.title,
       honorifics: post.honorifics,
+      customHonorific: post.customHonorific,
       email: post.email,
       facebook: post.facebook,
       tiktok: post.tiktok,
@@ -370,12 +429,13 @@ const faculty = defineCollection({
     lastName: z.string(),
     title: z.string(),
     honorifics: z.string(),
+    customHonorific: z.string().nullish(),
     email: z.string().nullish(),
     facebook: z.string().nullish(),
     tiktok: z.string().nullish(),
     twitter: z.string().nullish(),
     instagram: z.string().nullish(),
-    image: z.any(),
+    image: imageSchema.nullish(),
   }),
 });
 
@@ -442,22 +502,44 @@ const programs = defineCollection({
           body,
         },
 
-      logo{
-        ...,
-        asset->{
-          _id,
-          url,
-          size
-        }
-      },
-      image{
-        ...,
-        asset->{
-          _id,
-          url,
-          size
-        }
-      },
+        logo{
+          ...,
+          asset->{
+            _id,
+            url,
+            size
+          }
+        },
+        image{
+          ...,
+          asset->{
+            _id,
+            url,
+            size,
+            metadata{
+              dimensions{
+                height,
+                width,
+              }
+            }
+          }
+        },
+
+        gallery[]{
+         ..., 
+         asset->{
+            _id, 
+            url, 
+            size, 
+            metadata{ 
+              dimensions{ 
+                height, 
+                width 
+              } 
+            } 
+          }, 
+          alt 
+        },
 
         careers,
         objectives,
@@ -482,6 +564,7 @@ const programs = defineCollection({
       specializations: post.specializations,
       logo: post.logo,
       image: post.image,
+      gallery: post.gallery,
       body: post.body,
       careers: post.careers,
       objectives: post.objectives,
@@ -492,11 +575,10 @@ const programs = defineCollection({
     title: z.string(),
     titleLong: z.string(),
     slug: z.string(),
-
     specializations: z.array(specializationSchema).nullish(),
-    logo: z.any(),
-    image: z.any(),
-
+    logo: imageSchema.nullish(),
+    image: imageSchema.nullish(),
+    gallery: z.array(imageSchema).nullish(),
     body: z.any(),
     careers: z.any(),
     objectives: z.any(),

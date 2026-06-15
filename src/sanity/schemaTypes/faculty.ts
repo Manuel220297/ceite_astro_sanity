@@ -5,7 +5,50 @@ export const facultyType = defineType({
   title: 'Faculty',
   type: 'document',
 
+  fieldsets: [
+    {
+      name: 'socials',
+      title: 'Social Media',
+      description: '(Optional)',
+      options: {
+        collapsible: true,
+        collapsed: true,
+      },
+    },
+  ],
+
   fields: [
+    defineField({
+      name: 'honorifics',
+      title: 'Honorifics',
+      type: 'string',
+      validation: (rule) => rule.required(),
+      options: {
+        layout: 'radio',
+        list: [
+          { title: "Ma'am", value: "Ma'am" },
+          { title: 'Sir', value: 'Sir' },
+          { title: 'Dr.', value: 'Dr.' },
+          { title: 'Engr.', value: 'Engr.' },
+          { title: 'Custom', value: 'custom' },
+        ],
+      },
+    }),
+
+    defineField({
+      name: 'customHonorific',
+      title: 'Custom Honorific',
+      type: 'string',
+      hidden: ({ document }) => document?.honorifics !== 'custom',
+      validation: (rule) =>
+        rule.custom((value, context) => {
+          if (context.document?.honorifics === 'custom' && !value) {
+            return 'Please enter a custom honorific';
+          }
+          return true;
+        }),
+    }),
+
     defineField({
       name: 'firstName',
       title: 'First name',
@@ -34,31 +77,19 @@ export const facultyType = defineType({
     }),
 
     defineField({
-      name: 'honorifics',
-      title: 'Honorifics',
-      type: 'string',
-      validation: (rule) => rule.required(),
-      options: {
-        layout: 'radio',
-        list: [
-          { title: "Ma'am", value: "Ma'am" },
-          { title: 'Sir', value: 'Sir' },
-        ],
-      },
-    }),
-
-    defineField({
       name: 'email',
       title: 'Email',
       type: 'string',
       validation: (rule) => rule.email(),
     }),
 
+    // Social Media (Grouped)
     defineField({
       name: 'facebook',
       title: 'Facebook',
       type: 'url',
       description: 'Facebook profile or page URL (Optional)',
+      fieldset: 'socials',
     }),
 
     defineField({
@@ -66,6 +97,7 @@ export const facultyType = defineType({
       title: 'Twitter (X)',
       type: 'url',
       description: 'X/Twitter profile URL (Optional)',
+      fieldset: 'socials',
     }),
 
     defineField({
@@ -73,6 +105,7 @@ export const facultyType = defineType({
       title: 'TikTok',
       type: 'url',
       description: 'TikTok profile URL (Optional)',
+      fieldset: 'socials',
     }),
 
     defineField({
@@ -80,6 +113,7 @@ export const facultyType = defineType({
       title: 'Instagram',
       type: 'url',
       description: 'Instagram profile URL (Optional)',
+      fieldset: 'socials',
     }),
 
     defineField({
@@ -94,7 +128,7 @@ export const facultyType = defineType({
           name: 'alt',
           type: 'string',
           title: 'Alternative Text',
-          description: 'Optional',
+          description: 'Optional. Provides a description for the image.',
         },
       ],
     }),
@@ -105,11 +139,12 @@ export const facultyType = defineType({
       firstName: 'firstName',
       middleName: 'middleName',
       lastName: 'lastName',
+      honorifics: 'honorifics',
       media: 'image',
     },
 
-    prepare({ firstName, middleName, lastName, media }) {
-      const fullname = [firstName, middleName, lastName].filter(Boolean).join(' ');
+    prepare({ firstName, middleName, lastName, media, honorifics }) {
+      const fullname = [honorifics, firstName, middleName, lastName].filter(Boolean).join(' ');
 
       return {
         title: fullname || 'Unnamed',

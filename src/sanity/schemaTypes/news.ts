@@ -34,6 +34,7 @@ export const newsType = defineType({
           name: 'alt',
           type: 'string',
           title: 'Alternative Text',
+          description: 'Optional. Provides a description for the image.',
         },
       ],
     }),

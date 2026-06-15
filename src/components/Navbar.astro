@@ -8,17 +8,20 @@ const navLinks = [
   { href: '/news', label: 'Happenings' },
   { href: '/projects', label: 'Projects' },
   { href: '#footer', label: 'Contact' },
+  { href: '/test', label: 'Test' },
 ];
 ---
 
 <nav class='fixed top-0 left-0 z-50 w-full font-(family-name:--font-tiktok) isolate'>
   {/* Layer 1: displaced backdrop */}
   <div
-    class='absolute inset-0 rounded-[inherit] [filter:url(#glass-displacement)_saturate(150%)] backdrop-blur-[3px] sm:backdrop-blur-[6px] isolate'>
+    class='absolute inset-0 rounded-[inherit] [filter:url(#glass-displacement)_saturate(200%)] backdrop-blur-[6px] isolate'>
   </div>
 
   {/* Layer 2: subtle tint */}
-  <div class='absolute inset-0 rounded-[inherit] bg-linear-to-t from-0% from-accent-100/7 to-75% to-accent-1000/42'>
+  <div
+    id='nav-tint'
+    class='absolute inset-0 rounded-[inherit] bg-linear-to-t from-8% from-accent-100/8 to-93% to-accent-1000/33 bg-black/0 transition-colors duration-333 ease-in-out'>
   </div>
 
   {/* Layer 3: specular highlight */}
@@ -147,6 +150,7 @@ const navLinks = [
     const menu = document.getElementById('mobile-menu');
     const openIcon = document.getElementById('menu-open-icon');
     const closeIcon = document.getElementById('menu-close-icon');
+    const navTint = document.getElementById('nav-tint');
 
     if (!button || !menu) return;
 
@@ -160,6 +164,9 @@ const navLinks = [
 
       openIcon?.classList.toggle('hidden');
       closeIcon?.classList.toggle('hidden');
+
+      navTint?.classList.toggle('bg-black/50', isOpen);
+      navTint?.classList.toggle('bg-black/0', !isOpen);
     });
   }
 
@@ -173,6 +180,6 @@ const navLinks = [
       href='data:image/webp;base64,UklGRk4AAABXRUJQVlA4TEEAAAAv/8A/AE0ASQL+f2+J6H/qvwASwv/7SiEK3v/UH2TSNvNvuhJ2Zv4zsvs+/Oc///nPf/7zn//85z//+c9//vNfwwA='
       preserveAspectRatio='none'></feImage>
 
-    <feDisplacementMap in='SourceGraphic' scale='50' xChannelSelector='R' yChannelSelector='G'></feDisplacementMap>
+    <feDisplacementMap in='SourceGraphic' scale='44' xChannelSelector='R' yChannelSelector='G'></feDisplacementMap>
   </filter>
 </svg>

@@ -9,12 +9,10 @@ const faculty = await getCollection('faculty');
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
-// Helper: build full name with honorifics + first + middle + last
 function fullName(data: any) {
-  return [data.honorifics, data.firstName, data.middleName, data.lastName].filter(Boolean).join(' ');
+  return [data.firstName, data.middleName, data.lastName].filter(Boolean).join(' ');
 }
 
-// Social link helper — excludes email (handled separately)
 const socialLinks = (data: any) =>
   [
     { key: 'facebook', value: data.facebook, href: data.facebook, label: 'Facebook' },
@@ -25,7 +23,7 @@ const socialLinks = (data: any) =>
 ---
 
 <MainLayout>
-  <section class='relative w-full overflow-hidden bg-background pt-32 pb-24 md:pt-40 md:pb-32'>
+  <section id='faculty-gallery' class='relative w-full overflow-hidden bg-background pt-32 pb-24 md:pt-40 md:pb-32'>
     {/* Ambient background glow */}
     <div
       class='pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 size-[800px] rounded-full bg-accent/5 blur-[120px]'>
@@ -67,21 +65,26 @@ const socialLinks = (data: any) =>
       </div>
 
       <article class='dean-card group relative overflow-hidden rounded-[40px] border border-white/10 bg-white/[0.02]'>
-        {/* Soft accent glow */}
         <div class='pointer-events-none absolute -right-20 -top-20 size-96 rounded-full bg-accent/10 blur-3xl'></div>
 
         <div class='grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] gap-0 md:gap-8'>
           {/* Portrait */}
           <div class='relative aspect-square overflow-hidden md:aspect-auto md:min-h-[520px]'>
-            <SanityImage
-              image={dean.data?.image}
-              fallback='/images/default_avatar.svg'
-              width={800}
-              height={800}
-              class='size-full object-cover transition-transform duration-700'
-            />
+            <a
+              href={dean.data?.image?.asset?.url}
+              data-pswp-width={dean.data?.image?.asset?.metadata?.dimensions?.width || 1200}
+              data-pswp-height={dean.data?.image?.asset?.metadata?.dimensions?.height || 1200}
+              class='pswp-link block size-full cursor-zoom-in'>
+              <SanityImage
+                image={dean.data?.image}
+                fallback='/images/default_avatar.svg'
+                width={800}
+                height={800}
+                class='size-full object-cover transition-transform duration-700 group-hover:scale-[1.02]'
+              />
+            </a>
             <div
-              class='absolute inset-0 bg-linear-to-t from-background/80 via-background/10 to-transparent md:bg-linear-to-r md:from-transparent md:to-background/30'>
+              class='pointer-events-none absolute inset-0 bg-linear-to-t from-background/80 via-background/10 to-transparent md:bg-linear-to-r md:from-transparent md:to-background/30'>
             </div>
           </div>
 
@@ -91,11 +94,12 @@ const socialLinks = (data: any) =>
               <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>Office of the Dean</span>
               <h2
                 class='mt-3 font-(family-name:--font-tiktok) text-3xl leading-tight text-stone-50 sm:text-4xl md:text-5xl'>
+                <span>{dean.data.honorifics === 'custom' ? dean.data.customHonorific : dean.data.honorifics}</span>
                 {fullName(dean.data)}
               </h2>
             </div>
 
-            {/* Email — separate from socials */}
+            {/* Email */}
             {
               dean.data.email && (
                 <div class='flex flex-col gap-2'>
@@ -155,31 +159,38 @@ const socialLinks = (data: any) =>
               <article class='staff-card group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] transition-all duration-500 hover:border-accent/30 hover:bg-white/[0.04]'>
                 {/* Portrait */}
                 <div class='relative aspect-[4/5] overflow-hidden'>
-                  <SanityImage
-                    image={f.data?.image}
-                    fallback={`/images/default_avatar.svg`}
-                    width={512}
-                    height={640}
-                    class='size-full object-cover saturate-[0.85] transition-all duration-700 group-hover:saturate-100'
-                  />
-                  <div class='absolute inset-0 bg-linear-to-t from-background via-background/40 via-30% to-transparent' />
+                  <a
+                    href={f.data?.image?.asset?.url}
+                    data-pswp-width={f.data?.image?.asset?.metadata?.dimensions?.width || 1000}
+                    data-pswp-height={f.data?.image?.asset?.metadata?.dimensions?.height || 1250}
+                    class='pswp-link block size-full cursor-zoom-in'>
+                    <SanityImage
+                      image={f.data?.image}
+                      fallback={`/images/default_avatar.svg`}
+                      width={512}
+                      height={640}
+                      class='size-full object-cover saturate-[0.85] transition-all duration-700 group-hover:saturate-100 group-hover:scale-[1.03]'
+                    />
+                  </a>
+                  <div class='pointer-events-none absolute inset-0 bg-linear-to-t from-background via-background/40 via-30% to-transparent' />
 
                   {/* Name overlay */}
-                  <div class='absolute inset-x-0 bottom-0 p-5'>
+                  <div class='pointer-events-none flex gap-2 absolute inset-x-0 bottom-0 p-5 z-10'>
+                    <span class='font-light'>
+                      {f.data.honorifics === 'custom' ? f.data.customHonorific : f.data.honorifics}
+                    </span>
                     <h3 class='text-lg font-bold leading-tight text-stone-50 sm:text-xl'>{fullName(f.data)}</h3>
                   </div>
                 </div>
 
                 {/* Card body */}
                 <div class='flex flex-col gap-3 p-4'>
-                  {/* Title */}
                   {f.data?.title && (
                     <div class='flex flex-col gap-1'>
                       <span class='text-sm font-medium text-accent leading-snug'>{f.data.title}</span>
                     </div>
                   )}
 
-                  {/* Email — visible, dedicated row */}
                   {f.data?.email && (
                     <a
                       href={`mailto:${f.data.email}`}
@@ -191,7 +202,6 @@ const socialLinks = (data: any) =>
                     </a>
                   )}
 
-                  {/* Social icons row */}
                   {socials.length > 0 && (
                     <div class='flex items-center gap-1.5 border-t border-white/5 pt-3'>
                       {socials.map((soc) => (
@@ -215,4 +225,39 @@ const socialLinks = (data: any) =>
       </div>
     </div>
   </section>
+
+  <link rel='stylesheet' href='photoswipe/dist/photoswipe.css' />
+
+  <script>
+    import PhotoSwipeLightbox from 'photoswipe/lightbox';
+
+    function initGallery() {
+      const lightbox = new PhotoSwipeLightbox({
+        gallery: '#faculty-gallery',
+        children: 'a.pswp-link',
+        showHideAnimationType: 'fade',
+        showAnimationDuration: 0,
+        hideAnimationDuration: 200,
+        clickToCloseNonZoomable: true,
+        errorMsg: 'The photo cannot be loaded',
+        pinchToClose: true,
+        pswpModule: () => import('photoswipe'),
+      });
+
+      lightbox.on('uiRegister', () => {
+        lightbox.pswp?.ui?.registerElement({
+          name: 'swipe-hint',
+          order: 6,
+          isButton: false,
+          appendTo: 'bar',
+          html: '<span class="pswp__swipe-hint">Swipe <span class="text-accent">↑/↓</span> or Pinch to exit</span>',
+        });
+      });
+
+      lightbox.init();
+    }
+
+    initGallery();
+    document.addEventListener('astro:after-swap', initGallery);
+  </script>
 </MainLayout>

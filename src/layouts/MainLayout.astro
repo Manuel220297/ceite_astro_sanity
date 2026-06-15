@@ -5,25 +5,34 @@ import '../styles/global.css';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
+import 'photoswipe/style.css';
+
 import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
+import clsx from 'clsx';
+import ProgressBar from '@/components/ProgressBar.astro';
+
+const { class: className } = Astro.props;
 ---
 
 <!doctype html>
-<html lang='en' class='bg-background text-foreground scroll-smooth'>
+<html lang='en' class='bg-background text-foreground'>
   <head>
     <ClientRouter />
+
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width' />
     <meta name='generator' content={Astro.generator} />
     <Font cssVariable='--font-tiktok' preload />
     <Font cssVariable='--font-inter' preload />
+    <Font cssVariable='--font-jetbrains-mono' preload />
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <link rel='icon' href='/favicon.ico' />
     <title>C.E.I.T.E. | College of Engineering and Information Technology Education</title>
   </head>
-  <body class='min-h-screen flex flex-col'>
+  <body class={clsx('min-h-screen flex flex-col', className)}>
     <Navbar />
+    <ProgressBar />
 
     <main class='flex-1 flex flex-col'>
       <slot />

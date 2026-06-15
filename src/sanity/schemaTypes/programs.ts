@@ -48,9 +48,11 @@ export const programType = defineType({
           name: 'alt',
           type: 'string',
           title: 'Alternative Text',
+          description: 'Optional. Provides a description for the image.',
         },
       ],
     }),
+
     defineField({
       name: 'logo',
       title: 'Logo',
@@ -63,33 +65,15 @@ export const programType = defineType({
           name: 'alt',
           type: 'string',
           title: 'Alternative Text',
+          description: 'Optional. Provides a description for the image.',
         },
       ],
-    }),
-    defineField({
-      name: 'specializations',
-      title: 'Specializations',
-      type: 'array',
-      of: [{ type: 'reference', to: [{ type: 'specialization' }] }],
-      validation: (rule) =>
-        rule.custom((items) => {
-          if (!items) return true;
-
-          const refs = (items as { _ref: string }[]).map((item) => item._ref).filter(Boolean);
-
-          const duplicates = refs.filter((id, index) => refs.indexOf(id) !== index);
-
-          if (duplicates.length > 0) {
-            return 'Each specialization can only be used once';
-          }
-
-          return true;
-        }),
     }),
 
     defineField({
       name: 'body',
       title: 'Body',
+      description: 'Write a comprehensive description of the program for display on the website.',
       type: 'blockContent',
     }),
     defineField({
@@ -124,7 +108,7 @@ export const programType = defineType({
           _type: 'block',
           _key: 'initial',
           style: 'normal',
-          listItem: 'bullet', // ← this makes it a bullet
+          listItem: 'bullet',
           level: 1,
           children: [
             {
@@ -135,6 +119,51 @@ export const programType = defineType({
             },
           ],
           markDefs: [],
+        },
+      ],
+    }),
+    defineField({
+      name: 'specializations',
+      title: 'Specializations',
+      type: 'array',
+      of: [{ type: 'reference', to: [{ type: 'specialization' }] }],
+      validation: (rule) =>
+        rule.custom((items) => {
+          if (!items) return true;
+
+          const refs = (items as { _ref: string }[]).map((item) => item._ref).filter(Boolean);
+
+          const duplicates = refs.filter((id, index) => refs.indexOf(id) !== index);
+
+          if (duplicates.length > 0) {
+            return 'Each specialization can only be used once';
+          }
+
+          return true;
+        }),
+    }),
+
+    defineField({
+      name: 'gallery',
+      title: 'Gallery',
+      description:
+        "Upload images that represent the program's facilities, activities, and student learning experiences. (Maximum of 10 images)",
+      type: 'array',
+      of: [
+        {
+          type: 'image',
+          validation: (rule) => rule.required().error('An image is required'),
+          options: {
+            hotspot: true,
+          },
+          fields: [
+            {
+              name: 'alt',
+              type: 'string',
+              title: 'Alternative Text',
+              description: 'Optional. Provides a description for the image.',
+            },
+          ],
         },
       ],
     }),

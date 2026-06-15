@@ -7,7 +7,6 @@ import SanityPortableImage from './SanityPortableImage.astro';
 import SanityHighlight from './SanityHighlight.astro';
 import { getCurriculumDuration } from '../lib/utils/getCurriculumDuration';
 import { getTotalUnits } from '../lib/utils/getTotalUnits';
-import { urlFor } from '@/lib/sanity/image';
 import Breadcrumb from './Breadcrumb.astro';
 
 const components = {
@@ -21,7 +20,7 @@ const components = {
 
 const programs = (await getCollection('programs')).sort().reverse();
 
-// Pre-fetch curriculum + logo for each program (parallel)
+// Pre-fetch curriculum, program
 const programData = await Promise.all(
   programs.map(async (p) => ({
     program: p,
@@ -29,12 +28,17 @@ const programData = await Promise.all(
   })),
 );
 
+// programs[0].data?.gallery?.map((image) => {
+//   return console.log(image.asset.metadata?.dimensions);
+// });
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
-<section id='program-section' class='relative w-full overflow-hidden bg-background py-24 md:py-32'>
+<section id='program-section' class='relative w-full overflow-hidden bg-background px-2 sm:px-11 py-24 md:py-32'>
   <div class='pointer-events-none absolute inset-0 opacity-[1] pattern-graph'></div>
   <div class='pointer-events-none absolute inset-0 bg-linear-to-b from-background from-7% to-35% to-transparent z-1'>
+  </div>
+  <div class='pointer-events-none absolute inset-0 bg-linear-to-t from-background from-5% to-35% to-transparent z-1'>
   </div>
 
   <!-- Headline -->
@@ -60,10 +64,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
         </p>
       </div>
     </div>
-    <span class='w-full block h-px m-8 bg-linear-to-r from-transparent via-accent/50 to-transparent'></span>
-    <strong class='font-bold text-stone-100'>Bachelor</strong>
-    and
-    <strong class='font-bold text-stone-100'>Associate</strong>
   </header>
 
   <!-- Thumbs -->
@@ -95,16 +95,26 @@ const pad = (n: number) => String(n).padStart(2, '0');
   </div>
 
   <!-- Slider -->
-  <div id='swiper-program' class='swiper relative mb-12 w-full max-w-[1920px] h-[clamp(540px,77vh,645px)]'>
-    <div class='swiper-wrapper min-w-[400vw] h-full'>
+  <div
+    id='swiper-program'
+    class='swiper relative mb-12 w-full max-w-6xl border-[2px] aspect-[10/16] xs:aspect-square md:aspect-video border-stone-700 rounded-2xl corner-squircle bg-stone-800
+    after:content-[""]
+    after:absolute
+    after:inset-0
+    after:rounded-2xl
+    after:corner-squircle
+    after:pointer-events-none
+    after:z-[1]
+    after:shadow-[inset_0_0_0_12px_rgb(from_var(--color-stone-900)_r_g_b_/_1)]'>
+    <div class='swiper-wrapper max-w-6xl my-auto'>
       {
         programData.map(({ program: p, curriculum }, i) => (
           <div class='swiper-slide group select-none'>
             <div class='img-wrapper'>
-              <SanityImage image={p.data.image} Xparallax={30} loading='lazy' width={1920} height={1080} />
+              <SanityImage image={p.data.image} Xparallax={44} loading='lazy' width={1920} height={1080} />
               {/* Gradient layers */}
-              <div class='gradient-layer absolute inset-0 bg-background/83 sm:bg-background/0 sm:bg-linear-to-t from-background/75 via-background/40 via-30% to-transparent' />
-              <div class='gradient-layer absolute inset-0  sm:bg-linear-to-r from-background/100 from-0% via-background/85 via-22% to-60% to-transparent' />
+              <div class='gradient-layer absolute inset-0 bg-background/83 md:bg-background/0 md:bg-linear-to-t from-background/75 via-background/40 via-30% to-transparent' />
+              <div class='gradient-layer absolute inset-0  md:bg-linear-to-r from-background/100 from-0% via-background/85 via-22% to-60% to-transparent' />
             </div>
 
             {/* Content */}
@@ -120,7 +130,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
                 </div>
 
                 <SanityImage
-                  class='size-16 sm:size-20 md:size-24 rounded-full border border-stone-200/25 bg-stone-900/33 p-2'
+                  class='size-[clamp(48px,8vw,96px)] rounded-full border border-stone-200/25 bg-stone-900/33 p-2'
                   image={p.data.logo}
                   fallback='/images/asiatech_logo.avif'
                   format='none'
@@ -254,20 +264,20 @@ const pad = (n: number) => String(n).padStart(2, '0');
       modules: [Parallax, Keyboard, Thumbs],
       grabCursor: true,
 
-      speed: 600,
+      speed: 650,
       spaceBetween: 8,
       parallax: true,
-      slidesPerView: 1.1,
-      centeredSlides: true,
+      slidesPerView: 'auto',
+      // centeredSlides: true,
       keyboard: { enabled: true },
       thumbs: {
         swiper: thumbsSwiper,
       },
-      breakpoints: {
-        768: { slidesPerView: 1.33, spaceBetween: 12 },
-        1080: { slidesPerView: 1.4, spaceBetween: 16 },
-        1440: { slidesPerView: 1.6, spaceBetween: 20 },
-      },
+      // breakpoints: {
+      //   768: { slidesPerView: 1.2, spaceBetween: 12 },
+      //   1080: { slidesPerView: 1.2, spaceBetween: 16 },
+      //   1440: { slidesPerView: 1.2, spaceBetween: 20 },
+      // },
     });
   }
 

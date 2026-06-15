@@ -121,7 +121,7 @@ const components = {
               class='flex flex-col border border-stone-700 rounded-2xl corner-squircle bg-stone-900 overflow-hidden'
               style={`--program-color: ${s.color}`}>
               <div class='relative w-full overflow-hidden'>
-                <SanityImage class='w-full h-full aspect-[16/10] object-cover' image={s.image} />
+                <SanityImage class='select-none w-full h-full aspect-[16/10] object-cover' image={s.image} />
 
                 <div class='absolute inset-0 bg-gradient-to-t from-stone-900 from-7% to-42% to-transparent' />
               </div>
@@ -142,10 +142,11 @@ const components = {
               [&_li]:before:mr-2
               [&_li]:before:text-[var(--program-color)] 
               [&_li]:rounded-full 
+              [&_li]:tracking-[0.1em]
               [&_li]:bg-stone-600/17
               [&_li]:border-stone-700
               [&_li]:px-3
-              [&_li]:py-[5.5px]
+              [&_li]:py-1
               
               '>
                 <h4 class='text-[11px] font-light tracking-widest text-[var(--program-color)]'>

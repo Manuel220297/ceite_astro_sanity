@@ -9,7 +9,7 @@ interface Props {
 const { program } = Astro.props;
 ---
 
-<header id='program-top' class='mb-12 select-none'>
+<header id='program-top' class='my-12 select-none'>
   <div class='relative w-full h-[60vh]'>
     <div class='relative h-full'>
       <SanityImage
@@ -20,7 +20,7 @@ const { program } = Astro.props;
         image={program.data.image}
       />
 
-      <div class='absolute inset-0 sm:bg-linear-to-r from-black/75 to-transparent'></div>
+      <div class='absolute inset-0 sm:bg-linear-to-r from-background/75 to-50% to-transparent'></div>
       <div class='absolute inset-0 bg-linear-to-t from-background from-0% to-50% to-transparent'></div>
       <div class='absolute inset-0 py-12 max-w-[90%] mx-auto flex flex-col-reverse'>
         <h2 class='text-xl tracking-widest text-stone-300'>{program.data.titleLong}</h2>

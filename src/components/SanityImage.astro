@@ -3,6 +3,7 @@ import { urlFor } from '../lib/sanity/image';
 import clsx from 'clsx';
 import { DEFAULT_IMAGE } from '../lib/fallbackImages';
 import type { DefaultImage } from '../lib/fallbackImages';
+import { size } from 'astro:schema';
 
 interface Props {
   image?: any;
@@ -30,6 +31,7 @@ const {
   Xparallax = 0,
   Yparallax = 0,
   format = 'webp',
+  ...rest
 } = Astro.props;
 
 const w = width || 800;
@@ -115,4 +117,5 @@ const finalStyle = `${baseImageStyle} ${sizeStyle}`;
   loading={loading || 'lazy'}
   width={w}
   height={h}
+  {...rest}
 />

@@ -3,7 +3,6 @@ import FacebookIcon from '../assets/icons/FacebookIcon.astro';
 import TikTokIcon from '../assets/icons/TikTokIcon.astro';
 import InstagramIcon from '../assets/icons/InstagramIcon.astro';
 import YoutubeIcon from '../assets/icons/YoutubeIcon.astro';
-import ArrowUpIcon from '../assets/icons/ArrowUpIcon.astro';
 
 const socialLinks = [
   {
@@ -74,11 +73,18 @@ const year = new Date().getFullYear();
         <div class='flex items-center gap-3 text-white'>
           <img src='/images/ceite_small.webp' alt='CEITE Logo' class='shrink-0 size-14 md:size-16' />
           <div class='flex flex-col'>
-            <h3
-              class='text-3xl md:text-4xl text-transparent tracking-wider bg-clip-text font-(family-name:--font-tiktok) bg-[linear-gradient(to_top,_#ffffff_33%,_#9f9f9f_50%,_#ffffff_67%)] leading-none'>
-              C.E.I.T.E.
-            </h3>
-            <h5 class='text-[8px] sm:text-[9px] text-stone-400 mt-1 whitespace-nowrap'>
+            <div class='relative inline-block'>
+              <h2
+                class='font-(family-name:--font-tiktok) leading-none tracking-wider text-transparent bg-clip-text bg-[linear-gradient(to_top,_#dadada_8%,_#8b8b8b_50%,_#ffffff_72%)] text-[clamp(36px,3.33vw,60px)]'>
+                C.E.I.T.E
+              </h2>
+              <h2
+                class='font-(family-name:--font-tiktok) leading-none tracking-wider text-stroke text-[clamp(36px,3.33vw,60px)] absolute inset-0 -z-10'
+                aria-hidden='true'>
+                C.E.I.T.E
+              </h2>
+            </div>
+            <h5 class='text-[clamp(8px,0.75vw,10px)] text-stone-400 mt-1 whitespace-nowrap'>
               College of <span class='text-accent'>Engineering</span> and <span class='text-accent'
                 >Information Technology</span
               > Education
@@ -91,10 +97,10 @@ const year = new Date().getFullYear();
           <img src='/images/asiatech_logo.avif' alt='Asiatech Logo' class='shrink-0 size-14 md:size-16' />
           <div class='flex flex-col'>
             <h3
-              class='text-3xl md:text-4xl text-transparent tracking-wider bg-clip-text font-serif font-bold bg-linear-to-tr from-stone-300 to-stone-100 leading-none'>
+              class='text-[clamp(36px,3.33vw,52px)] text-transparent tracking-wider bg-clip-text font-serif font-bold bg-linear-to-tr from-stone-300 to-stone-100 leading-none'>
               ASIATECH
             </h3>
-            <h5 class='text-[7px] tracking-wide uppercase text-stone-400 mt-1 whitespace-nowrap'>
+            <h5 class='text-[clamp(8px,0.75vw,10px)] tracking-wide uppercase text-stone-400 mt-1 whitespace-nowrap'>
               Asia Technological School of Science and Arts
             </h5>
           </div>

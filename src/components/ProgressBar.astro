@@ -1,0 +1,33 @@
+---
+import '@bprogress/core/css';
+---
+
+<script>
+  import { BProgress } from '@bprogress/core';
+
+  let initialized = false;
+
+  function initProgress() {
+    if (initialized) return;
+    initialized = true;
+
+    BProgress.configure({
+      showSpinner: false,
+      trickleSpeed: 200,
+    });
+
+    document.addEventListener('astro:before-preparation', () => {
+      BProgress.start();
+    });
+
+    document.addEventListener('astro:page-load', () => {
+      BProgress.done();
+    });
+
+    document.addEventListener('astro:before-swap', () => {
+      BProgress.set?.(0); // optional safety reset
+    });
+  }
+
+  initProgress();
+</script>
