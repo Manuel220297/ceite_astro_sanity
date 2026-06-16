@@ -5,6 +5,7 @@ import SanityImage from '../../components/SanityImage.astro';
 import ProgramOverview from '../../components/programs-page/ProgramOverview.astro';
 import ProgramHeader from '../../components/programs-page/ProgramHeader.astro';
 import ProgramCurriculum from '../../components/programs-page/ProgramCurriculum.astro';
+import ProgramGallery from '@/components/programs-page/ProgramGallery.astro';
 
 export async function getStaticPaths() {
   const programs = await getCollection('programs');
@@ -30,6 +31,7 @@ const projects = allProjects.filter((p) => p.data.program?.slug === program.data
   <ProgramHeader program={program} />
   <ProgramOverview program={program} />
   <ProgramCurriculum program={program} />
+  <ProgramGallery program={program} />
   <article id='program-projects'>
     <h2>{program.data.title} STUDENT PROJECTS</h2>
     {

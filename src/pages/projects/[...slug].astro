@@ -1,0 +1,284 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import SanityImage from '../../components/SanityImage.astro';
+import MainLayout from '../../layouts/MainLayout.astro';
+import { PortableText } from 'astro-portabletext';
+import SanityPortableImage from '../../components/SanityPortableImage.astro';
+import SanityHighlight from '../../components/SanityHighlight.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+
+const components = {
+  type: {
+    image: SanityPortableImage,
+  },
+  marks: {
+    highlight: SanityHighlight,
+  },
+};
+
+export const getStaticPaths = (async () => {
+  const projects = await getCollection('projects');
+
+  return projects.map((project) => ({
+    params: {
+      slug: project.data.slug,
+    },
+    props: {
+      project,
+      projects,
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { project, projects } = Astro.props;
+
+// Related projects from the same program (excluding current)
+const relatedProjects = project.data.program
+  ? projects
+      .filter((p) => p.data.program?.slug === project.data.program?.slug && p.data.slug !== project.data.slug)
+      .slice(0, 3)
+  : [];
+
+const pad = (n: number) => String(n).padStart(2, '0');
+
+// Featured image dimensions for PhotoSwipe
+const featuredWidth = project.data?.image?.asset?.metadata?.dimensions?.width || 1024;
+const featuredHeight = project.data?.image?.asset?.metadata?.dimensions?.height || 1024;
+const featuredFullUrl = project.data?.image?.asset?.url || '/images/default_background.avif';
+---
+
+<MainLayout>
+  <article id='project-article-gallery' class='relative w-full bg-background pb-24 pt-28 md:pt-32'>
+    <Breadcrumb
+      class='mb-10'
+      items={[
+        { label: 'CEITE', href: '/' },
+        { label: 'Projects', href: '/projects' },
+        ...(project.data.program
+          ? [{ label: project.data.program.title, href: `/programs/${project.data.program.slug}` }]
+          : []),
+      ]}
+    />
+
+    <header class='relative mx-auto mb-10 w-full max-w-[900px] px-6 md:px-10'>
+      {
+        project.data.program && (
+          <div class='mb-6 flex items-center gap-3'>
+            <span class='h-px w-8 bg-accent' />
+            <a
+              href={`/programs/${project.data.program.slug}`}
+              class='text-[10px] tracking-[0.3em] uppercase text-accent font-bold hover:underline underline-offset-4'>
+              {project.data.program.title}
+            </a>
+          </div>
+        )
+      }
+
+      <h1 class='font-(family-name:--font-tiktok) text-4xl leading-[1.05] text-stone-50 sm:text-5xl md:text-6xl'>
+        {project.data.title}
+      </h1>
+
+      <div
+        class='mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-stone-700/50 pt-6 text-xs text-stone-400'>
+        <div class='flex items-center gap-2'>
+          <svg
+            class='size-3.5 text-stone-500'
+            viewBox='0 0 24 24'
+            fill='none'
+            stroke='currentColor'
+            stroke-width='2'
+            stroke-linecap='round'
+            stroke-linejoin='round'
+            aria-hidden='true'>
+            <path d='M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z'></path>
+          </svg>
+          <span class='tracking-wide'>Student Project</span>
+        </div>
+
+        {
+          project.data.author && (
+            <>
+              <span class='size-1 rounded-full bg-stone-700' />
+              <div class='flex items-center gap-2'>
+                <svg
+                  class='size-3.5 text-stone-500'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  stroke-width='2'
+                  stroke-linecap='round'
+                  stroke-linejoin='round'
+                  aria-hidden='true'>
+                  <path d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2' />
+                  <circle cx='12' cy='7' r='4' />
+                </svg>
+                <span>by {project.data.author}</span>
+              </div>
+            </>
+          )
+        }
+      </div>
+    </header>
+
+    {/* Featured image — now zoomable via PhotoSwipe */}
+    <figure class='mx-auto mb-12 w-full max-w-[1100px] px-6 md:px-10'>
+      <div class='overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]'>
+        <a
+          href={featuredFullUrl}
+          data-pswp-width={featuredWidth}
+          data-pswp-height={featuredHeight}
+          class='pswp-link block w-full cursor-zoom-in'>
+          <SanityImage
+            class='w-full max-h-[640px] object-cover'
+            image={project.data.image}
+            fallback='/images/default_background.avif'
+            width={1024}
+            height={576}
+          />
+        </a>
+      </div>
+    </figure>
+
+    {/* Body */}
+    <div class='mx-auto w-full max-w-[760px] px-6 md:px-10'>
+      <div class='portable-text portable-text-article'>
+        <PortableText value={project.data?.body} components={components} />
+      </div>
+
+      {/* End-of-project footer */}
+      <div class='mt-16 border-t border-stone-700/50 pt-8'>
+        <div class='flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between'>
+          <div class='flex flex-col gap-1'>
+            <span class='text-[10px] tracking-[0.3em] uppercase text-stone-500'>End of project</span>
+            <span class='text-sm text-stone-300'>Thank you for viewing.</span>
+          </div>
+          <a
+            href='/projects'
+            class='inline-flex w-fit items-center gap-2 rounded-full border border-accent/40 bg-accent/10
+          px-5 py-2.5 text-xs font-semibold tracking-[0.2em] uppercase text-accent transition-colors hover:border-accent
+          hover:bg-accent hover:text-background'>
+            <svg
+              class='size-3.5'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              stroke-width='2'
+              stroke-linecap='round'
+              stroke-linejoin='round'
+              aria-hidden='true'>
+              <path d='M19 12H5M12 19l-7-7 7-7'></path>
+            </svg>
+            <span>Back to Showcase</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {/* Related projects */}
+    {
+      relatedProjects.length > 0 && (
+        <div class='relative mx-auto mt-24 w-full max-w-[1600px] px-6 md:px-10'>
+          <div class='mb-8 flex items-center gap-3'>
+            <span class='h-px w-8 bg-accent' />
+            <span class='text-[10px] tracking-[0.3em] uppercase text-accent'>More from</span>
+            <span class='text-[10px] tracking-[0.3em] uppercase text-stone-300 font-bold'>
+              {project.data.program?.title}
+            </span>
+          </div>
+
+          <div class='flex flex-wrap gap-6'>
+            {relatedProjects.map((p, i) => (
+              <article class='project-card group relative flex flex-col overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02] transition-all duration-500 hover:border-accent/30 hover:bg-white/[0.04] basis-full sm:basis-[calc((100%-1.5rem)/2)] lg:basis-[calc((100%-3rem)/3)]'>
+                <a href={`/projects/${p.data.slug}`} class='flex h-full flex-col'>
+                  <div class='relative aspect-[4/3] overflow-hidden'>
+                    <SanityImage
+                      width={600}
+                      height={450}
+                      image={p.data.image}
+                      fallback='/images/default_background.avif'
+                      loading='lazy'
+                      class='size-full object-cover saturate-[0.9] transition-all duration-700 group-hover:scale-105 group-hover:saturate-100'
+                    />
+                    <div class='pointer-events-none absolute inset-0 bg-linear-to-t from-background/80 via-background/20 to-transparent' />
+                    <span class='absolute left-4 top-4 font-(family-name:--font-tiktok) text-base tabular-nums text-stone-300/70'>
+                      {pad(i + 1)}
+                    </span>
+                  </div>
+                  <div class='flex flex-1 flex-col gap-3 p-5'>
+                    <h3 class='text-lg font-bold leading-[1.15] line-clamp-2 text-stone-50 transition-colors group-hover:text-accent'>
+                      {p.data.title}
+                    </h3>
+                    <div class='mt-auto flex items-center gap-2 pt-3 text-[10px] font-semibold tracking-[0.25em] uppercase text-stone-400 transition-all group-hover:text-accent group-hover:gap-3'>
+                      <span>View project</span>
+                      <svg
+                        class='size-3.5 transition-transform group-hover:translate-x-1'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        stroke-width='2'
+                        stroke-linecap='round'
+                        stroke-linejoin='round'>
+                        <path d='M5 12h14M13 5l7 7-7 7' />
+                      </svg>
+                    </div>
+                  </div>
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+      )
+    }
+
+    <link rel='stylesheet' href='photoswipe/dist/photoswipe.css' />
+
+    <script>
+      import PhotoSwipeLightbox from 'photoswipe/lightbox';
+
+      const UpDownGestureIcon = `
+    <svg class='inline-block w-6 h-6 text-accent' width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="1.91"
+        d="M13,22.5,7.82,17.36a2,2,0,0,1-.59-1.43,2,2,0,0,1,2-2,2,2,0,0,1,1.43.59L12,15.82V6.38a2,2,0,0,1,1.74-2,1.87,1.87,0,0,1,1.51.56,1.83,1.83,0,0,1,.57,1.34V12l5,.72a1.91,1.91,0,0,1,1.64,1.89h0a17.18,17.18,0,0,1-1.82,7.71l-.09.18"/>
+      <polyline fill="none" stroke="currentColor" stroke-width="1.91" points="7.23 11.04 4.36 13.91 1.5 11.04"/>
+      <line fill="none" stroke="currentColor" stroke-width="1.91" x1="4.36" y1="6.27" x2="4.36" y2="13.91"/>
+      <polyline fill="none" stroke="currentColor" stroke-width="1.91" points="5.32 4.36 8.18 1.5 11.04 4.36"/>
+      <line fill="none" stroke="currentColor" stroke-width="1.91" x1="8.18" y1="9.14" x2="8.18" y2="1.5"/>
+    </svg>
+    `;
+
+      const PinchGestureIcon = `
+      <svg class='inline-block w-6 h-6 text-accent' fill="currentColor" width="800px" height="800px" viewBox="0 0 14 14" role="img" focusable="false" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><path d="m 8.12441,12.961763 c -0.0211,-0.021 -0.0384,-0.094 -0.0384,-0.1624 0,-0.068 -0.0434,-0.2515 -0.0964,-0.4071 -0.077,-0.2259 -0.21506,-0.3995 -0.68378,-0.8595 -0.58327,-0.5724 -0.59061,-0.583 -1.05909,-1.5381005 -0.51694,-1.0539 -0.77974,-1.4893 -1.21313,-2.0101 -0.30495,-0.3664 -0.39636,-0.5878 -0.3039,-0.736 0.15376,-0.2464 0.63155,-0.3074 0.98383,-0.1255 0.29042,0.1499 0.59998,0.4813 0.95366,1.021 0.30722,0.4687 0.46244,0.5704 0.59465,0.3896 0.10339,-0.1414 0.10144,-1.868 -0.002,-2.1542 -0.0402,-0.1108 -0.28129,-0.4735 -0.53568,-0.806 -0.60145,-0.786 -0.61847,-0.8198 -0.53691,-1.0669 0.0879,-0.2664 0.30798,-0.4299 0.57865,-0.4299 0.20886,0 0.2466,0.033 0.87019,0.7614 0.35853,0.4188 0.69721,0.8139 0.75262,0.878 0.0923,0.1067 0.10564,0.1084 0.15866,0.02 0.0809,-0.1345 0.36486,-0.1842 0.60305,-0.1056 0.29471,0.097 0.43288,0.304 0.43288,0.6478 l 0,0.2864 0.11005,-0.1359 c 0.09,-0.1111 0.16436,-0.1359 0.40772,-0.1359 0.26345,0 0.31698,0.022 0.46566,0.188 0.11749,0.1315 0.16799,0.2483 0.16799,0.3886 l 0,0.2006 0.11514,-0.1151 c 0.23367,-0.2337 0.75236,-0.085 0.89513,0.2568 0.0616,0.1475 0.0815,0.5788 0.0863,1.8736 l 0.006,1.6819005 -0.31641,0.6413 c -0.30365,0.6155 -0.44087,1.0579 -0.44087,1.4214 l 0,0.1699 -1.45846,0 c -0.80216,0 -1.47574,-0.017 -1.49685,-0.038 z m -5.80662,-1.9355 -0.15509,-0.1274 0.46443,-0.6299 0.46444,-0.6299005 -0.13146,-0.1064 c -0.0723,-0.059 -0.17243,-0.1294 -0.22251,-0.1574 -0.0501,-0.028 -0.0783,-0.062 -0.0627,-0.076 0.0156,-0.014 0.36123,-0.1941 0.76813,-0.4004 0.72356,-0.3667 0.73918,-0.3716 0.71029,-0.2236 -0.0163,0.083 -0.0754,0.4492 -0.13147,0.8134 -0.056,0.3641 -0.10943,0.6721005 -0.11861,0.6844005 -0.009,0.012 -0.10753,-0.047 -0.21854,-0.1315 L 3.48286,9.8876625 3.01619,10.522863 c -0.25667,0.3494 -0.4839,0.6344 -0.50497,0.6332 -0.0211,-10e-4 -0.10809,-0.059 -0.19338,-0.1295 z m 2.5131,-2.5673005 c -1.04698,-0.4756 -0.72548,-2.0147 0.42207,-2.0206 0.30902,0 0.65163,0.1694 0.84354,0.421 0.20545,0.2694 0.1845,0.3604 -0.043,0.1869 -0.62371,-0.4758 -1.17581,-0.4602 -1.48181,0.042 -0.21309,0.3494 -0.0891,0.904 0.24174,1.0811 0.2062,0.1103 0.42073,0.4007 0.29332,0.3969 -0.0238,-7e-4 -0.14788,-0.049 -0.27585,-0.1069 z m 1.28847,-2.9697 c -0.11479,-0.078 -0.26329,-0.2546 -0.33001,-0.3924 -0.33043,-0.6826 0.10133,-1.4527 0.85505,-1.5251 0.54474,-0.052 1.05616,0.3474 1.13269,0.8854 l 0.0319,0.224 -0.16333,-0.2015 c -0.37261,-0.4597 -0.51522,-0.5831 -0.72938,-0.6312 -0.58208,-0.1306 -1.12158,0.4144 -0.96176,0.9716 0.03,0.1046 0.16,0.3298 0.28892,0.5006 0.2532,0.3353 0.20926,0.3951 -0.12403,0.1686 z m 1.62019,-1.9437 c -5.7e-4,-0.04 0.0548,-0.4147 0.12312,-0.8317 l 0.12417,-0.7584 0.22348,0.1479 c 0.12291,0.081 0.23093,0.1376 0.24004,0.1251 0.009,-0.013 0.20532,-0.2884 0.43602,-0.6129 0.2307,-0.3245 0.43646,-0.6006 0.45725,-0.6134 0.0208,-0.013 0.1145,0.038 0.20823,0.1125 l 0.17043,0.1359 -0.18228,0.2472 c -0.10026,0.136 -0.30472,0.4228 -0.45435,0.6374 l -0.27206,0.3901 0.19286,0.161 0.19286,0.161 -0.54225,0.2907 c -0.89633,0.4806 -0.91634,0.4894 -0.91752,0.4076 z"/></svg>
+    `;
+
+      function initProjectGallery() {
+        const lightbox = new PhotoSwipeLightbox({
+          gallery: '#project-article-gallery',
+          children: 'a.pswp-link',
+          showHideAnimationType: 'zoom',
+          showAnimationDuration: 0,
+          hideAnimationDuration: 250,
+          clickToCloseNonZoomable: true,
+          errorMsg: 'The photo cannot be loaded',
+          pinchToClose: true,
+          pswpModule: () => import('photoswipe'),
+        });
+
+        lightbox.on('uiRegister', () => {
+          lightbox.pswp?.ui?.registerElement({
+            name: 'swipe-hint',
+            order: 6,
+            isButton: false,
+            appendTo: 'wrapper',
+            html: `<span class="pswp__swipe-hint">Swipe ${UpDownGestureIcon} or Pinch ${PinchGestureIcon} to exit</span>`,
+          });
+        });
+
+        lightbox.init();
+      }
+
+      initProjectGallery();
+      document.addEventListener('astro:after-swap', initProjectGallery);
+    </script>
+  </article>
+</MainLayout>

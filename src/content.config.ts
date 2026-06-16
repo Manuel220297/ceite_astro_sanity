@@ -444,8 +444,25 @@ const projects = defineCollection({
     const posts = await client.fetch(`
       *[_type == 'projects']{
           title,
+          author,
           "slug": slug.current,
           image{
+              ...,
+              asset->{
+                _id,
+                url,
+                size,
+                metadata{
+                  dimensions{
+                    height,
+                    width,
+                  }
+                }
+              }
+            },
+          "program": program.program->{
+            title,
+            logo{
               ...,
               asset->{
                 _id,
@@ -453,8 +470,6 @@ const projects = defineCollection({
                 size
               }
             },
-          "program": program.program->{
-            title,
             "slug": slug.current
           },
           body
@@ -466,6 +481,7 @@ const projects = defineCollection({
       title: post.title,
       slug: post.slug,
       image: post.image,
+      author: post.author,
       program: post.program,
       body: post.body,
     }));
@@ -474,8 +490,9 @@ const projects = defineCollection({
   schema: z.object({
     title: z.string(),
     slug: z.string(),
-    program: z.object({ title: z.string(), slug: z.string() }).nullish(),
-    image: z.any(),
+    author: z.string().nullish(),
+    program: z.object({ title: z.string(), slug: z.string(), logo: z.any() }).nullish(),
+    image: imageSchema.nullish(),
     body: z.any(),
   }),
 });

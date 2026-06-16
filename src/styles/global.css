@@ -30,12 +30,13 @@
     --accent: #ff9c45;
     --swiper-navigation-color: var(--color-accent);
     --bprogress-color: var(--color-accent) !important;
-    --bprogress-height: 3px !important;
+    --bprogress-height: 1.5px !important;
     color-scheme: dark;
   }
 
+  .bprogress .indeterminate,
   .bprogress .bar {
-    @apply top-[68px];
+    @apply !top-[68px];
   }
 
   .dark {
@@ -64,12 +65,15 @@
   }
 
   .pswp__swipe-hint {
-    @apply absolute top-8 left-1/2 -translate-x-1/2 hidden text-base whitespace-nowrap self-center;
+    @apply absolute top-8 left-1/2 -translate-x-1/2 hidden items-center gap-2 px-4 py-2
+         text-stone-200 text-xs tracking-[0.15em] uppercase whitespace-nowrap
+         pointer-events-none;
+    z-index: 1100;
   }
 
   @media (pointer: coarse) {
     .pswp__swipe-hint {
-      @apply flex items-center justify-center;
+      @apply flex;
     }
   }
 

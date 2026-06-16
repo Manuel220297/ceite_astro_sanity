@@ -1,4 +1,5 @@
 ---
+// @ts-ignore
 import '@bprogress/core/css';
 ---
 
@@ -6,6 +7,8 @@ import '@bprogress/core/css';
   import { BProgress } from '@bprogress/core';
 
   let initialized = false;
+  let timer: number | null = null;
+  let started = false;
 
   function initProgress() {
     if (initialized) return;
@@ -17,15 +20,25 @@ import '@bprogress/core/css';
     });
 
     document.addEventListener('astro:before-preparation', () => {
-      BProgress.start();
+      started = false;
+
+      timer = window.setTimeout(() => {
+        started = true;
+        BProgress.start();
+      }, 450);
     });
 
     document.addEventListener('astro:page-load', () => {
-      BProgress.done();
+      if (timer) clearTimeout(timer);
+
+      if (started) {
+        BProgress.done();
+      }
     });
 
     document.addEventListener('astro:before-swap', () => {
-      BProgress.set?.(0); // optional safety reset
+      if (timer) clearTimeout(timer);
+      BProgress.set?.(0);
     });
   }
 
